@@ -9,14 +9,5 @@ module.exports = async () => {
             type: item,
         });
     });
-    const hi = await transaction.create({
-        userId: null,
-        transactionTypeId: 1,
-        storeId: null,
-        price: null,
-        gMoney: 10000,
-        gPoint: 0,
-    });
-    console.log("hiCreatedAt", hi.createdAt);
     console.log("momentJs", moment());
 };

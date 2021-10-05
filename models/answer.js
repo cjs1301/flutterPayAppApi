@@ -9,12 +9,15 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(db) {
             // define association here
-            this.belongsTo(db.ask, { foreignKey: "askId", sourceKey: "id" });
+            this.belongsTo(db.question, {
+                foreignKey: "questionId",
+                sourceKey: "id",
+            });
         }
     }
     answer.init(
         {
-            askId: DataTypes.INTEGER,
+            questionId: DataTypes.INTEGER,
             title: DataTypes.STRING,
             content: DataTypes.TEXT,
         },

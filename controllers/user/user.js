@@ -6,26 +6,45 @@ const type = require("../../models/index.js").type;
 const store = require("../../models/index.js").store;
 const { QueryTypes } = require("sequelize");
 const { Op } = require("sequelize");
+const authCheck = require("../../authorizationCheck");
+const loginCheck = require("../../loginCheck");
 
 module.exports = {
     info: async (req, res) => {
         //유저 정보 확인
-        //실패
-
-        //성공
-        //res.status(200).send({data:null,message:""})
-        res.status(200).send({ data: userInfo, message: "유저정보 확인" });
+        const authorization = req.headers.authorization;
+        let authData = authCheck(authorization);
+        if (!authData) {
+            //실패
+            return res
+                .status(403)
+                .send({ data: null, message: "만료된 토큰입니다" });
+        } else {
+            let User = await user.findOne({
+                where: { userCode: authData.userCode },
+            });
+            if (!User) {
+                //일치하는 데이터 찾지 못함
+            } else {
+                //성공
+                let userInfo = {};
+                res.status(200).send({
+                    data: userInfo,
+                    message: "유저정보 확인",
+                });
+            }
+        }
     },
     monthTransaction: async (req, res) => {
         //유저 정보 확인
-        let userCode;
-        let User = await user.findOne({ where: { userCode: userCode } });
+        const authorization = req.headers.authorization;
+        let User = loginCheck(authorization);
         if (!User) {
-            return; //유저정보없음
+            throw Error;
         }
-        const { resultType, mouth } = req.body;
+        const { resulttype, month } = req.query;
         let transactionData;
-        switch (resultType) {
+        switch (resulttype) {
             case "전체":
                 transactionData = await transaction.findAll({
                     where: {
@@ -45,6 +64,10 @@ module.exports = {
                         },
                     ],
                 });
+                // await sequelize.query(`SELECT * FROM transaction WHERE userId = ${User.id}, createdAt <=`, {
+                //     nest: true,
+                //     type: QueryTypes.SELECT
+                //   });
                 return res
                     .status(200)
                     .send({ data: transactionData, message: "전체 내역 출력" });

@@ -9,19 +9,19 @@ module.exports = {
     giveGmoney: async (req, res) => {},
     giveGpoint: async (req, res) => {},
     answer: async (req, res) => {
-        const { title, content, askId } = req.body;
+        const { title, content, questionId } = req.body;
 
         const newAnswer = await answer.create({
             title: title,
             content: content,
-            askId: askId,
+            questionId: questionId,
         });
         res.status(200).send({ data: null, message: "등록 완료" });
     },
-    askList: async (req, res) => {
+    questionList: async (req, res) => {
         const { word, date, state } = req.body;
 
-        let askListData = await ask.findAll({
+        let questionListData = await question.findAll({
             where: Sequelize.or({
                 title: {
                     [Op.like]: `${word}%`,

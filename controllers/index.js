@@ -2,13 +2,13 @@
 const user = require("./user/user");
 const pay = require("./user/pay");
 const gMoney = require("./user/gMoney");
-const ask = require("./user/ask");
+const question = require("./user/question");
 
 //store
 const storeHandler = require("./store/storeHandler");
 
 //admin
-const answer = require("./admin/answer");
+const answer = require("./admin/userHandler");
 const event = require("./admin/event");
 const notice = require("./admin/notice");
 const appHandler = require("./admin/appHandler");
@@ -21,7 +21,7 @@ module.exports = {
     user,
     pay,
     gMoney,
-    ask,
+    question,
     storeHandler,
     answer,
     appListData,

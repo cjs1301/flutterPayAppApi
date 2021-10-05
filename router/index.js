@@ -4,7 +4,7 @@ const {
     user,
     pay,
     gMoney,
-    ask,
+    question,
     storeHandler,
     answer,
     appListData,
@@ -33,7 +33,7 @@ router.post("/userinfo", user.uploadAndEditInfo);
 //appAdmin
 router.post("/event", event.uploadAndEdit);
 router.delete("/event", event.delete);
-router.post("/answer", answer.uploadAndEdit);
+router.post("/answer", userHandler.answer);
 router.post("/notice", notice.uploadAndEdit);
 router.post("/coupon", userHandler.giveCoupon);
 router.post("/gmoney", userHandler.giveGmoney);
