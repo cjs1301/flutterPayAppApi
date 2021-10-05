@@ -9,11 +9,11 @@ module.exports = {
         res.send({ data: eventList, message: "성공" });
     },
 
-    manyAsk: async (req, res) => {
-        let manyAskList = await sequelize.query("SELECT title FROM manyAsks", {
+    faq: async (req, res) => {
+        let faqList = await sequelize.query("SELECT title FROM faqs", {
             type: QueryTypes.SELECT,
         });
-        res.send({ data: manyAskList, message: "성공" });
+        res.send({ data: faqList, message: "성공" });
     },
 
     notice: async (req, res) => {

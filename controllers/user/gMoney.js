@@ -43,6 +43,7 @@ module.exports = {
         const { chargegMoney } = req.body;
         //어드민에게 내역 알리기
         //결과 데이터 은행, 계좌번호, 입금 기간 보내기
+        //관리앱 충전신청일자, 이름, 신청금액, 은행-계좌번호, 전화번호, 이메일, 충전상태
     },
     sendUserSearch: async (req, res) => {
         const { word } = req.query;

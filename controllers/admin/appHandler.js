@@ -1,15 +1,15 @@
 const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
-const ask = require("../../models/index.js").ask;
+const answer = require("../../models/index.js").answer;
 
 module.exports = {
     uploadAndEdit: async (req, res) => {
-        const { title, content } = req.body;
+        const { title, content, askId } = req.body;
 
-        const newAsk = await ask.create({
+        const newAnswer = await answer.create({
             title: title,
             content: content,
-            userId: userId,
+            askId: askId,
         });
         res.status(200).send({ data: null, message: "등록 완료" });
     },
