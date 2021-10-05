@@ -12,6 +12,7 @@ const {
     notice,
     appHandler,
     userHandler,
+    appListData,
 } = require("../controllers/index");
 
 router.get("/", (req, res) => {
@@ -46,10 +47,10 @@ router.post("/storeinfo");
 //storeAdmin
 
 //app
-router.get("/storelist");
-router.get("/faqlist");
-router.get("/noticelist");
-router.get("/eventlist");
+router.get("/storelist", appListData.store);
+router.get("/faqlist", appListData.faq);
+router.get("/noticelist", appListData.notice);
+router.get("/eventlist", appListData.event);
 router.get("/storeinfo");
 router.get("/store");
 
