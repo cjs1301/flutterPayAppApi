@@ -12,7 +12,6 @@ const {
     notice,
     appHandler,
     userHandler,
-    appListData,
 } = require("../controllers/index");
 
 router.get("/", (req, res) => {
