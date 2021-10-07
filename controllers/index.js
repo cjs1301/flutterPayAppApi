@@ -8,11 +8,11 @@ const question = require("./user/question");
 const storeHandler = require("./store/storeHandler");
 
 //admin
-const answer = require("./admin/userHandler");
-const event = require("./admin/event");
+const answer = require("./admin/gMoneyHandler");
+const eventHandler = require("./admin/eventHandler");
 const notice = require("./admin/notice");
 const appHandler = require("./admin/appHandler");
-const userHandler = require("./admin/userHandler");
+const gMoneyHandler = require("./admin/gMoneyHandler");
 
 //app
 const appListData = require("./appListData");
@@ -25,8 +25,8 @@ module.exports = {
     storeHandler,
     answer,
     appListData,
-    event,
+    eventHandler,
     notice,
     appHandler,
-    userHandler,
+    gMoneyHandler,
 };

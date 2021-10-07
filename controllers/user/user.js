@@ -177,5 +177,17 @@ module.exports = {
             });
         }
     },
-    logout: async (req, res) => {},
+    alarm: async (req, res) => {
+        const User = await user.findOne({ where: { id: userId } });
+        if (User.alarm) {
+            User.alarm = false;
+            User.save();
+            return res.send({ data: null, message: "알림 끄기" });
+        } else {
+            User.alarm = true;
+            User.save();
+            return res.send({ data: null, message: "알림 켜기" });
+        }
+    },
+    signout: async (req, res) => {},
 };

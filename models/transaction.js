@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             price: DataTypes.INTEGER,
             gMoney: DataTypes.INTEGER,
             gPoint: DataTypes.INTEGER,
+            state: DataTypes.STRING,
         },
         {
             sequelize,

@@ -11,7 +11,7 @@ const {
     event,
     notice,
     appHandler,
-    userHandler,
+    gMoneyHandler,
 } = require("../controllers/index");
 
 router.get("/", (req, res) => {
@@ -22,7 +22,7 @@ router.get("/userinfo", user.info);
 router.get("/transaction", user.monthTransaction);
 router.post("/buy", pay.buy);
 router.get("/charge", gMoney.charge);
-router.post("/contractcharge");
+router.post("/subscription");
 router.post("/password", user.uploadPassword);
 router.put("/password", user.editPassword);
 router.get("/logout");
@@ -33,11 +33,11 @@ router.post("/userinfo", user.uploadAndEditInfo);
 //appAdmin
 router.post("/event", event.uploadAndEdit);
 router.delete("/event", event.delete);
-router.post("/answer", userHandler.answer);
+//router.post("/answer", gMoneyHandler.answer);
 router.post("/notice", notice.uploadAndEdit);
-router.post("/coupon", userHandler.giveCoupon);
-router.post("/gmoney", userHandler.giveGmoney);
-router.post("/gpoint", userHandler.giveGpoint);
+//router.post("/coupon", gMoneyHandler.giveCoupon);
+//router.post("/gmoney", gMoneyHandler.giveGmoney);
+//router.post("/gpoint", gMoneyHandler.giveGpoint);
 //router.post("/faq", appHandler);
 //router.delete("/faq", appHandler);
 router.delete("/storeinfo");
