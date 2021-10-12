@@ -18,31 +18,30 @@ router.get("/", (req, res) => {
     res.send({ title: "Hello World" });
 });
 //user
-router.get("/userinfo", user.info);
-router.get("/transaction", user.monthTransaction);
-router.post("/buy", pay.buy);
-router.get("/charge", gMoney.charge);
-router.post("/subscription");
-router.post("/password", user.uploadPassword);
-router.put("/password", user.editPassword);
-router.get("/logout");
-router.get("/alarm");
-router.post("/wire", gMoney.send);
-router.get("/senduser", gMoney.sendUserSearch);
-router.post("/userinfo", user.uploadAndEditInfo);
+router.get("/user/info", user.info);
+router.get("/user/transaction", user.monthTransaction);
+router.post("/user/buy", pay.buy);
+router.get("/user/charge", gMoney.charge);
+router.post("/user/subscription");
+router.post("/user/password", user.uploadPassword);
+router.put("/user/password", user.editPassword);
+router.get("/user/alarm");
+router.post("/user/wire", gMoney.send);
+router.get("/user/search", gMoney.sendUserSearch);
+router.post("/user/info", user.uploadAndEditInfo);
 //appAdmin
-router.post("/event", event.uploadAndEdit);
-router.delete("/event", event.delete);
-//router.post("/answer", gMoneyHandler.answer);
-router.post("/notice", notice.uploadAndEdit);
-//router.post("/coupon", gMoneyHandler.giveCoupon);
-//router.post("/gmoney", gMoneyHandler.giveGmoney);
-//router.post("/gpoint", gMoneyHandler.giveGpoint);
-//router.post("/faq", appHandler);
-//router.delete("/faq", appHandler);
-router.delete("/storeinfo");
-router.delete("/notice", notice.delete);
-router.post("/storeinfo");
+//router.post("/admin/event", event.uploadAndEdit);
+//router.delete("/admin/event", event.delete);
+//router.post("/admin/answer", gMoneyHandler.answer);
+router.post("/admin/notice", notice.uploadAndEdit);
+//router.post("/admin/coupon", gMoneyHandler.giveCoupon);
+//router.post("/admin/gmoney", gMoneyHandler.giveGmoney);
+//router.post("/admin/gpoint", gMoneyHandler.giveGpoint);
+//router.post("/admin/faq", appHandler);
+//router.delete("/admin/faq", appHandler);
+router.delete("/admin/store");
+router.delete("/admin/notice", notice.delete);
+router.post("/admin/store");
 //storeAdmin
 
 //app
@@ -52,5 +51,11 @@ router.get("/noticelist", appListData.notice);
 router.get("/eventlist", appListData.event);
 router.get("/storeinfo");
 router.get("/store");
+
+//sns
+// app.get("/auth/kakao", (req, res) => {
+//     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${kakao.clientID}&redirect_uri=${kakao.redirectUri}&response_type=code&scope=profile,account_email`;
+//     res.redirect(kakaoAuthURL);
+// });
 
 module.exports = router;

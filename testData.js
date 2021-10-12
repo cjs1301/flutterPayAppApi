@@ -2,6 +2,8 @@ const event = require("./models/index.js").event;
 const faq = require("./models/index.js").faq;
 const notice = require("./models/index.js").notice;
 const store = require("./models/index.js").store;
+const user = require("./models/index.js").user;
+const transaction = require("./models/index.js").transaction;
 
 module.exports = async () => {
     for (let i = 0; i < 20; i++) {
@@ -34,4 +36,42 @@ module.exports = async () => {
             img: "메인이미지uri",
         });
     }
+    await user.create({
+        userCode: 1293940,
+        userName: "박보검",
+        email: "hi@gmail.com",
+        phoneNumber: "01012345678",
+        gMoney: "284000",
+        alram: true,
+        paymentPassword: "0000",
+        activityArea: null,
+        belongGroup: null,
+    });
+    await transaction.create({
+        userId: 1,
+        transactionTypeId: 4,
+        storeId: 2,
+        price: 1000,
+        gMoney: 1000,
+        gPoint: 10,
+        state: "결제완료",
+    });
+    await transaction.create({
+        userId: 1,
+        transactionTypeId: 4,
+        storeId: 2,
+        price: 1000,
+        gMoney: 1000,
+        gPoint: 10,
+        state: "결제완료",
+    });
+    await transaction.create({
+        userId: 1,
+        transactionTypeId: 4,
+        storeId: 2,
+        price: 1000,
+        gMoney: 1000,
+        gPoint: 10,
+        state: "결제완료",
+    });
 };

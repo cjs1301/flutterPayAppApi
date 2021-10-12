@@ -4,6 +4,7 @@ const transaction = require("../../models/index.js").transaction;
 const store = require("../../models/index.js").store;
 const type = require("../../models/index.js").type;
 const bcrypt = require("bcrypt");
+const pushEvent = require("../push");
 
 module.exports = {
     buy: async (req, res) => {
@@ -50,6 +51,11 @@ module.exports = {
             //마일리지 적립
             //User.gPoint
             User.save();
+            let userInfo = {
+                ...User,
+                gPoint: 1000,
+            };
+            pushEvent();
             return res
                 .status(200)
                 .send({ data: null, message: "결제가 성공하였습니다" });

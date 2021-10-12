@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             gMoney: DataTypes.INTEGER,
             alram: DataTypes.BOOLEAN,
             paymentPassword: DataTypes.STRING,
+            fcmToken: DataTypes.STRING,
             activityArea: DataTypes.STRING,
             belongGroup: DataTypes.STRING,
         },

@@ -27,9 +27,8 @@ module.exports = {
                 //일치하는 데이터 찾지 못함
             } else {
                 //성공
-                let userInfo = {};
                 res.status(200).send({
-                    data: userInfo,
+                    data: User,
                     message: "유저정보 확인",
                 });
             }
@@ -43,6 +42,11 @@ module.exports = {
             throw Error;
         }
         const { resulttype, month } = req.query;
+        let day = moment().format(`DD`);
+        let monthFormat = month === null ? moment().format(`MM`) : month;
+        let year = date;
+        let startMonth = new Date(`${year}-${monthFormat}-${day}`);
+        let endMonth = new Date();
         let transactionData;
         switch (resulttype) {
             case "전체":
@@ -50,7 +54,7 @@ module.exports = {
                     where: {
                         userId: User.id,
                         createdAt: {
-                            //[Op.]
+                            [Op.between]: [startMonth, endMonth],
                         },
                     },
                     include: [
@@ -64,17 +68,18 @@ module.exports = {
                         },
                     ],
                 });
-                // await sequelize.query(`SELECT * FROM transaction WHERE userId = ${User.id}, createdAt <=`, {
-                //     nest: true,
-                //     type: QueryTypes.SELECT
-                //   });
                 return res
                     .status(200)
                     .send({ data: transactionData, message: "전체 내역 출력" });
                 break;
             case "충전":
                 transactionData = await transaction.findAll({
-                    where: { userId: User.id },
+                    where: {
+                        userId: User.id,
+                        createdAt: {
+                            [Op.between]: [startMonth, endMonth],
+                        },
+                    },
                     include: [
                         {
                             model: type,
@@ -97,7 +102,12 @@ module.exports = {
                 });
             case "결제":
                 transactionData = await transaction.findAll({
-                    where: { userId: User.id },
+                    where: {
+                        userId: User.id,
+                        createdAt: {
+                            [Op.between]: [startMonth, endMonth],
+                        },
+                    },
                     include: [
                         {
                             model: type,
@@ -179,15 +189,35 @@ module.exports = {
     },
     alarm: async (req, res) => {
         const User = await user.findOne({ where: { id: userId } });
-        if (User.alarm) {
-            User.alarm = false;
+        if (User.notiAlarm) {
+            User.notiAlarm = false;
             User.save();
             return res.send({ data: null, message: "알림 끄기" });
         } else {
-            User.alarm = true;
+            User.notiAlarm = true;
             User.save();
             return res.send({ data: null, message: "알림 켜기" });
         }
     },
-    signout: async (req, res) => {},
+    login: async (req, res) => {
+        const { id, password, fcmToken } = req.body;
+        //기존서버에 로그인 확인=>사용자 정보 받아오기
+        let data;
+        //페이 데이터베이스에 저장
+        const [User, created] = await user.findOrCreate({
+            where: { userCode: 1234 }, //테트용 임시 코드
+            defaults: {
+                userCode: data.userCode,
+                userName: data.userName,
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+                gMoney: data.gMoney,
+                notiAlram: true,
+                paymentPassword: null,
+                fcmToken: fcmToken,
+                activityArea: null,
+                belongGroup: null,
+            },
+        });
+    },
 };
