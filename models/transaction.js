@@ -15,20 +15,16 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: "storeId",
                 sourceKey: "id",
             });
-            this.belongsTo(db.type, {
-                foreignKey: "transactionTypeId",
-                sourceKey: "id",
-            });
         }
     }
     transaction.init(
         {
             userId: DataTypes.INTEGER,
-            transactionTypeId: DataTypes.INTEGER,
             storeId: DataTypes.INTEGER,
             price: DataTypes.INTEGER,
             gMoney: DataTypes.INTEGER,
-            gPoint: DataTypes.INTEGER,
+            useGpoint: DataTypes.INTEGER,
+            couponData: DataTypes.STRING,
             state: DataTypes.STRING,
         },
         {

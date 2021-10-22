@@ -3,7 +3,9 @@ const faq = require("./models/index.js").faq;
 const notice = require("./models/index.js").notice;
 const store = require("./models/index.js").store;
 const user = require("./models/index.js").user;
+const charge = require("./models/index.js").charge;
 const transaction = require("./models/index.js").transaction;
+const question = require("./models/index.js").question;
 
 module.exports = async () => {
     for (let i = 0; i < 20; i++) {
@@ -24,54 +26,51 @@ module.exports = async () => {
                 "페이앱으로 편하게 현금,카드 없이 어디서나! 페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!",
             title: `앱사용 규칙 공지${i}`,
         });
-        await store.create({
-            name: `가게${i}`,
-            introduction:
-                "우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!우리가게가 짱이야!!!",
-            location: "강남어딘가",
-            ownerName: "박보검",
-            callNumber: "01012345678",
-            openingHours: "10:00am ~ 7:00pm",
-            logoImg: "로고이미지uri",
-            img: "메인이미지uri",
-        });
     }
     await user.create({
-        userCode: 1293940,
+        userCode: 1,
         userName: "박보검",
         email: "hi@gmail.com",
         phoneNumber: "01012345678",
-        gMoney: "284000",
+        gMoney: 2840000,
         alram: true,
-        paymentPassword: "0000",
         activityArea: null,
         belongGroup: null,
     });
-    await transaction.create({
-        userId: 1,
-        transactionTypeId: 4,
-        storeId: 2,
-        price: 1000,
+    await user.create({
+        userCode: 1295,
+        userName: "홍길동",
+        email: "hi2@gmail.com",
+        phoneNumber: "01012345679",
         gMoney: 1000,
-        gPoint: 10,
-        state: "결제완료",
+        alram: true,
+        activityArea: null,
+        belongGroup: null,
     });
-    await transaction.create({
-        userId: 1,
-        transactionTypeId: 4,
-        storeId: 2,
-        price: 1000,
-        gMoney: 1000,
-        gPoint: 10,
-        state: "결제완료",
+    await user.create({
+        userCode: 288,
+        userName: "윤현수",
+        email: "hi2@gmail.com",
+        phoneNumber: "01012345679",
+        gMoney: 9000000,
+        alram: true,
+        activityArea: null,
+        belongGroup: null,
     });
-    await transaction.create({
-        userId: 1,
-        transactionTypeId: 4,
-        storeId: 2,
-        price: 1000,
-        gMoney: 1000,
-        gPoint: 10,
-        state: "결제완료",
+    await charge.create({
+        userId: 2,
+        userName: "홍길동",
+        money: 1000,
+        phoneNumber: "01012345679",
+        email: "hi2@gmail.com",
+        state: "충전신청",
     });
+    for (let i = 0; i < 10; i++) {
+        await question.create({
+            userId: 1,
+            content:
+                "어디서나!페이앱으로 편하게 현금없이 어디서나!페이앱으로 편하게 현금없이 어디서나!",
+            title: `질문${i}`,
+        });
+    }
 };

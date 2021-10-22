@@ -1,8 +1,9 @@
-const moment = require("moment");
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const createError = require("http-errors");
 const debug = require("debug")("backend:server");
+//const static = require("serve-static");
+//const path = require("path");
 const logger = require("morgan");
 const fs = require("fs");
 const app = express();
@@ -17,6 +18,10 @@ const router = require("./router/index");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+//app.use("/public", static(path.join(__dirname, "public")));
+//app.use("/uploads", static(path.join(__dirname, "uploads")));
+
 app.use(cookieParser());
 
 sequelize
@@ -34,6 +39,9 @@ sequelize
 
 app.use("/", router);
 
+app.get("/favicon.ico", (req, res) => res.status(204));
+app.get("/apple-touch-icon.png", (req, res) => res.status(204));
+app.get("/apple-touch-icon-precomposed.png", (req, res) => res.status(204));
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));

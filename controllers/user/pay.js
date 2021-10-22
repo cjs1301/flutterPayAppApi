@@ -5,63 +5,140 @@ const store = require("../../models/index.js").store;
 const type = require("../../models/index.js").type;
 const bcrypt = require("bcrypt");
 const pushEvent = require("../push");
+const token = require("../token/accessToken");
+const axios = require("axios");
+const FormData = require("form-data");
+require("dotenv").config();
 
 module.exports = {
+    check: async (req, res) => {
+        //유저 정보 확인
+        try {
+            const authorization = req.headers.authorization;
+            let userId = await token.check(authorization);
+            if (!userId) {
+                //실패
+                return res
+                    .status(403)
+                    .send({ data: null, message: "만료된 토큰입니다" });
+            } else {
+                //성공
+                try {
+                    const User = await user.findOne({
+                        where: { id: userId },
+                    });
+                    if (!User) {
+                        return res.status(403).send({
+                            data: null,
+                            message: "일치하는 회원정보를 찾지 못했습니다",
+                        });
+                    }
+                    //결제 정보 포인트 쿠폰 잔액 정보 확인
+                    let result = await axios.get(
+                        `${process.env.TEST_API}/app/gpointcoupon?userId=${User.userCode}`
+                    );
+                    res.status(200).send({
+                        data: result.data,
+                        message: "유저정보 확인",
+                    });
+                } catch (error) {
+                    console.log(error);
+                    return res.status(403).send({
+                        data: null,
+                        message: "일치하는 회원정보를 찾지 못했습니다",
+                    });
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send({
+                data: userInfo,
+                message: "포인트 쿠폰 체크중 에러발생",
+            });
+        }
+    },
     buy: async (req, res) => {
         //유저 정보 확인
-        let userCode;
-        let User = await user.findOne({ where: { userCode: userCode } });
+        const authorization = req.headers.authorization;
+        let userId = token.check(authorization);
+        let User = await user.findOne({ where: { id: userId } });
         if (!User) {
-            return; //유저정보없음
+            return res
+                .status(403)
+                .send({ data: null, message: "유저정보 없음" });
         }
-        //결제 금액, 사용할 마일리지, 사용할 쿠폰, 사용될 가게, 금액, 결제 비밀번호
-        const { usegPoint, useCoupon, storeName, price, password } = req.body;
-        //결제 비밀번호 확인
-        checkPassword = await bcrypt.compare(User.password, password);
-        if (!checkPassword) {
-            return; //결제 비밀번호가 일치 하지 않습니다.
-        }
-        //마일리지나 쿠폰 사용시
-        if (usegPoint !== null || useCoupon !== null) {
-            //기존 데이터베이스에 마일리지, 쿠폰 사용가능 확인 api 요청
-            //불가능
-            //가능
-            //쿠폰과 마일리지 사용액 차감
-        }
-        //가격에서 쿠폰과 마일리지 사용금액 제외
-        let resultPrice;
-        //result = (price*useCoupon)-usegPoint
-        //유저 잔액 차감 가능 확인
-        if (User.gMoney - resultPrice >= 0) {
-            //가능
-            User.gMoney = User.gMoney - resultPrice;
-            //결제 성공 거래내역 생성
-            let Type = await type.findOne({ where: { type: "결제" } }); //let Type = await type.findOne({where:{id:4}})
-            let Store = await store.findOne({ where: { name: storeName } });
+        //결제 금액, 사용할 포인트, 사용할 쿠폰, 사용될 가게, 금액
+        const { useGpoint, couponData, storeId, price } = req.body;
+        //let resultPrice= price * couponData - usegPoint
 
+        let newTransaction;
+
+        let resultPrice = price - useGpoint;
+
+        if (User.gMoney - resultPrice < 0) {
             await transaction.create({
                 userId: User.id,
-                transactionTypeId: Type.id,
-                storeId: Store.id,
+                storeId: storeId,
                 price: price,
-                usegMoney: resultPrice,
-                usegPoint: usegPoint !== null ? usegPoint : null,
-                addgPoint: usegPoint === null ? resultPrice * 0.03 : null,
+                gMoney: resultPrice,
+                state: "결제실패",
             });
-            //마일리지 적립
-            //User.gPoint
-            User.save();
-            let userInfo = {
-                ...User,
-                gPoint: 1000,
+
+            return res.status(400).send({
+                data: null,
+                message: "회원의 잔액이 결제금액보다 부족합니다",
+            });
+        }
+        //포인트나 쿠폰 사용시
+        if (useGpoint !== "" || useCoupon !== "") {
+            //기존 데이터베이스에 포인트, 쿠폰 사용가능 확인 api 요청
+            newTransaction = await transaction.create({
+                userId: User.id,
+                transactionTypeId: Type.id,
+                storeId: storeId,
+                price: price,
+                gMoney: resultPrice,
+                useGpoint: useGpoint,
+                couponData: couponData,
+            });
+            let data = new FormData();
+            data.append("userId", User.userCode);
+            data.append("gPoint", useGpoint);
+            data.append("couponCode", "");
+            data.append("orderNo", newTransaction.id);
+            data.append("payMoney", price);
+            data.append("storeId", storeId);
+
+            let config = {
+                method: "post",
+                url: `${process.env.TEST_API}/app/buy`,
+                headers: {
+                    ...data.getHeaders(),
+                },
+                data: data,
             };
-            pushEvent();
-            return res
-                .status(200)
-                .send({ data: null, message: "결제가 성공하였습니다" });
-        } else {
-            //불가능 => 사용한 마일리지와 쿠폰 롤백
-            return;
+            try {
+                let result = await axios(config);
+                let resultData = result.data.data;
+                if (resultData.result === "success") {
+                    User.gPoint = resultData.gPoint;
+                    User.save();
+                    newTransaction.state = "결제성공";
+                    newTransaction.save();
+                    pushEvent.data("/user/info", User.fcmToken);
+                    return res
+                        .status(200)
+                        .send({ data: null, message: "결제가 성공하였습니다" });
+                }
+            } catch (error) {
+                console.log(error);
+                newTransaction.state = "결제실패";
+                newTransaction.save();
+                return res.status(400).send({
+                    data: null,
+                    message: "회원의 쿠폰이나 포인트 정보가 맞지 않습니다",
+                });
+            }
         }
     },
 };

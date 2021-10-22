@@ -1,13 +1,9 @@
-const transaction = require("./models/index.js").transaction;
-const type = require("./models/index.js").type;
 var moment = require("moment");
+const refreshData = require("./controllers/refreshData");
 
 module.exports = async () => {
-    var typeList = ["일반충전", "약정충전", "송금", "결제"];
-    typeList.forEach(async (item) => {
-        await type.create({
-            type: item,
-        });
+    refreshData.storeListSet().then(() => {
+        console.log("가게정보목록 업데이트");
     });
     console.log("momentJs", moment());
 };

@@ -1,20 +1,15 @@
-const { Request, Response } = require("express");
+const { Request, Response, response } = require("express");
 const event = require("../models/index.js").event;
 const faq = require("../models/index.js").faq;
 const notice = require("../models/index.js").notice;
 const store = require("../models/index.js").store;
-var moment = require("moment");
-const { QueryTypes, Op } = require("sequelize");
+const storeImg = require("../models/index.js").storeImg;
+const { Op } = require("sequelize");
+const axios = require("axios");
+require("dotenv").config();
 
 module.exports = {
     event: async (req, res) => {
-        let day = moment().format(`DD`);
-        let month = moment().format(`MM`);
-        let year = moment().format(`YYYY`);
-        let now = moment().format(`YYYY-MM-DD`);
-        let startMonth = new Date(`${year}-${month - 1}-${day}`);
-        let endMonth = new Date();
-        console.log(startMonth, endMonth);
         let eventList = await event.findAll();
         res.send({ data: eventList, message: "성공" });
     },
@@ -29,14 +24,28 @@ module.exports = {
         res.send({ data: noticeList, message: "성공" });
     },
 
-    store: async (req, res) => {
+    storeList: async (req, res) => {
         let storeList = await store.findAll();
-        store.img = "테스트 데이터";
-        res.send({ data: storeList, message: "성공" });
+        return res.send({ data: storeList, message: "성공" });
+    },
+    store: async (req, res) => {
+        const { storeid } = req.query;
+        let orginData = await axios.get(
+            `${process.env.TEST_API}/app/store?storeid=${storeid}`
+        );
+        let findStore = await store.findOne({
+            where: {
+                storeCode: storeid,
+                [Op.or]: {
+                    ceo: null,
+                    introduction: null,
+                    logoImg: null,
+                },
+            },
+        });
+        if (findStore) {
+            findStore.ceo = orginData.data.ceo;
+        }
+        res.send({ data: noticeList, message: "성공" });
     },
 };
-
-// let storeList = await await sequelize.query(
-//     "SELECT name, location, callNumber, logoImg FROM events",
-//     { type: QueryTypes.SELECT }
-// );

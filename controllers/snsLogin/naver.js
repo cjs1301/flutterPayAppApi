@@ -2,51 +2,35 @@ const { Request, Response } = require("express");
 const axios = require("axios");
 const user = require("../../models/index.js").user;
 const token = require("../token/accessToken");
-const FormData = require("form-data");
 const qs = require("qs");
+const FormData = require("form-data");
 require("dotenv").config();
 
 module.exports = {
     callback: async (req, res) => {
-        const { code } = req.query;
-        let data = qs.stringify({
-            grant_type: "authorization_code",
-            client_id: process.env.KAKAO_CLIENT_ID,
-            redirect_uri: `${process.env.SERVER}/auth/kakao/callback`,
-            code: code,
-        });
+        const { code, state, error, error_description } = req.query;
+        if (error) {
+            console.log(error, error_description);
+            return res.send(error_description);
+        }
         let config = {
-            method: "post",
-            url: "https://kauth.kakao.com/oauth/token",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            data: data,
+            method: "get",
+            url: `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${process.env.NAVER_CLIENT_ID}&client_secret=${process.env.NAVER_CLIENT_SECRET}&code=${code}&state=${state}`,
         };
+
         try {
             let response = await axios(config);
-            let userId = await axios.get(
-                "https://kapi.kakao.com/v1/user/access_token_info",
+            var userData = await axios.get(
+                "https://openapi.naver.com/v1/nid/me",
                 {
                     headers: {
                         Authorization: `bearer ${response.data.access_token}`,
-                        "Content-type": "application/x-www-form-urlencoded",
                     },
                 }
             );
-
-            let userData = await axios.get(
-                `https://kapi.kakao.com/v2/user/me?target_id_type=user_id&target_id=${userId.data.id}`,
-                {
-                    headers: {
-                        Authorization: `KakaoAK ${process.env.KAKAO_ADMIN_KEY}`,
-                        "Content-type": "application/x-www-form-urlencoded",
-                    },
-                }
-            );
-            let kakaoId = "kko" + userData.data.id;
+            let naverId = userData.data.response.id;
             let dataForm = new FormData();
-            dataForm.append("id", kakaoId);
+            dataForm.append("id", naverId);
 
             let snsConfig = {
                 method: "post",
@@ -73,11 +57,9 @@ module.exports = {
                                     ? ""
                                     : snsUser.cellphone,
                             gMoney: 0,
-                            gPoint:
-                                snsUser.gPoint === null ? 0 : snsUser.gPoint,
                             notiAlram: true,
                             activityArea: "",
-                            rute: "kakao",
+                            rute: "naver",
                             couponCount:
                                 snsUser.coupon === null ? 0 : snsUser.coupon,
                         },
@@ -95,39 +77,23 @@ module.exports = {
                         return res.redirect(
                             `intent://pay?token=${createToken}&status="ok"#Intent;scheme=maeulstorypay;end`
                         );
-                        res.send({
-                            data: null,
-                            message: "카카오로 로그인하셨습니다",
-                        });
                     }
                     let createToken = await token.make(User.userCode);
                     return res.redirect(
                         `intent://pay?token=${createToken}&status="ok"#Intent;scheme=maeulstorypay;end`
                     );
-                    res.send({
-                        data: null,
-                        message: "카카오로 로그인하셨습니다",
-                    });
                 }
             } catch (error) {
                 console.log(error);
                 return res.redirect(
                     `intent://pay?token=${"확인되지 않는 회원입니다."}&status="no"#Intent;scheme=maeulstorypay;end`
                 );
-                res.status(403).send({
-                    data: null,
-                    message: "확인되지 않는 회원입니다",
-                });
             }
         } catch (error) {
             console.log(error.data);
             return res.redirect(
                 `intent://pay?token=${"확인되지 않는 회원입니다."}&status="no"#Intent;scheme=maeulstorypay;end`
             );
-            res.status(403).send({
-                data: null,
-                message: "카카오 로그인이 되지 않았습니다.",
-            });
         }
     },
 };

@@ -19,9 +19,14 @@ module.exports = (sequelize, DataTypes) => {
             },
 
             content: DataTypes.TEXT,
+            isExpanded: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            createdAt: DataTypes.DATEONLY,
+            updatedAt: DataTypes.DATEONLY,
         },
         {
-            timestamps: false,
             sequelize,
             modelname: "faq",
             comment: "자주 묻는 질문",

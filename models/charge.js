@@ -28,3 +28,13 @@ module.exports = (sequelize, DataTypes) => {
     );
     return charge;
 };
+
+// {
+//     hooks:{
+//         afterCreate:(charge,options) =>{
+//             if(charge.state = '충전신청'){
+
+//             }
+//         }
+//     }
+// },

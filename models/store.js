@@ -13,13 +13,16 @@ module.exports = (sequelize, DataTypes) => {
     }
     store.init(
         {
+            storeCode: DataTypes.INTEGER,
             name: DataTypes.STRING,
             introduction: DataTypes.TEXT,
-            location: DataTypes.STRING,
-            ownerName: DataTypes.STRING,
-            callNumber: DataTypes.STRING,
-            openingHours: DataTypes.STRING,
+            address: DataTypes.STRING,
+            ceo: DataTypes.STRING,
+            phone: DataTypes.STRING,
+            img: DataTypes.TEXT,
             logoImg: DataTypes.STRING,
+            x: DataTypes.STRING,
+            y: DataTypes.STRING,
         },
         {
             timestamps: false,

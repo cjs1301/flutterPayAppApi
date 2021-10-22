@@ -6,13 +6,13 @@
         "host": "127.0.0.1",
         "port": "3307",
         "dialect": "mysql",
-
+        "timezone": "Asia/Seoul",
         "dialectOptions": {
             "charset": "utf8mb4",
             "dateStrings": true,
-            "typeCast": true
-        },
-        "timezone": "+09:00"
+            "typeCast": true,
+            "timezone": "Asia/Seoul"
+        }
     },
     "test": {
         "username": "root",
@@ -25,8 +25,7 @@
             "charset": "utf8mb4",
             "dateStrings": true,
             "typeCast": true
-        },
-        "timezone": "+09:00"
+        }
     },
     "production": {
         "username": "root",
