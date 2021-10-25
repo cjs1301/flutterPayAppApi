@@ -26,7 +26,7 @@ module.exports = {
                 let [newStore, created] = await store.findOrCreate({
                     where: { storeCode: el.store_id },
                     defaults: {
-                        storeCode: el.store_id,
+                        id: el.store_id,
                         name: el.name,
                         introduction: originData.introduction,
                         ceo: originData.ceo,
@@ -75,10 +75,9 @@ module.exports = {
                 let originData = origin.data.data;
 
                 let [newStore, created] = await store.findOrCreate({
-                    where: { storeCode: el.store_id },
+                    where: { id: el.store_id },
                     defaults: {
-                        storeCode:
-                            el.store_id === null ? "" : `${el.store_id}`.trim(),
+                        id: el.store_id,
                         name: el.name === null ? "" : `${el.name}`.trim(),
                         introduction:
                             originData.introduction === null

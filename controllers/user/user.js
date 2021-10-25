@@ -10,6 +10,7 @@ const axios = require("axios");
 const crypto = require("crypto");
 const FormData = require("form-data");
 const token = require("../token/accessToken");
+const moment = require("moment")
 
 module.exports = {
     info: async (req, res) => {
@@ -37,7 +38,7 @@ module.exports = {
                 let nowDate = new Date();
                 let userGpoint = await axios.get(
                     `${process.env.TEST_API}/app/gpoint?userId=${
-                        User.userCode
+                        User.id
                     }&year=${nowDate.getFullYear()}&month=${nowDate.getMonth()}`
                 );
 
@@ -62,18 +63,25 @@ module.exports = {
         //월별 사용자 거래 내역
         //유저 정보 확인
         const authorization = req.headers.authorization;
-        let userId = token.check(authorization);
+        let userId = await token.check(authorization);
         if (!userId) {
-            throw Error;
+            //실패
+            return res
+                .status(403)
+                .send({ data: null, message: "만료된 토큰입니다" });
         }
         const { resulttype, month } = req.query;
         let monthFormat = month === null ? moment().format(`MM`) : month;
         let year = moment().format(`YYYY`);
-        let startMonth = new Date(`${year}-${monthFormat}-${01}`);
-        let endMonth = new Date(`${year}-${monthFormat}-${31}`);
+        let startMonth = new Date(`${year}-${monthFormat}-${01} 00:00:00`);
+        let endMonth = new Date(`${year}-${monthFormat}-${31} 24:00:00`);
         let transactionData;
+
+        console.log(resulttype,startMonth, endMonth)
+
         switch (resulttype) {
             case "전체":
+                console.log("전체")
                 transactionData = await transaction.findAll({
                     where: {
                         userId: userId,
@@ -83,12 +91,8 @@ module.exports = {
                     },
                     include: [
                         {
-                            model: type,
-                            attrebutes: ["type"],
-                        },
-                        {
                             model: store,
-                            attrebutes: ["name"],
+                            attributes: ["name"],
                         },
                     ],
                 });
@@ -103,20 +107,16 @@ module.exports = {
                         createdAt: {
                             [Op.between]: [startMonth, endMonth],
                         },
+                        state:{
+                            type: {
+                                [Op.or]: ["일반충전", "약정충전"],
+                            },
+                        }
                     },
                     include: [
                         {
-                            model: type,
-                            where: {
-                                type: {
-                                    [Op.or]: ["일반충전", "약정충전"],
-                                },
-                            },
-                            attrebutes: ["type"],
-                        },
-                        {
                             model: store,
-                            attrebutes: ["name"],
+                            attributes: ["name"],
                         },
                     ],
                 });
@@ -131,20 +131,16 @@ module.exports = {
                         createdAt: {
                             [Op.between]: [startMonth, endMonth],
                         },
+                        state:{
+                            type: {
+                                [Op.or]: ["송금", "결제"],
+                            },
+                        }
                     },
                     include: [
                         {
-                            model: type,
-                            where: {
-                                type: {
-                                    [Op.or]: ["송금", "결제"],
-                                },
-                            },
-                            attrebutes: ["type"],
-                        },
-                        {
                             model: store,
-                            attrebutes: ["name"],
+                            attributes: ["name"],
                         },
                     ],
                 });
@@ -310,9 +306,9 @@ module.exports = {
         const userInfo = apiResult.data.data;
         try {
             const [User, created] = await user.findOrCreate({
-                where: { userCode: userInfo.user_id },
+                where: { id: userInfo.user_id },
                 defaults: {
-                    userCode: userInfo.user_id,
+                    id: userInfo.user_id,
                     userName: userInfo.name,
                     email: userInfo.email,
                     phoneNumber: userInfo.callphone,
@@ -324,12 +320,12 @@ module.exports = {
                 },
             });
             if (created) {
-                let userToken = token.make(User.userCode);
+                let userToken = token.make(User.id);
                 return res
                     .status(200)
                     .send({ data: userToken, message: "로그인 성공" });
             } else {
-                User.userCode = userInfo.user_id;
+                User.id = userInfo.user_id;
                 User.userName = userInfo.name;
                 User.email = userInfo.email;
                 if (User.phoneNumber !== null) {
@@ -339,7 +335,7 @@ module.exports = {
                     User.couponCount = userInfo.coupon;
                 }
                 User.save();
-                let userToken = token.make(User.userCode);
+                let userToken = token.make(User.id);
                 res.status(200).send({
                     data: userToken,
                     message: "로그인 성공",

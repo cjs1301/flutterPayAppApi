@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     }
     store.init(
         {
-            storeCode: DataTypes.INTEGER,
             name: DataTypes.STRING,
             introduction: DataTypes.TEXT,
             address: DataTypes.STRING,

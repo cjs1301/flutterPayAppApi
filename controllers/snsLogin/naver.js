@@ -46,10 +46,10 @@ module.exports = {
                     let snsUser = loginResult.data.data;
                     let [User, created] = await user.findOrCreate({
                         where: {
-                            userCode: snsUser.user_id,
+                            id: snsUser.user_id,
                         },
                         defaults: {
-                            userCode: snsUser.user_id,
+                            id: snsUser.user_id,
                             userName: snsUser.name,
                             email: snsUser.email === null ? "" : snsUser.email,
                             phoneNumber:
@@ -73,12 +73,12 @@ module.exports = {
                         User.couponCount =
                             snsUser.coupon === null ? 0 : snsUser.coupon;
                         await User.save();
-                        let createToken = await token.make(User.userCode);
+                        let createToken = await token.make(User.id);
                         return res.redirect(
                             `intent://pay?token=${createToken}&status="ok"#Intent;scheme=maeulstorypay;end`
                         );
                     }
-                    let createToken = await token.make(User.userCode);
+                    let createToken = await token.make(User.id);
                     return res.redirect(
                         `intent://pay?token=${createToken}&status="ok"#Intent;scheme=maeulstorypay;end`
                     );

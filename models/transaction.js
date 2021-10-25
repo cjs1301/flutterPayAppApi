@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             useGpoint: DataTypes.INTEGER,
             couponData: DataTypes.STRING,
             state: DataTypes.STRING,
+            isUsed: DataTypes.BOOLEAN
         },
         {
             sequelize,

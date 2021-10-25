@@ -49,6 +49,21 @@ module.exports = {
             return; //실패
         }
     },
+    sendUserSearch: async (req, res) => {
+        try {
+            const { word } = req.query;
+            console.log(typeof word)
+            const list = await user.sequelize.query(
+                `SELECT userName, email FROM users WHERE userName LIKE '${word}%'`,
+                { type: QueryTypes.SELECT }
+            );
+            res.send({ data:list,message:"검색성공" });
+        } catch (error) {
+            console.log(error)
+            throw error
+        }
+
+    },
     charge: async (req, res) => {
         //유저 정보 확인
         const authorization = req.headers.authorization;
@@ -75,7 +90,7 @@ module.exports = {
         }
 
         //관리앱 충전신청일자, 이름, 신청금액, 은행-계좌번호, 전화번호, 이메일, 충전상태
-        let newcharge = await charge.create({
+        let newCharge = await charge.create({
             userId: User.id,
             userName: User.name,
             money: chargegMoney,
@@ -85,10 +100,10 @@ module.exports = {
         });
 
         await db.sequelize.query(
-            `CREATE EVENT chargeEvent${newcharge.id}` +
+            `CREATE EVENT chargeEvent${newCharge.id}` +
                 " ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 30 MINUTE" +
                 " DO" +
-                ` UPDATE charges SET state = '입금미완료' WHERE id = ${newcharge.id}`
+                ` UPDATE charges SET state = '입금미완료' WHERE id = ${newCharge.id}`
         );
         //결과 데이터 은행, 계좌번호, 입금 기간 보내기
         let result = {
@@ -127,7 +142,7 @@ module.exports = {
                     });
                 }
                 let userCoupon = await axios.get(
-                    `${process.env.TEST_API}/app/coupon?userId=${User.userCode}`
+                    `${process.env.TEST_API}/app/coupon?userId=${User.id}`
                 );
 
                 res.status(200).send({
@@ -209,14 +224,7 @@ module.exports = {
         subscription.save();
         res.status(200).send({ data: null, message: "취소신청 되었습니다" });
     },
-    sendUserSearch: async (req, res) => {
-        const { word } = req.query;
-        const list = await user.sequelize.query(
-            `SELECT userName, phoneNumber FROM users WHERE userName LIKE '${word}%'`,
-            { type: QueryTypes.SELECT }
-        );
-        res.send({ list });
-    },
+
     subscriptionDownload: async (req, res) => {
         //약정충전 신청서 다운로드
         var path = require("path");
@@ -253,7 +261,7 @@ module.exports = {
 
             let a = await db.sequelize.query(
                 `CREATE EVENT hey${newcharge.id}` +
-                    ` ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 MINUTE` +
+                    ` ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 20 SECOND` +
                     " DO" +
                     ` UPDATE charges SET state = '입금미완료' WHERE id = ${newcharge.id}`
             );

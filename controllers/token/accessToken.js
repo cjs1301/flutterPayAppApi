@@ -2,10 +2,10 @@ const jwt = require("jsonwebtoken");
 const user = require("../../models/index").user;
 require("dotenv").config();
 module.exports = {
-    make: (userCode) => {
-        console.log("userCode", userCode, typeof userCode);
+    make: (userId) => {
+        console.log("userId", userId, typeof userId);
         const accessToken = jwt.sign(
-            { userCode: userCode },
+            { id: userId },
             process.env.JWT_SECRET,
             {
                 expiresIn: "30d",
@@ -28,7 +28,7 @@ module.exports = {
         } else {
             console.log(accessTokenData);
             let userInfo = await user.findOne({
-                where: { userCode: accessTokenData.userCode },
+                where: { id: accessTokenData.id },
             });
             if (userInfo) {
                 console.log("userId ========", userInfo.id);

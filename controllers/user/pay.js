@@ -35,10 +35,17 @@ module.exports = {
                     }
                     //결제 정보 포인트 쿠폰 잔액 정보 확인
                     let result = await axios.get(
-                        `${process.env.TEST_API}/app/gpointcoupon?userId=${User.userCode}`
+                        `${process.env.TEST_API}/app/gpointcoupon?userId=${User.id}`
                     );
+                    console.log(result.data.message)
+                    //쿠폰 사용가능 목록 배열처리
+                    let couponlist = result.data.data.coupon
+                    couponlist.forEach(el => {
+                        el.provider_list = el.provider_list.split("|").filter(i=> i !== "")
+                    });
+                    result.data.data.coupon = couponlist
                     res.status(200).send({
-                        data: result.data,
+                        data: result.data.data,
                         message: "유저정보 확인",
                     });
                 } catch (error) {
@@ -60,7 +67,7 @@ module.exports = {
     buy: async (req, res) => {
         //유저 정보 확인
         const authorization = req.headers.authorization;
-        let userId = token.check(authorization);
+        let userId = await token.check(authorization);
         let User = await user.findOne({ where: { id: userId } });
         if (!User) {
             return res
@@ -70,7 +77,7 @@ module.exports = {
         //결제 금액, 사용할 포인트, 사용할 쿠폰, 사용될 가게, 금액
         const { useGpoint, couponData, storeId, price } = req.body;
         //let resultPrice= price * couponData - usegPoint
-
+        console.log(req.body)
         let newTransaction;
 
         let resultPrice = price - useGpoint;
@@ -94,21 +101,28 @@ module.exports = {
             //기존 데이터베이스에 포인트, 쿠폰 사용가능 확인 api 요청
             newTransaction = await transaction.create({
                 userId: User.id,
-                transactionTypeId: Type.id,
                 storeId: storeId,
                 price: price,
                 gMoney: resultPrice,
                 useGpoint: useGpoint,
-                couponData: couponData,
+                couponData: couponData.coupon_code,
             });
             let data = new FormData();
-            data.append("userId", User.userCode);
+            console.log(User.id)
+            console.log(useGpoint)
+            console.log(couponData !== "" ? couponData.coupon_code : null)
+            console.log(couponData)
+            console.log(couponData !== {})
+            console.log(newTransaction.id)
+            console.log(price)
+            console.log(storeId)
+            data.append("userId", User.id);
             data.append("gPoint", useGpoint);
-            data.append("couponCode", "");
+            data.append("couponCode", couponData !== {} ? couponData.coupon_code : null);
             data.append("orderNo", newTransaction.id);
             data.append("payMoney", price);
             data.append("storeId", storeId);
-
+            console.log(data)
             let config = {
                 method: "post",
                 url: `${process.env.TEST_API}/app/buy`,
