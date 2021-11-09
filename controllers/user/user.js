@@ -1,16 +1,37 @@
 const { Request, Response } = require("express");
-const bcrypt = require("bcrypt");
 const user = require("../../models/index.js").user;
 const transaction = require("../../models/index.js").transaction;
-const type = require("../../models/index.js").type;
 const store = require("../../models/index.js").store;
-const question = require("../../models/index.js").question;
+const alarm = require("../../models/index.js").alarm;
+//const question = require("../../models/index.js").question;
 const { Op } = require("sequelize");
 const axios = require("axios");
 const crypto = require("crypto");
 const FormData = require("form-data");
 const token = require("../token/accessToken");
-const moment = require("moment")
+
+const arrByDate = (array) => {
+    let day = [array[0]];
+    let result = [];
+    for (let i = 1; i < array.length; i++) {
+        let pre = new Date(array[i - 1].createdAt);
+        let crr = new Date(array[i].createdAt);
+        if (pre.getDate() === crr.getDate()) {
+            day.push(array[i]);
+            if (i === array.length - 1) {
+                result.push(day);
+            }
+        } else {
+            result.push(day);
+            day = [];
+            day.push(array[i]);
+            if (i === array.length - 1) {
+                result.push(day);
+            }
+        }
+    }
+    return result;
+};
 
 module.exports = {
     info: async (req, res) => {
@@ -36,16 +57,25 @@ module.exports = {
                     });
                 }
                 let nowDate = new Date();
+                console.log(
+                    nowDate.getFullYear(),
+                    nowDate.getMonth(),
+                    nowDate.getHours()
+                );
                 let userGpoint = await axios.get(
                     `${process.env.TEST_API}/app/gpoint?userId=${
                         User.id
                     }&year=${nowDate.getFullYear()}&month=${nowDate.getMonth()}`
                 );
+                let userCoupon = await axios.get(
+                    `${process.env.TEST_API}/app/coupon?userId=${User.id}`
+                );
 
                 let userInfo = {
                     ...User.dataValues,
-                    gPoint: userGpoint.data.data.emoney,
+                    gPoint: Math.floor(userGpoint.data.data.emoney),
                 };
+                userInfo.couponCount = userCoupon.data.data.active.length;
                 res.status(200).send({
                     data: userInfo,
                     message: "유저정보 확인",
@@ -70,23 +100,35 @@ module.exports = {
                 .status(403)
                 .send({ data: null, message: "만료된 토큰입니다" });
         }
-        const { resulttype, month } = req.query;
-        let monthFormat = month === null ? moment().format(`MM`) : month;
-        let year = moment().format(`YYYY`);
-        let startMonth = new Date(`${year}-${monthFormat}-${01} 00:00:00`);
-        let endMonth = new Date(`${year}-${monthFormat}-${31} 24:00:00`);
+        const { resulttype, month, year } = req.query;
+        console.log(year);
+        let from = Number(month) - 1;
+        let to = Number(month);
+        const startOfMonth = new Date(year, from, 1);
+        const endOfMonth = new Date(year, to, 0);
+        endOfMonth.setDate(endOfMonth.getDate() + 1);
+
         let transactionData;
 
-        console.log(resulttype,startMonth, endMonth)
+        console.log(resulttype, startOfMonth, endOfMonth);
 
         switch (resulttype) {
             case "전체":
-                console.log("전체")
                 transactionData = await transaction.findAll({
                     where: {
                         userId: userId,
                         createdAt: {
-                            [Op.between]: [startMonth, endMonth],
+                            [Op.between]: [startOfMonth, endOfMonth],
+                        },
+                        state: {
+                            [Op.or]: [
+                                "일반충전",
+                                "약정충전",
+                                "송금",
+                                "입금",
+                                "결제완료",
+                                "결제취소",
+                            ],
                         },
                     },
                     include: [
@@ -94,34 +136,40 @@ module.exports = {
                             model: store,
                             attributes: ["name"],
                         },
+                        {
+                            model: user,
+                            attributes: ["userName"],
+                        },
                     ],
+                    order: [["createdAt", "DESC"]],
                 });
-                return res
-                    .status(200)
-                    .send({ data: transactionData, message: "전체 내역 출력" });
+
+                return res.status(200).send({
+                    data: arrByDate(transactionData),
+                    message: "전체 내역 출력",
+                });
                 break;
             case "충전":
                 transactionData = await transaction.findAll({
                     where: {
                         userId: userId,
                         createdAt: {
-                            [Op.between]: [startMonth, endMonth],
+                            [Op.between]: [startOfMonth, endOfMonth],
                         },
-                        state:{
-                            type: {
-                                [Op.or]: ["일반충전", "약정충전"],
-                            },
-                        }
+                        state: {
+                            [Op.or]: ["일반충전", "약정충전"],
+                        },
                     },
                     include: [
                         {
-                            model: store,
-                            attributes: ["name"],
+                            model: user,
+                            attributes: ["userName"],
                         },
                     ],
+                    order: [["createdAt", "DESC"]],
                 });
                 return res.status(200).send({
-                    data: transactionData,
+                    data: arrByDate(transactionData),
                     message: "일반,약정 충전 내역 출력",
                 });
             case "결제":
@@ -129,23 +177,26 @@ module.exports = {
                     where: {
                         userId: userId,
                         createdAt: {
-                            [Op.between]: [startMonth, endMonth],
+                            [Op.between]: [startOfMonth, endOfMonth],
                         },
-                        state:{
-                            type: {
-                                [Op.or]: ["송금", "결제"],
-                            },
-                        }
+                        state: {
+                            [Op.or]: ["결제완료"],
+                        },
                     },
                     include: [
                         {
                             model: store,
                             attributes: ["name"],
                         },
+                        {
+                            model: user,
+                            attributes: ["userName"],
+                        },
                     ],
+                    order: [["createdAt", "DESC"]],
                 });
                 return res.status(200).send({
-                    data: transactionData,
+                    data: arrByDate(transactionData),
                     message: "송금,결제 내역 출력",
                 });
         }
@@ -154,67 +205,6 @@ module.exports = {
             .status(500)
             .send({ data: null, message: "조회할 내역의 타입을 정해주세요" });
     },
-    // uploadPassword: async (req, res) => {//결제 비밀번호 등록
-    //     const authorization = req.headers.authorization;
-    //     let userId = token.check(authorization);
-    //     const { password } = req.body;
-    //     const hashedPassword = await bcrypt.hash(password, 10);
-    //     const User = await user.findOne({
-    //         where: { id: userId },
-    //     });
-    //     if (User) {
-    //         User.password = hashedPassword;
-    //         User.save();
-    //         res.status(200).send({ data: null, message: "등록 완료" });
-    //     } else {
-    //         res.status(403).send({
-    //             data: null,
-    //             message: "유저 정보를 확인할수 없습니다.",
-    //         });
-    //     }
-    // },
-    // uploadPassword: async (req, res) => {//결제 비밀번호 등록
-    //     const authorization = req.headers.authorization;
-    //     let userId = token.check(authorization);
-    //     const { password } = req.body;
-    //     const hashedPassword = await bcrypt.hash(password, 10);
-    //     const User = await user.findOne({
-    //         where: { id: userId },
-    //     });
-    //     if (User) {
-    //         User.password = hashedPassword;
-    //         User.save();
-    //         res.status(200).send({ data: null, message: "등록 완료" });
-    //     } else {
-    //         res.status(403).send({
-    //             data: null,
-    //             message: "유저 정보를 확인할수 없습니다.",
-    //         });
-    //     }
-    // },
-    // editPassword: async (req, res) => {
-    //     const authorization = req.headers.authorization;
-    //     let userId = token.check(authorization);
-    //     const { oldPassword, newPassword } = req.body;
-    //     const checkId = await user.findOne({ where: { id: userId } });
-
-    //     const checkPassword = false;
-    //     checkPassword = await bcrypt.compare(checkId.password, oldPassword);
-
-    //     if (checkPassword) {
-    //         const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    //         checkId.password = hashedPassword;
-    //         checkId.save();
-
-    //         return res.send({ data: null, message: "ok" });
-    //     } else {
-    //         return res.send({
-    //             data: null,
-    //             message: "비밀번호가 일치하지 않습니다.",
-    //         });
-    //     }
-    // },
     uploadAndEditInfo: async (req, res) => {
         //소속그룹 등록 belongGroup: DataTypes.STRING,
         const authorization = req.headers.authorization;
@@ -236,17 +226,29 @@ module.exports = {
     },
     alarm: async (req, res) => {
         const authorization = req.headers.authorization;
-        let userId = token.check(authorization);
+        let userId = await token.check(authorization);
         const User = await user.findOne({ where: { id: userId } });
-        if (User.notiAlarm) {
-            User.notiAlarm = false;
-            User.save();
-            return res.send({ data: null, message: "알림 끄기" });
-        } else {
-            User.notiAlarm = true;
-            User.save();
-            return res.send({ data: null, message: "알림 켜기" });
+        if (User) {
+            console.log(User.notiAlarm);
+            if (User.notiAlarm) {
+                User.notiAlarm = false;
+                User.save();
+                return res.send({ data: null, message: "알림 끄기" });
+            } else {
+                User.notiAlarm = true;
+                User.save();
+                return res.send({ data: null, message: "알림 켜기" });
+            }
         }
+    },
+    alarmList: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let userId = await token.check(authorization);
+
+        let list = await alarm.findAll({
+            where: { userId: userId },
+        });
+        return res.send({ data: list, message: "알림 목록" });
     },
     login: async (req, res) => {
         const { id, password, fcmToken } = req.body;
@@ -286,7 +288,7 @@ module.exports = {
             let data = new FormData();
             data.append("id", id);
             data.append("password", hashedPassword);
-
+            console.log(id, hashedPassword);
             let config = {
                 method: "post",
                 url: `${process.env.TEST_API}/app/login`,
@@ -298,23 +300,26 @@ module.exports = {
             apiResult = await axios(config);
         } catch (error) {
             console.log(error);
+            console.log(error.response);
             return res
                 .status(403)
-                .send({ data: null, message: "확인되지 않는 회원입니다" });
+                .send({ data: null, message: error.response.data.message });
         }
         //페이 데이터베이스에 저장
         const userInfo = apiResult.data.data;
+        console.log(userInfo);
         try {
             const [User, created] = await user.findOrCreate({
                 where: { id: userInfo.user_id },
                 defaults: {
                     id: userInfo.user_id,
+                    idValue: id,
                     userName: userInfo.name,
                     email: userInfo.email,
                     phoneNumber: userInfo.callphone,
                     gMoney: 0,
                     couponCount: userInfo.coupon,
-                    notiAlram: true,
+                    notiAlarm: true,
                     fcmToken: fcmToken,
                     //todo : rute 추가하기 => 로컬로그인인지 소셜로그인인지 파악
                 },

@@ -2,7 +2,7 @@
     "development": {
         "username": "susimdal",
         "password": "Dhsmf2021!",
-        "database": "payTest2",
+        "database": "payTest",
         "host": "127.0.0.1",
         "port": "3306",
         "dialect": "mysql",

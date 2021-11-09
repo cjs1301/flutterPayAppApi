@@ -50,6 +50,7 @@ module.exports = {
                         },
                         defaults: {
                             id: snsUser.user_id,
+                            idValue: naverId,
                             userName: snsUser.name,
                             email: snsUser.email === null ? "" : snsUser.email,
                             phoneNumber:
@@ -57,7 +58,7 @@ module.exports = {
                                     ? ""
                                     : snsUser.cellphone,
                             gMoney: 0,
-                            notiAlram: true,
+                            notiAlarm: true,
                             activityArea: "",
                             rute: "naver",
                             couponCount:

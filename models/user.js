@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
     class user extends Model {
         /**
@@ -9,16 +10,21 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(db) {
             // define association here
+            this.hasMany(db.transaction);
         }
     }
     user.init(
         {
+            idValue: DataTypes.STRING,
             userName: DataTypes.STRING,
             email: DataTypes.STRING,
             phoneNumber: DataTypes.STRING,
             gMoney: DataTypes.INTEGER,
             gPoint: DataTypes.INTEGER,
-            notiAlram: DataTypes.BOOLEAN,
+            notiAlarm: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
+            },
             fcmToken: DataTypes.STRING,
             belongGroup: DataTypes.STRING,
             rute: DataTypes.STRING,

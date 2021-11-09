@@ -38,4 +38,22 @@ module.exports = {
             }
         }
     },
+    storeCheck: async (authorization) => {
+        let accessTokenData;
+
+        let token = authorization.split(" ")[1];
+        try {
+            accessTokenData = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (e) {
+            console.log(e)
+            accessTokenData = null;
+        }
+
+        if (!accessTokenData) {
+            return false;
+        } else {
+            console.log(accessTokenData,"token fn");
+            return accessTokenData.store_id
+        }
+    },
 };

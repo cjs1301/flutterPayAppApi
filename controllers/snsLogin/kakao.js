@@ -60,12 +60,14 @@ module.exports = {
                 let loginResult = await axios(snsConfig);
                 if (loginResult.data.data !== null) {
                     let snsUser = loginResult.data.data;
+                    console.log("소셜로그인", snsUser);
                     let [User, created] = await user.findOrCreate({
                         where: {
                             id: snsUser.user_id,
                         },
                         defaults: {
                             id: snsUser.user_id,
+                            idValue: kakaoId,
                             userName: snsUser.name,
                             email: snsUser.email === null ? "" : snsUser.email,
                             phoneNumber:
@@ -75,8 +77,8 @@ module.exports = {
                             gMoney: 0,
                             gPoint:
                                 snsUser.gPoint === null ? 0 : snsUser.gPoint,
-                            notiAlram: true,
-                            activityArea: "",
+                            notiAlarm: true,
+                            belongGroup: "",
                             rute: "kakao",
                             couponCount:
                                 snsUser.coupon === null ? 0 : snsUser.coupon,

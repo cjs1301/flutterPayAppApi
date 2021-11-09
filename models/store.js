@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(db) {
             // define association here
+            this.hasMany(db.transaction);
         }
     }
     store.init(

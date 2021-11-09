@@ -3,9 +3,24 @@ const path = require("path");
 const imageStorage = multer.diskStorage({
     // Destination to store image
     destination: function (req, file, cb) {
-        cb(null, "images");
+        console.log(req.url, "aldskfja;lskdjfa;lksdjf;lakdsjf;laksdjf");
+        if (req.url === "/admin/event") {
+            return cb(null, "eventImg");
+        } else {
+            return cb(null, "flies");
+        }
     },
     filename: (req, file, cb) => {
+        //todo 이름 저장방식 수정
+        if (req.url === "admin/event") {
+            cb(
+                null,
+                file.fieldname +
+                    "_" +
+                    Date.now() +
+                    path.extname(file.originalname)
+            );
+        }
         cb(
             null,
             file.fieldname + "_" + Date.now() + path.extname(file.originalname)
@@ -21,9 +36,9 @@ const imageUpload = multer({
         fileSize: 1000000, // 1000000 Bytes = 1 MB
     },
     fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(png|jpg)$/)) {
+        if (!file.originalname.match(/\.(png|jpg|pdf|hwp)$/)) {
             // upload only png and jpg format
-            return cb(new Error("Please upload a Image"));
+            return cb(new Error("Please upload a pdf or hwp"));
         }
         cb(undefined, true);
     },

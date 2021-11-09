@@ -1,8 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
-const emojiRegex = require("emoji-regex");
 module.exports = (sequelize, DataTypes) => {
-    class question extends Model {
+    class storeQuestion extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -10,34 +9,28 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(db) {
             // define association here
-            this.belongsTo(db.user, { foreignKey: "userId", sourceKey: "id" });
-            this.hasOne(db.answer);
+            this.belongsTo(db.store, { foreignKey: "storeId", sourceKey: "id" });
+            this.hasOne(db.storeAnswer)
         }
     }
-    question.init(
+    storeQuestion.init(
         {
-            userId: DataTypes.INTEGER,
+            storeId: DataTypes.INTEGER,
             title: DataTypes.STRING,
             state: {
+                type: DataTypes.STRING,
+                comment:"정산문의,결제문의,기타",
+            },
+            isAnswer: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
             content: DataTypes.TEXT,
         },
         {
-            hooks: {
-                afterValidate: (question, options) => {
-                    question.title = question.title.replace(emojiRegex(), "");
-
-                    question.content = question.content.replace(
-                        emojiRegex(),
-                        ""
-                    );
-                },
-            },
             sequelize,
-            modelname: "question",
+            modelname: "storeQuestion",
         }
     );
-    return question;
+    return storeQuestion;
 };

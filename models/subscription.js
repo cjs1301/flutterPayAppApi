@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class charge extends Model {
+    class subscription extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -12,32 +12,30 @@ module.exports = (sequelize, DataTypes) => {
             this.belongsTo(db.user, { foreignKey: "userId", sourceKey: "id" });
         }
     }
-    charge.init(
+    subscription.init(
         {
             userId: DataTypes.INTEGER,
             userName: DataTypes.STRING,
-            money: DataTypes.INTEGER,
             phoneNumber: DataTypes.STRING,
             email: DataTypes.STRING,
-            state:{
-                type: DataTypes.STRING,
-                comment:"충전신청,입금미완료,충전완료,입금완료"
+            cancelDate: {
+                type: DataTypes.DATE,
+                comment: "약정충전취소 시 생성되는 날짜",
             },
+            terminationCompleteDate: {
+                type: DataTypes.DATE,
+                comment: "약정충전취소완료 시 생성되는 날짜",
+            },
+            state: {
+                type: DataTypes.STRING,
+                comment: "신청대기,약정충전진행,해지신청,해지완료",
+            },
+            file: DataTypes.STRING,
         },
         {
             sequelize,
-            modelname: "charge",
+            modelname: "subscription",
         }
     );
-    return charge;
+    return subscription;
 };
-
-// {
-//     hooks:{
-//         afterCreate:(charge,options) =>{
-//             if(charge.state = '충전신청'){
-
-//             }
-//         }
-//     }
-// },

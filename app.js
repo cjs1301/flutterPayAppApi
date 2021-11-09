@@ -1,9 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const createError = require("http-errors");
 const debug = require("debug")("backend:server");
-//const static = require("serve-static");
-//const path = require("path");
+const static = require("serve-static");
+const path = require("path");
 const logger = require("morgan");
 const fs = require("fs");
 const app = express();
@@ -19,13 +20,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//app.use("/public", static(path.join(__dirname, "public")));
-//app.use("/uploads", static(path.join(__dirname, "uploads")));
+app.use("/eventImg", static(path.join(__dirname, "eventImg")));
+app.use("/files", static(path.join(__dirname, "files")));
 
 app.use(cookieParser());
+app.use(cors());
 
 sequelize
-    .sync({ force: true })
+    .sync(/* { force: true } */)
     .then(() => {
         console.log("데이터베이스 연결 성공");
     })
@@ -81,11 +83,15 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port,"0.0.0.0", () => {
+server.listen(port, "0.0.0.0", () => {
     console.log("http server on " + port);
 });
 server.on("error", onError);
 server.on("listening", onListening);
+server.on("connection", function (socket) {
+    console.log("클라이언트가 접속");
+});
+
 //---------------------------------------------------------------------------------------------------------------
 /**
  * Normalize a port into a number, string, or false.
