@@ -4,7 +4,7 @@ const answer = require("../../models/index.js").answer;
 const token = require("../token/accessToken");
 
 module.exports = {
-    uploadAndEdit: async (req, res) => {
+    upload: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
             let userId = await token.check(authorization);
@@ -56,7 +56,7 @@ module.exports = {
                     const myQuestion = await question.findAll({
                         where: { userId: userId },
                         include: answer,
-                        order: [['updatedAt', 'DESC']]
+                        order: [["updatedAt", "DESC"]],
                     });
                     return res.status(200).send({
                         data: myQuestion,

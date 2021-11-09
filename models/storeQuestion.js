@@ -9,8 +9,11 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(db) {
             // define association here
-            this.belongsTo(db.store, { foreignKey: "storeId", sourceKey: "id" });
-            this.hasOne(db.storeAnswer)
+            this.belongsTo(db.store, {
+                foreignKey: "storeId",
+                sourceKey: "id",
+            });
+            this.hasOne(db.storeAnswer);
         }
     }
     storeQuestion.init(
@@ -19,8 +22,9 @@ module.exports = (sequelize, DataTypes) => {
             title: DataTypes.STRING,
             state: {
                 type: DataTypes.STRING,
-                comment:"정산문의,결제문의,기타",
+                comment: "정산문의,결제문의,기타",
             },
+            isShow: DataTypes.BOOLEAN,
             isAnswer: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
