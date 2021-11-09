@@ -259,7 +259,8 @@ module.exports = {
                     let find = await storeQuestion.findOne({
                         where: { id: id },
                     });
-                    await find.destroy();
+                    find.isShow = false;
+                    await find.save();
                     return res.status(200).send({
                         data: null,
                         message: "삭제 완료",

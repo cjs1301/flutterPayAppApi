@@ -11,25 +11,36 @@ const FormData = require("form-data");
 const token = require("../token/accessToken");
 
 const arrByDate = (array) => {
-    let day = [array[0]];
+    console.log(array);
+    let day;
+    if (array.length === 0) {
+        return [];
+    } else {
+        day = [array[0]];
+    }
     let result = [];
-    for (let i = 1; i < array.length; i++) {
-        let pre = new Date(array[i - 1].createdAt);
-        let crr = new Date(array[i].createdAt);
-        if (pre.getDate() === crr.getDate()) {
-            day.push(array[i]);
-            if (i === array.length - 1) {
+    if (array.length > 1) {
+        for (let i = 1; i < array.length; i++) {
+            let pre = new Date(array[i - 1].createdAt);
+            let crr = new Date(array[i].createdAt);
+            if (pre.getDate() === crr.getDate()) {
+                day.push(array[i]);
+                if (i === array.length - 1) {
+                    result.push(day);
+                }
+            } else {
                 result.push(day);
-            }
-        } else {
-            result.push(day);
-            day = [];
-            day.push(array[i]);
-            if (i === array.length - 1) {
-                result.push(day);
+                day = [];
+                day.push(array[i]);
+                if (i === array.length - 1) {
+                    result.push(day);
+                }
             }
         }
+    } else {
+        result.push(day);
     }
+
     return result;
 };
 
@@ -249,6 +260,26 @@ module.exports = {
             where: { userId: userId },
         });
         return res.send({ data: list, message: "알림 목록" });
+    },
+    alarmCheck: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let userId = await token.check(authorization);
+        let { id } = req.query;
+        let read = await alarm.findAll({
+            where: {
+                id: id,
+                userId: userId,
+            },
+        });
+        if (read) {
+            read.isRead = true;
+            await read.save();
+            return res.send({ data: null, message: "읽음" });
+        } else {
+            return res
+                .status(400)
+                .send({ data: null, message: "해당하는 알림이 없습니다" });
+        }
     },
     login: async (req, res) => {
         const { id, password, fcmToken } = req.body;

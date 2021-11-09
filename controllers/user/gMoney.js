@@ -303,6 +303,61 @@ module.exports = {
             message: "신청이 접수되었습니다.",
         });
     },
+    mySubscription: async (req, res) => {
+        //내 약정충전 신청 상태 확인
+        const authorization = req.headers.authorization;
+        let userId = await token.check(authorization);
+        let User = await user.findOne({ where: { id: userId } });
+        if (!User) {
+            return res
+                .status(403)
+                .send({ data: null, message: "회원정보를 확인할수 없습니다" });
+        }
+
+        let find = await subscription.findOne({
+            where: {
+                userId: userId,
+            },
+        });
+        if (find) {
+            return res.status(200).send({
+                data: find.state,
+                message: "완료",
+            });
+        }
+        return res
+            .status(500)
+            .send({ data: null, message: "신청하신 약정결제내역이 없습니다." });
+    },
+    deleteSubscription: async (req, res) => {
+        //약청충전 해지 신청
+
+        const authorization = req.headers.authorization;
+        let userId = await token.check(authorization);
+        let User = await user.findOne({ where: { id: userId } });
+        if (!User) {
+            return res
+                .status(403)
+                .send({ data: null, message: "회원정보를 확인할수 없습니다" });
+        }
+
+        let find = await subscription.findOne({
+            where: {
+                userId: userId,
+            },
+        });
+        if (find) {
+            find.state = "해지신청";
+            find.save();
+            return res.status(200).send({
+                data: null,
+                message: "완료",
+            });
+        }
+        return res
+            .status(500)
+            .send({ data: null, message: "신청하신 약정결제내역이 없습니다." });
+    },
     point: async (req, res) => {
         try {
             const authorization = req.headers.authorization;

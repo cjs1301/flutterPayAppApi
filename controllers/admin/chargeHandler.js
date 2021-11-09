@@ -195,7 +195,7 @@ module.exports = {
                                     body:
                                         "신청하신 " +
                                         chargeData.money +
-                                        "화 충전이 완료되었습니다",
+                                        "광 충전이 완료되었습니다",
                                 };
                                 pushEvent.data(
                                     "/user/info",
@@ -220,17 +220,15 @@ module.exports = {
                             break;
                     }
                 } else {
-                    return res
-                        .status(500)
-                        .send({
-                            data: error,
-                            message: "신청하신 데이터를 찾을수 없습니다",
-                        });
+                    return res.status(500).send({
+                        data: error,
+                        message: "신청하신 데이터를 찾을수 없습니다",
+                    });
                 }
             };
-            idsArr.forEach(async (id) => {
+            for (const id of idsArr) {
                 await asyncFn(id);
-            });
+            }
             return res.status(200).send({
                 data: null,
                 message: "상태 변경 완료",

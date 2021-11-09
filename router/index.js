@@ -37,13 +37,14 @@ router.get("/", (req, res) => {
 });
 //user
 router.get("/user/info", user.info);
-router.get("/user/transaction", user.monthTransaction);
+router.get("/user/transaction", user.monthTransaction); //월별 거래내역
 router.post("/user/buy", pay.buy);
-router.get("/user/buy/check", pay.check);
-router.get("/user/coupon", gMoney.coupon);
-router.post("/user/coupon", gMoney.getCoupon);
+router.get("/user/buy/check", pay.check); //결제전 포인트 쿠폰 상태 확인
+router.get("/user/coupon", gMoney.coupon); //내가 가진 쿠폰 정보(사용된것 포함)
+router.post("/user/coupon", gMoney.getCoupon); //쿠폰 코드 등록
 router.post("/user/charge", gMoney.charge);
-router.post("/user/subscription");
+router.get("/user/subscription", gMoney.mySubscription); //약정충전 상태 확인
+router.delete("/user/subscription", gMoney.deleteSubscription); //약정충전 해지 신청
 router.post(
     "/user/upload",
     imageUpload.single("file"),
@@ -55,16 +56,17 @@ router.post(
     }
 );
 router.get("/user/flie/:name", gMoney.subscriptionDownload);
-router.get("/user/alarm", user.alarm);
-router.get("/user/alarm/list", user.alarmList);
-router.post("/user/wire", gMoney.send);
-router.get("/user/search", gMoney.sendUserSearch);
-router.post("/user/info", user.uploadAndEditInfo);
+router.get("/user/alarm", user.alarm); //알람 켜고 끄기
+router.get("/user/alarm/list", user.alarmList); //내 알림 목록
+router.get("/user/alarm/check", user.alarmCheck); //알림 읽음 처리
+router.post("/user/wire", gMoney.send); //송금
+router.get("/user/search", gMoney.sendUserSearch); //송금 대상 검색
+router.post("/user/info", user.uploadAndEditInfo); //소속 그룹, 전화번호, 이메일 업로드
 router.post("/user/login", user.login);
-router.post("/user/fcmtoken", user.snsLoginGetFcmToken);
-router.get("/user/question", question.myQuestions);
-router.post("/user/question", question.uploadAndEdit);
-router.get("/user/point", gMoney.point);
+router.post("/user/fcmtoken", user.snsLoginGetFcmToken); //유저 기기토큰정보 저장하기
+router.get("/user/question", question.myQuestions); //1:1문의 목록
+router.post("/user/question", question.upload); //문의글 등록
+router.get("/user/point", gMoney.point); //월별 포인트 사용적립 내역
 
 //appAdmin
 router.get("/admin/home", adminHome.homeInfo);
