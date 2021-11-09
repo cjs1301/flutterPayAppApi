@@ -5,15 +5,22 @@ const gMoney = require("./user/gMoney");
 const question = require("./user/question");
 
 //store
-const storeHandler = require("./store/storeHandler");
+const qnaHandler = require("./store/qnaHandler");
+const storeTransaction = require("./store/transactionHandler");
+const storeHome = require("./store/home");
+const noticeBoard = require("./store/noticeBoard");
 
 //admin
-const answer = require("./admin/gMoneyHandler");
+const adminHome = require("./admin/home");
+const chargeHandler = require("./admin/chargeHandler");
+const adminTransactionHandler = require("./admin/transactionHandler");
 const eventHandler = require("./admin/eventHandler");
-const notice = require("./admin/notice");
-const appHandler = require("./admin/appHandler");
-const gMoneyHandler = require("./admin/gMoneyHandler");
 const rtpay = require("./admin/rtpay");
+const noticeHandler = require("./admin/noticeHandler");
+const faqHandler = require("./admin/faqHandler");
+const storeNoticeHandler = require("./admin/storeNoticeHandler");
+const storeQuestionHandler = require("./admin/storeQuestionHandler");
+const answerhandler = require("./admin/answerhandler");
 
 //app
 const appListData = require("./appListData");
@@ -27,15 +34,26 @@ module.exports = {
     pay,
     gMoney,
     question,
-    storeHandler,
-    answer,
-    appListData,
-    eventHandler,
-    notice,
-    appHandler,
-    gMoneyHandler,
+
     kakao,
     naver,
+
     refreshData,
+    appListData,
+
+    storeHome,
+    storeTransaction,
+    noticeBoard,
+    qnaHandler,
+
+    adminHome,
+    chargeHandler,
+    adminTransactionHandler,
+    eventHandler,
+    noticeHandler,
+    faqHandler,
+    storeNoticeHandler,
+    storeQuestionHandler,
+    answerhandler,
     rtpay,
 };

@@ -1,6 +1,7 @@
 var admin = require("firebase-admin");
 
 var serviceAccount = require("../path/to/serviceAccountKey.json");
+const user = require("../models/index.js").user;
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -9,6 +10,7 @@ admin.initializeApp({
 module.exports = {
     data: async (updateType, fcmToken) => {
         try {
+            console.log(updateType, fcmToken, "체크!!!!");
             var payload = {
                 data: {
                     updateUrl: updateType,
@@ -21,12 +23,12 @@ module.exports = {
             console.log(error);
         }
     },
-    noti: async (content, fcmToken) => {
+    noti: async (message, fcmToken) => {
         try {
             var payload = {
-                Notification: {
-                    title: content.title,
-                    body: content.body,
+                notification: {
+                    title: message.title,
+                    body: message.body,
                 },
                 token: fcmToken,
             };
@@ -36,16 +38,27 @@ module.exports = {
             console.log(error);
         }
     },
-    notiAll: async (updateType) => {
+    notiAll: async (message) => {
+        const registrationTokens = [];
+        let checkNoti = await user.findAll({
+            where: { notiAlarm: true },
+            attributes: ["fcmToken"],
+        });
+        checkNoti.forEach((element) => {
+            if (element.fcmToken !== null) {
+                registrationTokens.push(element.fcmToken);
+            }
+        });
         try {
-            var payload = {
-                Notification: {
-                    title: "제목(전체발송)",
-                    body: "내용",
+            var message = {
+                notification: {
+                    title: message.title,
+                    body: message.body,
                 },
+                tokens: registrationTokens,
             };
             console.log("푸쉬 알림 작동");
-            return await admin.messaging().sendAll(payload);
+            return await admin.messaging().sendMulticast(message);
         } catch (error) {
             console.log(error);
         }

@@ -2,8 +2,6 @@ const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const transaction = require("../../models/index.js").transaction;
 const store = require("../../models/index.js").store;
-const type = require("../../models/index.js").type;
-const bcrypt = require("bcrypt");
 const pushEvent = require("../push");
 const token = require("../token/accessToken");
 const axios = require("axios");
@@ -37,13 +35,16 @@ module.exports = {
                     let result = await axios.get(
                         `${process.env.TEST_API}/app/gpointcoupon?userId=${User.id}`
                     );
-                    console.log(result.data.message)
+                    console.log(result.data.message);
                     //쿠폰 사용가능 목록 배열처리
-                    let couponlist = result.data.data.coupon
-                    couponlist.forEach(el => {
-                        el.provider_list = el.provider_list.split("|").filter(i=> i !== "")
+                    let couponlist = result.data.data.coupon;
+                    couponlist.forEach((el) => {
+                        el.provider_list = el.provider_list
+                            .split("|")
+                            .filter((i) => i !== "")
+                            .map((el) => Number(el));
                     });
-                    result.data.data.coupon = couponlist
+                    result.data.data.coupon = couponlist;
                     res.status(200).send({
                         data: result.data.data,
                         message: "유저정보 확인",
@@ -76,83 +77,148 @@ module.exports = {
         }
         //결제 금액, 사용할 포인트, 사용할 쿠폰, 사용될 가게, 금액
         const { useGpoint, couponData, storeId, price } = req.body;
-        //let resultPrice= price * couponData - usegPoint
-        console.log(req.body)
-        let newTransaction;
-
+        console.log(req.body);
+        let findStore = await store.findOne({ where: { id: storeId } });
+        if (!findStore) {
+            return res
+                .status(400)
+                .send({ data: null, message: "없는 가게입니다" });
+        }
+        let newTransaction = await transaction.create({
+            userId: User.id,
+            storeId: storeId,
+            price: price,
+            useGpoint: useGpoint,
+            minus: true,
+        });
+        let couponPrice;
         let resultPrice = price - useGpoint;
 
-        if (User.gMoney - resultPrice < 0) {
-            await transaction.create({
-                userId: User.id,
-                storeId: storeId,
-                price: price,
-                gMoney: resultPrice,
-                state: "결제실패",
-            });
+        //쿠폰 사용시
+        if (couponData) {
+            function couponCheck(data, price) {
+                //쿠폰 사용확인리스트
+                //1 사용가능한 최소 상품의 가격 체크
+                //2 할인 최대금액 초과 여부 체크
+                //3 사용가능한 스토어여부 체크
+                let result = {
+                    price: null,
+                    message: null,
+                };
+                let salePrice;
+                if (data.limit_price > price) {
+                    result.price = false;
+                    result.message = "최소 사용 상품가격보다 낮음";
+                    return result; //최소 사용 상품가격보다 낮음
+                }
 
+                if (data.sale_type === "percent") {
+                    salePrice = Math.floor(
+                        (price * (100 - data.percent_goods)) / 100
+                    );
+                    if (price - salePrice > data.max_percent_goods) {
+                        result.price = false;
+                        result.message = "최대 할인 금액 보다 높음";
+                        return result; //최대 할인 금액 보다 높음
+                    }
+                }
+                if (!data.provider_list) {
+                    if (!data.provider_list.includes(storeId)) {
+                        result.price = false;
+                        result.message = "사용할수있는 가게가 아님";
+                        return result; //사용할수있는 가게가 아님
+                    }
+                }
+                switch (data.sale_type) {
+                    case "percent":
+                        result.price = Math.floor(
+                            (price * (100 - data.percent_goods)) / 100
+                        );
+                        result.message = "%할인 쿠폰 적용가";
+                        return result;
+                        break;
+
+                    case "won":
+                        result.price = price - data.won_goods;
+                        result.message = "원할인 쿠폰 적용가";
+                        return result;
+                        break;
+
+                    default:
+                        result.price = false;
+                        return result;
+                        break;
+                }
+            }
+            couponPrice = couponCheck(couponData, price);
+            newTransaction.gMoney = couponPrice.price - useGpoint;
+            newTransaction.couponData = couponData.coupon_code;
+            if (!couponPrice.price) {
+                newTransaction.state = "결제실패";
+                newTransaction.save();
+                return res.status(400).send({
+                    data: null,
+                    message: couponPrice.message,
+                });
+            }
+            resultPrice = couponPrice.price - useGpoint;
+        }
+
+        if (User.gMoney - resultPrice < 0) {
+            newTransaction.gMoney = resultPrice;
+            newTransaction.state = "결제실패";
+            newTransaction.save();
             return res.status(400).send({
                 data: null,
                 message: "회원의 잔액이 결제금액보다 부족합니다",
             });
         }
-        //포인트나 쿠폰 사용시
-        if (useGpoint !== "" || useCoupon !== "") {
-            //기존 데이터베이스에 포인트, 쿠폰 사용가능 확인 api 요청
-            newTransaction = await transaction.create({
-                userId: User.id,
-                storeId: storeId,
-                price: price,
-                gMoney: resultPrice,
-                useGpoint: useGpoint,
-                couponData: couponData.coupon_code,
-            });
-            let data = new FormData();
-            console.log(User.id)
-            console.log(useGpoint)
-            console.log(couponData !== "" ? couponData.coupon_code : null)
-            console.log(couponData)
-            console.log(couponData !== {})
-            console.log(newTransaction.id)
-            console.log(price)
-            console.log(storeId)
-            data.append("userId", User.id);
-            data.append("gPoint", useGpoint);
-            data.append("couponCode", couponData !== {} ? couponData.coupon_code : null);
-            data.append("orderNo", newTransaction.id);
-            data.append("payMoney", price);
-            data.append("storeId", storeId);
-            console.log(data)
-            let config = {
-                method: "post",
-                url: `${process.env.TEST_API}/app/buy`,
-                headers: {
-                    ...data.getHeaders(),
-                },
-                data: data,
-            };
-            try {
-                let result = await axios(config);
-                let resultData = result.data.data;
-                if (resultData.result === "success") {
-                    User.gPoint = resultData.gPoint;
-                    User.save();
-                    newTransaction.state = "결제성공";
-                    newTransaction.save();
-                    pushEvent.data("/user/info", User.fcmToken);
-                    return res
-                        .status(200)
-                        .send({ data: null, message: "결제가 성공하였습니다" });
-                }
-            } catch (error) {
-                console.log(error);
-                newTransaction.state = "결제실패";
+
+        //기존 데이터베이스에 포인트, 쿠폰 사용가능 확인 api 요청
+        newTransaction.gMoney = resultPrice;
+        newTransaction.couponData = couponData ? couponData.coupon_code : "";
+        let data = new FormData();
+        data.append("userId", User.id);
+        data.append("gPoint", useGpoint);
+        couponData
+            ? data.append("couponCode", couponData.coupon_code)
+            : data.append("couponCode", "");
+        data.append("orderNo", newTransaction.id);
+        data.append("payMoney", price);
+        data.append("storeId", storeId);
+        console.log(data);
+        let config = {
+            method: "post",
+            url: `${process.env.TEST_API}/app/buy`,
+            headers: {
+                ...data.getHeaders(),
+            },
+            data: data,
+        };
+        try {
+            let result = await axios(config);
+            let resultData = result.data.data;
+            if (resultData.result === "success") {
+                User.gMoney = User.gMoney - resultPrice;
+                User.save();
+                newTransaction.state = "결제완료";
                 newTransaction.save();
-                return res.status(400).send({
-                    data: null,
-                    message: "회원의 쿠폰이나 포인트 정보가 맞지 않습니다",
-                });
+                pushEvent.data("/user/info", User.fcmToken);
+                return res
+                    .status(200)
+                    .send({
+                        data: User.gMoney,
+                        message: "결제가 성공하였습니다",
+                    });
             }
+        } catch (error) {
+            console.log(error);
+            newTransaction.state = "결제실패";
+            newTransaction.save();
+            return res.status(400).send({
+                data: null,
+                message: "회원의 쿠폰이나 포인트 정보가 맞지 않습니다",
+            });
         }
     },
 };

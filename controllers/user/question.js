@@ -1,5 +1,6 @@
 const { Request, Response } = require("express");
 const question = require("../../models/index.js").question;
+const answer = require("../../models/index.js").answer;
 const token = require("../token/accessToken");
 
 module.exports = {
@@ -15,15 +16,6 @@ module.exports = {
             } else {
                 //성공
                 try {
-                    const User = await user.findOne({
-                        where: { id: userId },
-                    });
-                    if (!User) {
-                        return res.status(403).send({
-                            data: null,
-                            message: "일치하는 회원정보를 찾지 못했습니다",
-                        });
-                    }
                     const { title, content } = req.body;
                     const newQuestion = await question.create({
                         title: title,
@@ -63,6 +55,8 @@ module.exports = {
                 try {
                     const myQuestion = await question.findAll({
                         where: { userId: userId },
+                        include: answer,
+                        order: [['updatedAt', 'DESC']]
                     });
                     return res.status(200).send({
                         data: myQuestion,
