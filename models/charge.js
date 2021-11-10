@@ -19,9 +19,13 @@ module.exports = (sequelize, DataTypes) => {
             money: DataTypes.INTEGER,
             phoneNumber: DataTypes.STRING,
             email: DataTypes.STRING,
-            state:{
+            state: {
                 type: DataTypes.STRING,
-                comment:"충전신청,입금미완료,충전완료,입금완료"
+                comment: "충전신청,입금미완료,충전완료,입금완료",
+            },
+            isShow: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
             },
         },
         {

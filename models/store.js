@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             logoImg: DataTypes.STRING,
             x: DataTypes.STRING,
             y: DataTypes.STRING,
+            isShow: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
+            },
         },
         {
             timestamps: false,

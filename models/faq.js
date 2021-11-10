@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
             },
             createdAt: DataTypes.DATEONLY,
             updatedAt: DataTypes.DATEONLY,
+            isShow: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
+            },
         },
         {
             sequelize,

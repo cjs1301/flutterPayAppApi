@@ -1,10 +1,12 @@
 const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
+const store = require("../../models/index.js").store;
 const transaction = require("../../models/index.js").transaction;
 const { Op } = require("sequelize");
 const axios = require("axios");
-const FormData = require('form-data');
+const FormData = require("form-data");
 const token = require("../token/accessToken");
+const pushEvent = require("../push");
 require("dotenv").config();
 
 module.exports = {
@@ -13,18 +15,22 @@ module.exports = {
             //관리자 확인
             const authorization = req.headers.authorization;
             let storeId = await token.storeCheck(authorization);
-            if(!storeId){
+            if (!storeId) {
                 return res
-                .status(403)
-                .send({ data: null, message: "만료된 토큰입니다" });
+                    .status(403)
+                    .send({ data: null, message: "만료된 토큰입니다" });
             }
             const { name, date, state, limit, pageNum } = req.query;
             let offset = 0;
 
-            if(pageNum > 1){
-            offset = limit * (pageNum - 1);
+            if (pageNum > 1) {
+                offset = limit * (pageNum - 1);
             }
-            if (name === undefined || date === undefined || state === undefined) {
+            if (
+                name === undefined ||
+                date === undefined ||
+                state === undefined
+            ) {
                 res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
@@ -33,22 +39,23 @@ module.exports = {
             let stateArr = state.split(",");
             let result;
             if (!state) {
-                return res.status(400).send({ data: null, message: "결제상태를 입력해주세요" });
+                return res
+                    .status(400)
+                    .send({ data: null, message: "결제상태를 입력해주세요" });
             }
-            if(date){
-
-                let [start,end] = date.split("~")
-                start = !start ? "1970-01-01" : start
+            if (date) {
+                let [start, end] = date.split("~");
+                start = !start ? "1970-01-01" : start;
                 let startDay = new Date(start);
                 startDay.setHours(startDay.getHours() - 9);
                 let endDay = new Date(end);
                 endDay.setHours(endDay.getHours() + 15);
-                if(!name){
+                if (!name) {
                     result = await transaction.findAndCountAll({
                         where: {
-                            storeId : storeId,
+                            storeId: storeId,
                             createdAt: {
-                                [Op.between]: [startDay, endDay]
+                                [Op.between]: [startDay, endDay],
                             },
                             state: {
                                 [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
@@ -61,18 +68,20 @@ module.exports = {
                             },
                         ],
                         limit: Number(limit),
-                        offset: Number(offset)
+                        offset: Number(offset),
                     });
-                    if(result){
-                        return res.status(200).send({ data: result, message: "검색 완료" });
+                    if (result) {
+                        return res
+                            .status(200)
+                            .send({ data: result, message: "검색 완료" });
                     }
                 }
-                if(name){
+                if (name) {
                     result = await transaction.findAndCountAll({
                         where: {
-                            storeId : storeId,
+                            storeId: storeId,
                             createdAt: {
-                                [Op.between]: [startDay, endDay]
+                                [Op.between]: [startDay, endDay],
                             },
                             state: {
                                 [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
@@ -81,26 +90,27 @@ module.exports = {
                         include: [
                             {
                                 model: user,
-                                where:{
-                                    userName : name
+                                where: {
+                                    userName: name,
                                 },
                                 attributes: ["userName"],
                             },
                         ],
                         limit: Number(limit),
-                        offset: Number(offset)
+                        offset: Number(offset),
                     });
-                    if(result){
-                        return res.status(200).send({ data: result, message: "검색 완료" });
+                    if (result) {
+                        return res
+                            .status(200)
+                            .send({ data: result, message: "검색 완료" });
                     }
                 }
             }
 
-
-            if (!date&& name) {
+            if (!date && name) {
                 result = await transaction.findAndCountAll({
                     where: {
-                        storeId : storeId,
+                        storeId: storeId,
                         state: {
                             [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                         },
@@ -108,22 +118,24 @@ module.exports = {
                     include: [
                         {
                             model: user,
-                            where:{
-                                userName : name
+                            where: {
+                                userName: name,
                             },
                             attributes: ["userName"],
                         },
                     ],
                     limit: Number(limit),
-                    offset: Number(offset)
+                    offset: Number(offset),
                 });
-                return res.status(200).send({ data: result, message: "검색 완료" });
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
-            if (!name&& !date) {
-                console.log("여기",date)
+            if (!name && !date) {
+                console.log("여기", date);
                 result = await transaction.findAndCountAll({
                     where: {
-                        storeId : storeId,
+                        storeId: storeId,
                         state: {
                             [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                         },
@@ -135,49 +147,47 @@ module.exports = {
                         },
                     ],
                     limit: Number(limit),
-                    offset: Number(offset)
+                    offset: Number(offset),
                 });
-                return res.status(200).send({ data: result, message: "검색 완료" });
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
-
-
-            
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-        
     },
-    transaction: async (req,res)=>{
+    transaction: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
             //let storeUserId = await token.storeCheck(authorization);
             //정보 리스트
             let storeId = await token.storeCheck(authorization);
-            if(!storeId){
+            if (!storeId) {
                 return res
-                .status(403)
-                .send({ data: null, message: "만료된 토큰입니다" });
+                    .status(403)
+                    .send({ data: null, message: "만료된 토큰입니다" });
             }
-    
+
             const { year, month, limit, pageNum } = req.query;
             let offset = 0;
 
-            if(pageNum > 1){
-            offset = limit * (pageNum - 1);
+            if (pageNum > 1) {
+                offset = limit * (pageNum - 1);
             }
-            let from = Number(month) - 1 
-            let to = Number(month)
-            const startOfMonth =new Date(year, from, 1);
+            let from = Number(month) - 1;
+            let to = Number(month);
+            const startOfMonth = new Date(year, from, 1);
             const endOfMonth = new Date(year, to, 0);
             endOfMonth.setDate(endOfMonth.getDate() + 1);
-    
+
             let transactionData = await transaction.findAndCountAll({
                 where: {
-                    storeId : storeId,
+                    storeId: storeId,
                     createdAt: {
                         [Op.between]: [startOfMonth, endOfMonth],
                     },
-                    state:"결제완료"
+                    state: "결제완료",
                 },
                 include: [
                     {
@@ -187,39 +197,41 @@ module.exports = {
                 ],
                 limit: Number(limit),
                 offset: Number(offset),
-                order: [['createdAt', 'DESC']],
-                attributes: ["id","createdAt","price","gMoney"]
+                order: [["createdAt", "DESC"]],
+                attributes: ["id", "createdAt", "price", "gMoney"],
             });
-            let totalPrice = await transaction.sum(("price"),{
+            let totalPrice = await transaction.sum("price", {
                 where: {
-                    storeId : storeId,
+                    storeId: storeId,
                     createdAt: {
                         [Op.between]: [startOfMonth, endOfMonth],
                     },
-                    state:"결제완료"
+                    state: "결제완료",
                 },
             });
-            let totalgMoney = await transaction.sum(("gMoney"),{
+            let totalgMoney = await transaction.sum("gMoney", {
                 where: {
-                    storeId : storeId,
+                    storeId: storeId,
                     createdAt: {
                         [Op.between]: [startOfMonth, endOfMonth],
                     },
-                    state:"결제완료"
+                    state: "결제완료",
                 },
             });
-            
-            let total = await totalPrice * 0.98 - (totalPrice - totalgMoney)
 
+            let total = (await totalPrice) * 0.98 - (totalPrice - totalgMoney);
 
             return res
                 .status(200)
-                .send({ data: transactionData, total: total, message: "전체 내역 출력" });
+                .send({
+                    data: transactionData,
+                    total: total,
+                    message: "전체 내역 출력",
+                });
         } catch (error) {
-            console.log(error)
-            res.status(400).send({data:null,message:error.message})
+            console.log(error);
+            res.status(400).send({ data: null, message: error.message });
         }
-
     },
     cancel: async (req, res) => {
         try {
@@ -232,61 +244,82 @@ module.exports = {
                     .send({ data: null, message: "만료된 토큰입니다" });
             } else {
                 //성공
-                const { id} =req.body
+                const { id } = req.body;
                 try {
                     let find = await transaction.findOne({
-                        where:{id:id},
+                        where: { id: id },
                         include: [
                             {
                                 model: user,
-                                attributes: ["gMoney","id"],
+                                attributes: ["gMoney", "id"],
+                            },
+                            {
+                                model: store,
+                                attributes: ["name", "id"],
                             },
                         ],
-                        attributes: ["state","cancelDate","userId","id","couponData","gMoney"]
+                        attributes: [
+                            "state",
+                            "cancelDate",
+                            "userId",
+                            "id",
+                            "couponData",
+                            "gMoney",
+                            "fcmToken",
+                        ],
                     });
-                    if(find){
+                    if (find) {
                         let data = new FormData();
-                        data.append('userId', find.userId);
-                        data.append('orderNo', find.id);
-                        data.append('couponCode', find.couponData);
+                        data.append("userId", find.userId);
+                        data.append("orderNo", find.id);
+                        data.append("couponCode", find.couponData);
 
                         let config = {
-                        method: 'post',
-                        url: `${process.env.TEST_API}/admin/buycancel`,
-                        headers: { 
-                            ...data.getHeaders()
-                        },
-                        data : data
+                            method: "post",
+                            url: `${process.env.TEST_API}/admin/buycancel`,
+                            headers: {
+                                ...data.getHeaders(),
+                            },
+                            data: data,
                         };
 
-                        let result = await axios(config)
-                        
-                        if(result.data.message === "취소 완료"){
-                            find.state = "결제취소"
-                            find.cancelDate = new Date()
-                            console.log(find)
-                            find.user.gMoney = find.user.gMoney + find.gMoney
-                            find.user.save()
-                            find.save()
+                        let result = await axios(config);
+
+                        if (result.data.message === "취소 완료") {
+                            find.state = "결제취소";
+                            find.cancelDate = new Date();
+                            console.log(find);
+                            find.user.gMoney = find.user.gMoney + find.gMoney;
+                            find.user.save();
+                            find.save();
+                            let contents = {
+                                title: "결제취소 안내",
+                                body:
+                                    find.store.name +
+                                    "에서 결제하신 \n" +
+                                    find.price +
+                                    "광이 취소 되었습니다.\n" +
+                                    "결제시 이용하신 포인트나 쿠폰정보는 \n" +
+                                    "내 정보 보기를 이용해주세요",
+                            };
+                            pushEvent.data("/user/info", find.user.fcmToken);
+                            pushEvent.noti(contents, find.user.fcmToken);
                             return res.status(200).send({
                                 data: null,
                                 message: "취소 완료",
                             });
-                        }else{
+                        } else {
                             return res.status(200).send({
                                 data: null,
                                 message: "기존정보와 연동에 실패하였습니다",
                             });
                         }
-
-                    }else{
+                    } else {
                         return res.status(200).send({
                             data: null,
                             message: "해당하는 거래 내역을 찾을수 없습니다",
                         });
                     }
-                    
-
                 } catch (error) {
                     console.log(error);
                     return res.status(403).send({

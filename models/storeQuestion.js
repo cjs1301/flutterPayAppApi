@@ -24,7 +24,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 comment: "정산문의,결제문의,기타",
             },
-            isShow: DataTypes.BOOLEAN,
+            isShow: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
+            },
             isAnswer: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,

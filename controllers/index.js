@@ -20,7 +20,7 @@ const noticeHandler = require("./admin/noticeHandler");
 const faqHandler = require("./admin/faqHandler");
 const storeNoticeHandler = require("./admin/storeNoticeHandler");
 const storeQuestionHandler = require("./admin/storeQuestionHandler");
-const answerhandler = require("./admin/answerhandler");
+const questionHandler = require("./admin/questionHandler");
 
 //app
 const appListData = require("./appListData");
@@ -30,23 +30,23 @@ const refreshData = require("./refreshData");
 const kakao = require("./snsLogin/kakao");
 const naver = require("./snsLogin/naver");
 module.exports = {
-    user,
+    user, //user
     pay,
     gMoney,
     question,
 
-    kakao,
+    kakao, //sns
     naver,
 
-    refreshData,
+    refreshData, //app
     appListData,
 
-    storeHome,
+    storeHome, //storeAdmin
     storeTransaction,
     noticeBoard,
     qnaHandler,
 
-    adminHome,
+    adminHome, //admin
     chargeHandler,
     adminTransactionHandler,
     eventHandler,
@@ -54,6 +54,6 @@ module.exports = {
     faqHandler,
     storeNoticeHandler,
     storeQuestionHandler,
-    answerhandler,
+    questionHandler,
     rtpay,
 };
