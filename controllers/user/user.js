@@ -74,18 +74,42 @@ module.exports = {
                     nowDate.getHours()
                 );
                 let userGpoint = await axios.get(
-                    `${process.env.TEST_API}/app/gpoint?userId=${
-                        User.id
-                    }&year=${nowDate.getFullYear()}&month=${nowDate.getMonth()}`
+                    `${
+                        process.env.TEST_API
+                    }/app/gpoint?userId=${userId}&year=${nowDate.getFullYear()}&month=${nowDate.getMonth()}`
                 );
                 let userCoupon = await axios.get(
-                    `${process.env.TEST_API}/app/coupon?userId=${User.id}`
+                    `${process.env.TEST_API}/app/coupon?userId=${userId}`
                 );
+                let data = new FormData();
+                data.append("id", User.idValue);
 
+                let config = {
+                    method: "post",
+                    url: `${process.env.TEST_API}/app/sociallogin`,
+                    headers: {
+                        ...data.getHeaders(),
+                    },
+                    data: data,
+                };
+                let result = await axios(config);
+                User.email = !result.data.data.email
+                    ? ""
+                    : result.data.data.email;
+                User.phoneNumber = !result.data.data.cellphone
+                    ? ""
+                    : result.data.data.cellphone;
+                await User.save();
                 let userInfo = {
                     ...User.dataValues,
                     gPoint: Math.floor(userGpoint.data.data.emoney),
                 };
+                userInfo.email = !result.data.data.email
+                    ? ""
+                    : result.data.data.email;
+                userInfo.phoneNumber = !result.data.data.cellphone
+                    ? ""
+                    : result.data.data.cellphone;
                 userInfo.couponCount = userCoupon.data.data.active.length;
                 res.status(200).send({
                     data: userInfo,
@@ -220,12 +244,10 @@ module.exports = {
         //소속그룹 등록 belongGroup: DataTypes.STRING,
         const authorization = req.headers.authorization;
         let userId = await token.check(authorization);
-        const { belongGroup, phoneNumber, email } = req.body;
+        const { belongGroup } = req.body;
         const User = await user.findOne({ where: { id: userId } });
         if (User) {
             User.belongGroup = belongGroup;
-            User.phoneNumber = phoneNumber;
-            User.email = email;
             User.save();
             res.status(200).send({ data: null, message: "등록 완료" });
         } else {

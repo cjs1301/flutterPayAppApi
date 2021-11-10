@@ -175,28 +175,19 @@ module.exports = {
         } else {
             //성공
             try {
-                const User = await user.findOne({
-                    where: { id: userId },
-                });
-                if (!User) {
-                    return res.status(403).send({
-                        data: null,
-                        message: "일치하는 회원정보를 찾지 못했습니다",
-                    });
-                }
                 let userCoupon = await axios.get(
-                    `${process.env.TEST_API}/app/coupon?userId=${User.id}`
+                    `${process.env.TEST_API}/app/coupon?userId=${userId}`
                 );
 
-                res.status(200).send({
+                return res.status(200).send({
                     data: userCoupon.data,
                     message: userCoupon.data.message,
                 });
             } catch (error) {
                 console.log(error);
-                return res.status(403).send({
+                return res.status(500).send({
                     data: null,
-                    message: "일치하는 회원정보를 찾지 못했습니다",
+                    message: error.response.data.message,
                 });
             }
         }
@@ -232,12 +223,12 @@ module.exports = {
 
                     let result = await axios(config);
 
-                    res.status(200).send(result.data);
+                    return res.status(200).send(result.data);
                 } catch (error) {
                     console.log(error);
-                    return res.status(403).send({
+                    return res.status(500).send({
                         data: null,
-                        message: "일치하는 회원정보를 찾지 못했습니다",
+                        message: error.response.data.message,
                     });
                 }
             }

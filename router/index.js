@@ -2,23 +2,23 @@ const express = require("express");
 const fs = require("fs");
 const router = express.Router();
 const {
-    user,
+    user, //user
     pay,
     gMoney,
     question,
 
-    kakao,
+    kakao, //sns
     naver,
 
-    refreshData,
+    refreshData, //app
     appListData,
 
-    storeHome,
+    storeHome, //storeAdmin
     storeTransaction,
     noticeBoard,
     qnaHandler,
 
-    adminHome,
+    adminHome, //admin
     chargeHandler,
     adminTransactionHandler,
     eventHandler,
@@ -26,10 +26,10 @@ const {
     faqHandler,
     storeNoticeHandler,
     storeQuestionHandler,
-    answerhandler,
+    questionHandler,
     rtpay,
 } = require("../controllers/index");
-const pushEvent = require("../controllers/push");
+
 const { imageUpload } = require("../multerConfig");
 
 router.get("/", (req, res) => {
@@ -61,7 +61,7 @@ router.get("/user/alarm/list", user.alarmList); //내 알림 목록
 router.get("/user/alarm/check", user.alarmCheck); //알림 읽음 처리
 router.post("/user/wire", gMoney.send); //송금
 router.get("/user/search", gMoney.sendUserSearch); //송금 대상 검색
-router.post("/user/info", user.uploadAndEditInfo); //소속 그룹, 전화번호, 이메일 업로드
+router.post("/user/info", user.uploadAndEditInfo); //소속 그룹 등록 및 수정
 router.post("/user/login", user.login);
 router.post("/user/fcmtoken", user.snsLoginGetFcmToken); //유저 기기토큰정보 저장하기
 router.get("/user/question", question.myQuestions); //1:1문의 목록
@@ -98,12 +98,13 @@ router.get("/admin/stroenotice", storeNoticeHandler.notice);
 router.post("/admin/stroenotice", storeNoticeHandler.uploadEdit);
 router.delete("/admin/stroenotice", storeNoticeHandler.delete);
 router.get("/admin/stroequestion", storeQuestionHandler.storeQuestion);
-// router.post("/admin/stroeAnswer", answerhandler.stroeAnswer);
-// router.delete("/admin/stroeAnswer", answerhandler.stroeAnswerDelete);
 router.get("/admin/faq", faqHandler.faq);
 router.post("/admin/faq", faqHandler.uploadEdit);
 router.delete("/admin/faq", faqHandler.delete);
-// router.get("/admin/question", communityHandler.question);
+router.get("/admin/qna", questionHandler.questionList);
+router.post("/admin/qna", questionHandler.answer);
+router.put("/admin/qna", questionHandler.questionEdit);
+router.delete("/admin/qna", questionHandler.delete);
 
 router.post("/check/rtpay", rtpay.rtpay);
 //storeAdmin

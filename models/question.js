@@ -18,11 +18,15 @@ module.exports = (sequelize, DataTypes) => {
         {
             userId: DataTypes.INTEGER,
             title: DataTypes.STRING,
-            state: {
+            isAnswer: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
             content: DataTypes.TEXT,
+            isShow: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
+            },
         },
         {
             hooks: {
