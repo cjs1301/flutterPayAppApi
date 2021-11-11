@@ -77,6 +77,7 @@ router.get("/admin/transaction", adminTransactionHandler.search);
 router.get("/admin/calculate", adminTransactionHandler.transaction);
 router.get("/admin/storelist", adminTransactionHandler.storelist);
 router.get("/admin/event", eventHandler.search);
+router.post("/admin/event/copy", eventHandler.copy);
 router.post(
     "/admin/event",
     imageUpload.fields([

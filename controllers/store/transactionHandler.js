@@ -221,13 +221,11 @@ module.exports = {
 
             let total = (await totalPrice) * 0.98 - (totalPrice - totalgMoney);
 
-            return res
-                .status(200)
-                .send({
-                    data: transactionData,
-                    total: total,
-                    message: "전체 내역 출력",
-                });
+            return res.status(200).send({
+                data: transactionData,
+                total: total,
+                message: "전체 내역 출력",
+            });
         } catch (error) {
             console.log(error);
             res.status(400).send({ data: null, message: error.message });
@@ -251,7 +249,7 @@ module.exports = {
                         include: [
                             {
                                 model: user,
-                                attributes: ["gMoney", "id"],
+                                attributes: ["gMoney", "id", "fcmToken"],
                             },
                             {
                                 model: store,
@@ -265,7 +263,6 @@ module.exports = {
                             "id",
                             "couponData",
                             "gMoney",
-                            "fcmToken",
                         ],
                     });
                     if (find) {

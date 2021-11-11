@@ -76,7 +76,7 @@ module.exports = {
         const qasyncA = async () => {
             userQ = await question.count({
                 where: {
-                    state: false,
+                    isAnswer: false,
                     createdAt: {
                         [Op.between]: [startDay, endDay],
                     },

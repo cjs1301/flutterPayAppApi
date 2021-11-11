@@ -2,6 +2,9 @@ const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const question = require("../../models/index.js").question;
 const answer = require("../../models/index.js").answer;
+const alarm = require("../../models/index.js").alarm;
+const { Op } = require("sequelize");
+const pushEvent = require("../../controllers/push");
 
 module.exports = {
     delete: async (req, res) => {
@@ -81,6 +84,7 @@ module.exports = {
             //관리자 확인
 
             const { word, date, state, limit, pageNum } = req.query;
+            console.log(state);
             let offset = 0;
 
             if (pageNum > 1) {
@@ -100,13 +104,15 @@ module.exports = {
             }
             let stateArr = state.split(",");
             stateArr = stateArr.map((el) => {
+                console.log(el);
                 if (el === "답변대기") {
-                    el = false;
+                    return false;
                 }
                 if (el === "답변완료") {
-                    el = true;
+                    return true;
                 }
             });
+            console.log(stateArr);
             let result;
             if (!state) {
                 return res

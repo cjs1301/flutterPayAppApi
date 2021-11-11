@@ -2,6 +2,7 @@ const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const charge = require("../../models/index.js").charge;
 let myRegPkey = "09abc7fc-964e-4445-b488-a4209a39b08f";
+const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
 const axios = require("axios");
 const qs = require("qs");
@@ -98,6 +99,14 @@ module.exports = {
                                     RPAY +
                                     "화 충전이 완료되었습니다",
                             };
+                            await alarm.create({
+                                userId: giveMoneyUser.id,
+                                title: "충전완료 알림",
+                                content:
+                                    "신청하신 " +
+                                    RPAY +
+                                    "화 충전이 완료되었습니다",
+                            });
                             pushEvent.noti(contents, giveMoneyUser.fcmToken);
                             return res.json({ RCODE: 200, PCHK: "OK" });
                         } catch (error) {

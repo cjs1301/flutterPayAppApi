@@ -1,6 +1,9 @@
 const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const faq = require("../../models/index.js").faq;
+const alarm = require("../../models/index.js").alarm;
+const { Op } = require("sequelize");
+const pushEvent = require("../../controllers/push");
 
 module.exports = {
     faq: async (req, res) => {

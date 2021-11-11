@@ -1,5 +1,7 @@
 const { Request, Response } = require("express");
+const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
+const pushEvent = require("../../controllers/push");
 const event = require("../../models/index.js").event;
 const {
     start,
@@ -157,5 +159,24 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
+    },
+    copy: async (req, res) => {
+        const { id } = req.body;
+        const findEvent = await event.findOne({ where: { id: id } });
+        await event.create({
+            img: findEvent.img,
+            bannerImg: findEvent.bannerImg,
+            writer: findEvent.writer,
+            content: findEvent.content,
+            title: findEvent.title,
+            isShow: findEvent.isShow,
+            state: findEvent.state,
+            startDate: findEvent.startDate,
+            endDate: findEvent.endDate,
+        });
+        res.status(200).send({
+            data: null,
+            message: "성공적으로 삭제 하였습니다.",
+        });
     },
 };

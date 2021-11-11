@@ -312,7 +312,7 @@ module.exports = {
         });
         if (find) {
             return res.status(200).send({
-                data: find.state,
+                data: find,
                 message: "완료",
             });
         }

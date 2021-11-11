@@ -1,6 +1,7 @@
 const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
-
+const alarm = require("../../models/index.js").alarm;
+const { Op } = require("sequelize");
 const notice = require("../../models/index.js").notice;
 
 const pushEvent = require("../push");
@@ -115,9 +116,13 @@ module.exports = {
     },
     uploadEdit: async (req, res) => {
         try {
-            const { title, content, isShow, id } = req.body
+            const { title, content, isShow, id } = req.body;
 
-            if (title === undefined || content === undefined|| isShow === undefined) {
+            if (
+                title === undefined ||
+                content === undefined ||
+                isShow === undefined
+            ) {
                 res.status(400).send({
                     data: null,
                     message: "항목이 빠져 있습니다",
@@ -139,17 +144,17 @@ module.exports = {
                     message: "해당글은 없는 글입니다.",
                 });
             }
-    
-                await notice.create({
-                    content: content,
-                    title: title,
-                    isShow: isShow,
-                });
-    
-                return res.status(200).send({
-                    data: null,
-                    message: "작성 완료",
-                });
+
+            await notice.create({
+                content: content,
+                title: title,
+                isShow: isShow,
+            });
+
+            return res.status(200).send({
+                data: null,
+                message: "작성 완료",
+            });
         } catch (error) {
             console.log(error);
             return res.send("이게안되나");
@@ -158,8 +163,8 @@ module.exports = {
     delete: async (req, res) => {
         const { id } = req.body;
         const del = await notice.findOne({ where: { id: id } });
-        del.isShow=false;
-        await del.save()
+        del.isShow = false;
+        await del.save();
         res.status(200).send({
             data: null,
             message: "성공적으로 삭제 하였습니다.",

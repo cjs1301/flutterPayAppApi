@@ -1,6 +1,9 @@
 const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const answer = require("../../models/index.js").answer;
+const alarm = require("../../models/index.js").alarm;
+const { Op } = require("sequelize");
+const pushEvent = require("../../controllers/push");
 
 module.exports = {
     giveCoupon: async (req, res) => {
