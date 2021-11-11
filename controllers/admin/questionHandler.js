@@ -140,6 +140,7 @@ module.exports = {
 
                         limit: Number(limit),
                         offset: Number(offset),
+                        order: [["createdAt", "DESC"]],
                         include: [
                             {
                                 model: answer,
@@ -180,6 +181,7 @@ module.exports = {
                         },
                         limit: Number(limit),
                         offset: Number(offset),
+                        order: [["createdAt", "DESC"]],
                         include: [
                             {
                                 model: answer,
@@ -217,6 +219,7 @@ module.exports = {
                             [Op.or]: stateArr,
                         },
                     },
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                     include: [
@@ -243,6 +246,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["createdAt", "DESC"]],
                     include: [
                         {
                             model: answer,

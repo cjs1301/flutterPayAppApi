@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/eventImg", static(path.join(__dirname, "eventImg")));
-app.use("/files", static(path.join(__dirname, "files")));
+//app.use("/files", static(path.join(__dirname, "files")));
 
 app.use(cookieParser());
 app.use(cors());

@@ -67,6 +67,7 @@ module.exports = {
                                 attributes: ["userName"],
                             },
                         ],
+                        order: [["updatedAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                     });
@@ -87,6 +88,7 @@ module.exports = {
                                 [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                             },
                         },
+                        order: [["updatedAt", "DESC"]],
                         include: [
                             {
                                 model: user,
@@ -115,6 +117,7 @@ module.exports = {
                             [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                         },
                     },
+                    order: [["updatedAt", "DESC"]],
                     include: [
                         {
                             model: user,
@@ -140,6 +143,7 @@ module.exports = {
                             [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                         },
                     },
+                    order: [["updatedAt", "DESC"]],
                     include: [
                         {
                             model: user,

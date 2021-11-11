@@ -55,7 +55,7 @@ router.post(
         res.status(400).send({ message: error.message });
     }
 );
-router.get("/user/flie/:name", gMoney.subscriptionDownload);
+router.get("/user/file/:name", gMoney.subscriptionDownload); //사용자 약정신청서 양식 다운로드
 router.get("/user/alarm", user.alarm); //알람 켜고 끄기
 router.get("/user/alarm/list", user.alarmList); //내 알림 목록
 router.get("/user/alarm/check", user.alarmCheck); //알림 읽음 처리
@@ -73,6 +73,9 @@ router.get("/admin/home", adminHome.homeInfo);
 router.get("/admin/charge/search", chargeHandler.chargeSearch);
 router.put("/admin/charge/state", chargeHandler.stateChange);
 router.get("/admin/subscription/search", chargeHandler.subscriptionSearch);
+router.put("/admin/subscription", chargeHandler.proceeding); //약정신청 진행중 변경
+router.get("/files/:name", chargeHandler.downLoad); //약정신청서 다운로드
+router.delete("/admin/subscription", chargeHandler.termination); //약정신청 해지
 router.get("/admin/transaction", adminTransactionHandler.search);
 router.get("/admin/calculate", adminTransactionHandler.transaction);
 router.get("/admin/storelist", adminTransactionHandler.storelist);

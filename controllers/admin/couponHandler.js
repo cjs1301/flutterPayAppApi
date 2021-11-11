@@ -29,6 +29,7 @@ module.exports = {
                         [Op.or]: [...state], //["결제완료","결제실패","결제취소"]
                     },
                 },
+                order: [["createdAt", "DESC"]],
             });
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -40,6 +41,7 @@ module.exports = {
                         [Op.or]: [...state], //["결제완료","결제실패","결제취소"]
                     },
                 },
+                order: [["createdAt", "DESC"]],
             });
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -50,6 +52,7 @@ module.exports = {
                         [Op.or]: [...state], //["결제완료","결제실패","결제취소"]
                     },
                 },
+                order: [["createdAt", "DESC"]],
             });
             return res.status(200).send({ data: result, message: "검색 완료" });
         }

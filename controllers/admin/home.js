@@ -98,7 +98,6 @@ module.exports = {
         await Promise.all(qlist.map((fn) => fn()));
         result.today.questionList = userQ;
         result.recentchargeList = await charge.findAll({
-            order: [["updatedAt", "DESC"]],
             limit: 5,
             include: [
                 {
@@ -106,9 +105,10 @@ module.exports = {
                     attributes: ["userName"],
                 },
             ],
+            order: [["createdAt", "DESC"]],
         });
         result.recentEvent = await event.findAll({
-            order: [["updatedAt", "DESC"]],
+            order: [["createdAt", "DESC"]],
             limit: 4,
         });
 

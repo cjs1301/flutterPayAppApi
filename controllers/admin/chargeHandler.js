@@ -313,6 +313,48 @@ module.exports = {
             console.log(error);
         }
     },
-    proceeding: async (req, res) => {},
-    termination: async (req, res) => {},
+    proceeding: async (req, res) => {
+        const { id } = req.body;
+        console.log(req.body);
+        let proceedingSubscription = await subscription.findOne({
+            where: { id: id },
+        });
+        if (proceedingSubscription) {
+            proceedingSubscription.state = "약정충전진행";
+            await proceedingSubscription.save();
+            return res.status(200).send({ data: null, message: "완료" });
+        }
+        return res
+            .status(500)
+            .send({ data: null, message: "삭제된 신청서 입니다." });
+    },
+    downLoad: async (req, res) => {
+        var path = require("path");
+        var file = path.join(__dirname, "../../files/" + req.params.name);
+        console.log(file);
+        res.download(file, function (err) {
+            if (err) {
+                console.log("Error");
+                console.log(err);
+            } else {
+                console.log("Success");
+            }
+        });
+    },
+    termination: async (req, res) => {
+        const { id } = req.body;
+        console.log(req.body);
+        let deleteSubscription = await subscription.findOne({
+            where: { id: id },
+        });
+        if (deleteSubscription) {
+            deleteSubscription.state = "해지완료";
+            deleteSubscription.terminationCompleteDate = new Date();
+            await deleteSubscription.save();
+            return res.status(200).send({ data: null, message: "삭제 완료" });
+        }
+        return res
+            .status(500)
+            .send({ data: null, message: "삭제된 신청서 입니다." });
+    },
 };

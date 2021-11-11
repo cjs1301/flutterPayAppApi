@@ -58,6 +58,7 @@ module.exports = {
 
                             limit: Number(limit),
                             offset: Number(offset),
+                            order: [["createdAt", "DESC"]],
                             include: [
                                 {
                                     model: storeAnswer,
@@ -97,6 +98,7 @@ module.exports = {
                                     [Op.or]: stateArr, //["정산문의","결제문의","기타"]
                                 },
                             },
+                            order: [["createdAt", "DESC"]],
                             limit: Number(limit),
                             offset: Number(offset),
                             include: [
@@ -137,6 +139,7 @@ module.exports = {
                                 [Op.or]: stateArr, //["정산문의","결제문의","기타"]
                             },
                         },
+                        order: [["createdAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                         include: [
@@ -162,6 +165,7 @@ module.exports = {
                                 [Op.or]: stateArr, //["정산문의","결제문의","기타"]
                             },
                         },
+                        order: [["createdAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                         include: [
@@ -196,6 +200,7 @@ module.exports = {
                                     [Op.or]: stateArr, //["정산문의","결제문의","기타"]
                                 },
                             },
+                            order: [["createdAt", "DESC"]],
                             limit: Number(limit),
                             offset: Number(offset),
                             include: [
@@ -236,6 +241,7 @@ module.exports = {
                                     [Op.or]: stateArr, //["정산문의","결제문의","기타"]
                                 },
                             },
+                            order: [["createdAt", "DESC"]],
                             limit: Number(limit),
                             offset: Number(offset),
                             include: [
@@ -275,6 +281,7 @@ module.exports = {
                                 [Op.or]: stateArr, //["정산문의","결제문의","기타"]
                             },
                         },
+                        order: [["createdAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                         include: [
@@ -299,6 +306,7 @@ module.exports = {
                                 [Op.or]: stateArr, //["정산문의","결제문의","기타"]
                             },
                         },
+                        order: [["createdAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                         include: [

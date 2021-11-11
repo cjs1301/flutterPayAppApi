@@ -7,7 +7,7 @@ const imageStorage = multer.diskStorage({
         if (req.url === "/admin/event") {
             return cb(null, "eventImg");
         } else {
-            return cb(null, "flies");
+            return cb(null, "files");
         }
     },
     filename: (req, file, cb) => {
@@ -33,7 +33,7 @@ const imageStorage = multer.diskStorage({
 const imageUpload = multer({
     storage: imageStorage,
     limits: {
-        fileSize: 1000000, // 1000000 Bytes = 1 MB
+        fileSize: 10000000, // 10000000 Bytes = 10 MB
     },
     fileFilter(req, file, cb) {
         if (!file.originalname.match(/\.(png|jpg|pdf|hwp)$/)) {

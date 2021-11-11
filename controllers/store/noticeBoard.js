@@ -34,6 +34,7 @@ module.exports = {
                                 [Op.between]: [startDay, endDay],
                             },
                         },
+                        order: [["createdAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                     });
@@ -62,6 +63,7 @@ module.exports = {
                                 [Op.between]: [startDay, endDay],
                             },
                         },
+                        order: [["createdAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                     });
@@ -89,6 +91,7 @@ module.exports = {
                             },
                         ],
                     },
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -100,6 +103,7 @@ module.exports = {
                 result = await storeNotice.findAndCountAll({
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["createdAt", "DESC"]],
                 });
                 return res
                     .status(200)

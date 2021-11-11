@@ -63,6 +63,7 @@ module.exports = {
                         ],
                         limit: Number(limit),
                         offset: Number(offset),
+                        order: [["updatedAt", "DESC"]],
                     });
                     if (result) {
                         return res
@@ -92,6 +93,7 @@ module.exports = {
                             attributes: ["name"],
                         },
                     ],
+                    order: [["updatedAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -167,6 +169,7 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                     attributes: ["id", "name"],
+                    order: [["updatedAt", "DESC"]],
                 });
                 for (let el of storeData.rows) {
                     let priceData = await transaction.sum("price", {

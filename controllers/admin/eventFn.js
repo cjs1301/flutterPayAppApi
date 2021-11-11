@@ -23,6 +23,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["createdAt", "DESC"]],
                 });
                 if (result) {
                     return res
@@ -52,6 +53,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["createdAt", "DESC"]],
                 });
                 if (result) {
                     return res
@@ -82,6 +84,7 @@ module.exports = {
                 },
                 limit: Number(limit),
                 offset: Number(offset),
+                order: [["createdAt", "DESC"]],
             });
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -93,6 +96,7 @@ module.exports = {
                 },
                 limit: Number(limit),
                 offset: Number(offset),
+                order: [["createdAt", "DESC"]],
             });
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -113,7 +117,7 @@ module.exports = {
                         },
                         state: state,
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -143,7 +147,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -172,7 +176,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -184,7 +188,7 @@ module.exports = {
                 where: {
                     state: state,
                 },
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -207,7 +211,7 @@ module.exports = {
                         },
                         state: state,
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -237,7 +241,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -266,7 +270,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -278,7 +282,7 @@ module.exports = {
                 where: {
                     state: state,
                 },
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -301,7 +305,7 @@ module.exports = {
                             [Op.between]: [startDay, endDay],
                         },
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -330,7 +334,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -358,7 +362,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -367,7 +371,7 @@ module.exports = {
         if (!word && !date) {
             console.log("여기", date);
             result = await event.findAndCountAll({
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -391,6 +395,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["createdAt", "DESC"]],
                 });
                 if (result) {
                     return res
@@ -417,7 +422,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -445,7 +450,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -454,7 +459,7 @@ module.exports = {
         if (!word && !date) {
             console.log("여기", date);
             result = await event.findAndCountAll({
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -476,7 +481,7 @@ module.exports = {
                             [Op.between]: [startDay, endDay],
                         },
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -505,7 +510,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -533,7 +538,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -542,7 +547,7 @@ module.exports = {
         if (!word && !date) {
             console.log("여기", date);
             result = await transaction.findAndCountAll({
-                order: [["updatedAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });

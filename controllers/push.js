@@ -25,21 +25,21 @@ module.exports = {
     },
     noti: async (message, fcmToken) => {
         try {
-            let checkNoti = await user.findAll({
-                where: { fcmToken: fcmToken },
-                attributes: ["notiAlarm"],
-            });
-            if (checkNoti.notiAlarm) {
-                var payload = {
-                    notification: {
-                        title: message.title,
-                        body: message.body,
-                    },
-                    token: fcmToken,
-                };
-                console.log("푸쉬 알림 작동");
-                return await admin.messaging().send(payload);
-            }
+            // let checkNoti = await user.findOne({
+            //     where: { fcmToken: fcmToken },
+            //     attributes: ["notiAlarm"],
+            // });
+            // if (checkNoti.notiAlarm) {
+            var payload = {
+                notification: {
+                    title: message.title,
+                    body: message.body,
+                },
+                token: fcmToken,
+            };
+            console.log("푸쉬 알림 작동");
+            return await admin.messaging().send(payload);
+            //}
         } catch (error) {
             console.log(error);
         }

@@ -39,6 +39,7 @@ module.exports = {
                         },
                         limit: Number(limit),
                         offset: Number(offset),
+                        order: [["createdAt", "DESC"]],
                     });
                     if (result) {
                         return res
@@ -67,6 +68,7 @@ module.exports = {
                         },
                         limit: Number(limit),
                         offset: Number(offset),
+                        order: [["createdAt", "DESC"]],
                     });
                     if (result) {
                         return res
@@ -94,6 +96,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["createdAt", "DESC"]],
                 });
                 return res
                     .status(200)
@@ -103,6 +106,7 @@ module.exports = {
                 result = await faq.findAndCountAll({
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["createdAt", "DESC"]],
                 });
                 return res
                     .status(200)
