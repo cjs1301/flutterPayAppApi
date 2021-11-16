@@ -13,14 +13,14 @@ module.exports = {
         //기존데이터 요청
         try {
             let originStore = await axios.get(
-                `${process.env.TEST_API}/app/storelist`
+                `${process.env.PY_API}/app/storelist`
             );
 
             let originList = originStore.data.data;
 
             originList.forEach(async (el) => {
                 let origin = await axios.get(
-                    `${process.env.TEST_API}/app/store?storeid=${el.store_id}`
+                    `${process.env.PY_API}/app/store?storeid=${el.store_id}`
                 );
                 let originData = origin.data.data;
                 let [newStore, created] = await store.findOrCreate({
@@ -63,14 +63,14 @@ module.exports = {
         //기존데이터 요청
         try {
             let originStore = await axios.get(
-                `${process.env.TEST_API}/app/storelist`
+                `${process.env.PY_API}/app/storelist`
             );
 
             let originList = originStore.data.data;
 
             originList.forEach(async (el) => {
                 let origin = await axios.get(
-                    `${process.env.TEST_API}/app/store?storeid=${el.store_id}`
+                    `${process.env.PY_API}/app/store?storeid=${el.store_id}`
                 );
                 let originData = origin.data.data;
 
@@ -129,7 +129,7 @@ module.exports = {
     store: async (req, res) => {
         const { storeid } = req.query;
         let orginData = await axios.get(
-            `${process.env.TEST_API}/app/store?storeid=${storeid}`
+            `${process.env.PY_API}/app/store?storeid=${storeid}`
         );
         let findStore = await store.findOne({
             where: {

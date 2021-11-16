@@ -16,7 +16,7 @@ module.exports = {
 
             let snsConfig = {
                 method: "post",
-                url: `${process.env.TEST_API}/app/sociallogin`,
+                url: `${process.env.PY_API}/app/sociallogin`,
                 headers: {
                     ...dataForm.getHeaders(),
                 },
@@ -139,7 +139,7 @@ module.exports = {
 
 //             let snsConfig = {
 //                 method: "post",
-//                 url: `${process.env.TEST_API}/app/sociallogin`,
+//                 url: `${process.env.PY_API}/app/sociallogin`,
 //                 headers: {
 //                     ...dataForm.getHeaders(),
 //                 },

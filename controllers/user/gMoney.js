@@ -186,7 +186,7 @@ module.exports = {
             //성공
             try {
                 let userCoupon = await axios.get(
-                    `${process.env.TEST_API}/app/coupon?userId=${userId}`
+                    `${process.env.PY_API}/app/coupon?userId=${userId}`
                 );
 
                 return res.status(200).send({
@@ -224,7 +224,7 @@ module.exports = {
 
                     let config = {
                         method: "post",
-                        url: `${process.env.TEST_API}/app/coupon`,
+                        url: `${process.env.PY_API}/app/coupon`,
                         headers: {
                             ...data.getHeaders(),
                         },
@@ -386,7 +386,7 @@ module.exports = {
                     let config = {
                         method: "get",
                         url:
-                            process.env.TEST_API +
+                            process.env.PY_API +
                             `/app/gpoint?userId=${User.id}&year=${year}&month=${month}`,
                         headers: {},
                     };

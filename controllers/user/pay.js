@@ -33,7 +33,7 @@ module.exports = {
                     }
                     //결제 정보 포인트 쿠폰 잔액 정보 확인
                     let result = await axios.get(
-                        `${process.env.TEST_API}/app/gpointcoupon?userId=${User.id}`
+                        `${process.env.PY_API}/app/gpointcoupon?userId=${User.id}`
                     );
 
                     //쿠폰 사용가능 목록 배열처리
@@ -189,7 +189,7 @@ module.exports = {
 
         let config = {
             method: "post",
-            url: `${process.env.TEST_API}/app/buy`,
+            url: `${process.env.PY_API}/app/buy`,
             headers: {
                 ...data.getHeaders(),
             },

@@ -37,7 +37,7 @@ module.exports = {
     store: async (req, res) => {
         const { storeid } = req.query;
         let orginData = await axios.get(
-            `${process.env.TEST_API}/app/store?storeid=${storeid}`
+            `${process.env.PY_API}/app/store?storeid=${storeid}`
         );
         let findStore = await store.findOne({
             where: {

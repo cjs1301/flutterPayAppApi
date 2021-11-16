@@ -71,18 +71,18 @@ module.exports = {
 
                 let userGpoint = await axios.get(
                     `${
-                        process.env.TEST_API
+                        process.env.PY_API
                     }/app/gpoint?userId=${userId}&year=${nowDate.getFullYear()}&month=${nowDate.getMonth()}`
                 );
                 let userCoupon = await axios.get(
-                    `${process.env.TEST_API}/app/coupon?userId=${userId}`
+                    `${process.env.PY_API}/app/coupon?userId=${userId}`
                 );
                 let data = new FormData();
                 data.append("id", User.idValue);
 
                 let config = {
                     method: "post",
-                    url: `${process.env.TEST_API}/app/sociallogin`,
+                    url: `${process.env.PY_API}/app/sociallogin`,
                     headers: {
                         ...data.getHeaders(),
                     },
@@ -340,7 +340,7 @@ module.exports = {
 
             let config = {
                 method: "post",
-                url: `${process.env.TEST_API}/app/login`,
+                url: `${process.env.PY_API}/app/login`,
                 headers: {
                     ...data.getHeaders(),
                 },

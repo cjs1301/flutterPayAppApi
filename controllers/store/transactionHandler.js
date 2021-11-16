@@ -279,7 +279,7 @@ module.exports = {
 
                         let config = {
                             method: "post",
-                            url: `${process.env.TEST_API}/admin/buycancel`,
+                            url: `${process.env.PY_API}/admin/buycancel`,
                             headers: {
                                 ...data.getHeaders(),
                             },

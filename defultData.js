@@ -17,7 +17,7 @@ module.exports = async () => {
         // });
         // allUser.forEach((element) => {
         //     // let userCoupon = await axios.get(
-        //     //     `${process.env.TEST_API}/app/coupon?userId=${element.id}`
+        //     //     `${process.env.PY_API}/app/coupon?userId=${element.id}`
         //     // );
         //     // userCoupon.data.data.active.length
         //     if (element.fcmToken) {
