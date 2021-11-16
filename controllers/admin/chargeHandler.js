@@ -13,7 +13,6 @@ module.exports = {
             //관리자 확인
             //운영자 계정 확인
             const authorization = req.headers.authorization;
-            console.log(authorization);
             let adminId = 1;
 
             const { name, date, state, limit, pageNum } = req.query;
@@ -27,7 +26,7 @@ module.exports = {
                 date === undefined ||
                 state === undefined
             ) {
-                res.status(400).send({
+                return res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
                 });
@@ -75,9 +74,12 @@ module.exports = {
                 if (name) {
                     result = await charge.findAndCountAll({
                         where: {
-                            userName: name,
+                            userName: { [Op.like]: "%" + name + "%" },
                             state: {
                                 [Op.or]: stateArr, //["충전신청,입금미완료,충전완료"]
+                            },
+                            createdAt: {
+                                [Op.between]: [startDay, endDay],
                             },
                         },
                         include: [
@@ -100,7 +102,7 @@ module.exports = {
             if (!date && name) {
                 result = await charge.findAndCountAll({
                     where: {
-                        userName: name,
+                        userName: { [Op.like]: "%" + name + "%" },
                         state: {
                             [Op.or]: stateArr, //["충전신청,입금미완료,충전완료"]
                         },
@@ -171,7 +173,10 @@ module.exports = {
                             break;
 
                         case "입금미완료":
-                            if (chargeData.state === "충전신청") {
+                            if (
+                                chargeData.state === "충전신청" ||
+                                chargeData.state === "입금완료"
+                            ) {
                                 chargeData.state = "입금미완료";
                                 await chargeData.save();
                             }
@@ -221,7 +226,7 @@ module.exports = {
                     }
                 } else {
                     return res.status(500).send({
-                        data: error,
+                        data: null,
                         message: "신청하신 데이터를 찾을수 없습니다",
                     });
                 }
@@ -243,7 +248,6 @@ module.exports = {
             //관리자 확인
             //운영자 계정 확인
             const authorization = req.headers.authorization;
-            console.log(authorization);
             let adminId = 1;
 
             const { name, state, limit, pageNum } = req.query;
@@ -278,6 +282,7 @@ module.exports = {
                             model: user,
                         },
                     ],
+                    order: [["updatedAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -290,7 +295,7 @@ module.exports = {
             if (name) {
                 result = await subscription.findAndCountAll({
                     where: {
-                        userName: name,
+                        userName: { [Op.like]: "%" + name + "%" },
                         state: {
                             [Op.or]: stateArr, //["신청대기,약정충전진행,해지신청,해지완료"]
                         },
@@ -302,6 +307,7 @@ module.exports = {
                     ],
                     limit: Number(limit),
                     offset: Number(offset),
+                    order: [["updatedAt", "DESC"]],
                 });
                 if (result) {
                     return res
@@ -314,24 +320,44 @@ module.exports = {
         }
     },
     proceeding: async (req, res) => {
-        const { id } = req.body;
-        console.log(req.body);
-        let proceedingSubscription = await subscription.findOne({
-            where: { id: id },
-        });
-        if (proceedingSubscription) {
-            proceedingSubscription.state = "약정충전진행";
-            await proceedingSubscription.save();
+        const { ids } = req.body;
+        try {
+            for (let el of ids) {
+                let item = await subscription.findOne({
+                    where: { id: el },
+                    include: [
+                        {
+                            model: user,
+                        },
+                    ],
+                });
+                if (item) {
+                    item.state = "약정충전진행";
+                    await item.save();
+                    let contents = {
+                        title: "약정충전 진행 알림",
+                        body: "신청하신 약정충전신청이 완료되었습니다.",
+                    };
+                    await pushEvent.noti(contents, item.user.fcmToken);
+                    await alarm.create({
+                        userId: item.userId,
+                        title: "약정충전 진행 알림",
+                        content: "신청하신 약정충전신청이 완료되었습니다.",
+                    });
+                }
+            }
+
             return res.status(200).send({ data: null, message: "완료" });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .send({ data: error, message: "삭제된 신청서 입니다." });
         }
-        return res
-            .status(500)
-            .send({ data: null, message: "삭제된 신청서 입니다." });
     },
     downLoad: async (req, res) => {
         var path = require("path");
         var file = path.join(__dirname, "../../files/" + req.params.name);
-        console.log(file);
         res.download(file, function (err) {
             if (err) {
                 console.log("Error");
@@ -342,19 +368,40 @@ module.exports = {
         });
     },
     termination: async (req, res) => {
-        const { id } = req.body;
-        console.log(req.body);
-        let deleteSubscription = await subscription.findOne({
-            where: { id: id },
-        });
-        if (deleteSubscription) {
-            deleteSubscription.state = "해지완료";
-            deleteSubscription.terminationCompleteDate = new Date();
-            await deleteSubscription.save();
+        const { ids } = req.body;
+
+        try {
+            for (let el of ids) {
+                let item = await subscription.findOne({
+                    where: { id: el },
+                    include: [
+                        {
+                            model: user,
+                        },
+                    ],
+                });
+                if (item) {
+                    item.state = "해지완료";
+                    item.terminationCompleteDate = new Date();
+                    await item.save();
+                    let contents = {
+                        title: "약정충전 해지 알림",
+                        body: "약정충전 해지가 완료 되었습니다.",
+                    };
+                    await pushEvent.noti(contents, item.user.fcmToken);
+                    await alarm.create({
+                        userId: item.userId,
+                        title: "약정충전 해지 알림",
+                        content: "약정충전 해지가 완료 되었습니다.",
+                    });
+                }
+            }
             return res.status(200).send({ data: null, message: "삭제 완료" });
+        } catch (error) {
+            console.log(error);
+            return res
+                .status(500)
+                .send({ data: error, message: "삭제된 신청서 입니다." });
         }
-        return res
-            .status(500)
-            .send({ data: null, message: "삭제된 신청서 입니다." });
     },
 };

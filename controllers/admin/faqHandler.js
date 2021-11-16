@@ -33,6 +33,7 @@ module.exports = {
                 if (!word) {
                     result = await faq.findAndCountAll({
                         where: {
+                            isShow: true,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
                             },
@@ -50,6 +51,7 @@ module.exports = {
                 if (word) {
                     result = await faq.findAndCountAll({
                         where: {
+                            isShow: true,
                             [Op.or]: [
                                 {
                                     title: {
@@ -81,6 +83,7 @@ module.exports = {
             if (!date && word) {
                 result = await faq.findAndCountAll({
                     where: {
+                        isShow: true,
                         [Op.or]: [
                             {
                                 title: {
@@ -104,6 +107,7 @@ module.exports = {
             }
             if (!word && !date) {
                 result = await faq.findAndCountAll({
+                    where: { isShow: true },
                     limit: Number(limit),
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
@@ -114,19 +118,14 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return res.send("이게안되나");
+            return res.status(500).send({ data: error, message: "오류" });
         }
     },
     uploadEdit: async (req, res) => {
         try {
             const { title, content, isShow, id } = req.body;
-            console.log(req.body);
-            if (
-                title === undefined ||
-                content === undefined ||
-                isShow === undefined
-            ) {
-                res.status(400).send({
+            if (!title || !content || isShow === undefined) {
+                return res.status(400).send({
                     data: null,
                     message: "항목이 빠져 있습니다",
                 });
@@ -137,10 +136,10 @@ module.exports = {
                     where: { id: id },
                 });
                 if (findfaq) {
-                    findfaq.scontenttate = content;
+                    findfaq.content = content;
                     findfaq.title = title;
                     findfaq.isShow = isShow;
-                    findEvent.save();
+                    findfaq.save();
                 }
                 return res.status(400).send({
                     data: null,
@@ -160,7 +159,7 @@ module.exports = {
             });
         } catch (error) {
             console.log(error);
-            return res.send("이게안되나");
+            return res.status(500).send({ data: error, message: "오류" });
         }
     },
     delete: async (req, res) => {

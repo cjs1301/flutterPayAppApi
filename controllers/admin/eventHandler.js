@@ -20,9 +20,14 @@ module.exports = {
 
         const { img, bannerImg } = req.files;
 
-        console.log(req.body);
-        console.log(req.files);
-        if (!title || !content || !startDate || !endDate) {
+        if (
+            !title ||
+            !content ||
+            !startDate ||
+            !endDate ||
+            !img ||
+            !bannerImg
+        ) {
             return res
                 .status(500)
                 .send({ data: null, message: "누락된 항목이 있습니다." });
@@ -45,13 +50,17 @@ module.exports = {
             if (findEvent) {
                 findEvent.img = img[0].path;
                 findEvent.bannerImg = bannerImg[0].path;
-                findEvent.scontenttate = content;
+                findEvent.content = content;
                 findEvent.title = title;
-                findEvent.isShow = isShow;
+                findEvent.hide = isShow;
                 findEvent.startDate = new Date(startDate);
                 findEvent.endDate = new Date(endDate);
                 findEvent.state = state;
-                findEvent.save();
+                await findEvent.save();
+                return res.status(200).send({
+                    data: null,
+                    message: "수정 완료",
+                });
             }
             return res.status(400).send({
                 data: null,
@@ -65,7 +74,7 @@ module.exports = {
                 bannerImg: bannerImg[0].path,
                 content: content,
                 title: title,
-                isShow: isShow,
+                hide: isShow,
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
                 state: state,
@@ -86,7 +95,7 @@ module.exports = {
         const deletEvent = await event.findOne({ where: { id: id } });
         deletEvent.isShow = false;
         await deletEvent.save();
-        res.status(200).send({
+        return res.status(200).send({
             data: null,
             message: "성공적으로 삭제 하였습니다.",
         });
@@ -108,7 +117,7 @@ module.exports = {
                 date === undefined ||
                 state === undefined
             ) {
-                res.status(400).send({
+                return res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
                 });
@@ -122,36 +131,44 @@ module.exports = {
             } else if (state !== "전체") {
                 switch (registration) {
                     case "시작일":
+                        console.log("시작일", state);
                         start(word, date, state, limit, offset, result, res);
                         break;
 
                     case "종료일":
+                        console.log("종료일", state);
                         end(word, date, state, limit, offset, result, res);
                         break;
 
                     case "등록일":
+                        console.log("등록일", state);
                         created(word, date, state, limit, offset, result, res);
                         break;
 
                     default:
+                        console.log("디폴트", state);
                         created(word, date, state, limit, offset, result, res);
                         break;
                 }
             } else {
                 switch (registration) {
                     case "시작일":
+                        console.log("registration시작일", registration);
                         startAll(word, date, limit, offset, result, res);
                         break;
 
                     case "종료일":
+                        console.log("registration종료일", registration);
                         endAll(word, date, limit, offset, result, res);
                         break;
 
                     case "등록일":
+                        console.log("registration등록일", registration);
                         createdAll(word, date, limit, offset, result, res);
                         break;
 
                     default:
+                        console.log("registration디폴트", registration);
                         createdAll(word, date, limit, offset, result, res);
                         break;
                 }
@@ -169,14 +186,22 @@ module.exports = {
             writer: findEvent.writer,
             content: findEvent.content,
             title: findEvent.title,
-            isShow: findEvent.isShow,
+            hide: findEvent.isShow,
             state: findEvent.state,
             startDate: findEvent.startDate,
             endDate: findEvent.endDate,
         });
-        res.status(200).send({
+        return res.status(200).send({
             data: null,
-            message: "성공적으로 삭제 하였습니다.",
+            message: "복사 하였습니다.",
+        });
+    },
+    event: async (req, res) => {
+        const { id } = req.query;
+        const findEvent = await event.findOne({ where: { id: id } });
+        return res.status(200).send({
+            data: findEvent,
+            message: "완료",
         });
     },
 };

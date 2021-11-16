@@ -35,7 +35,7 @@ module.exports = {
                     let result = await axios.get(
                         `${process.env.TEST_API}/app/gpointcoupon?userId=${User.id}`
                     );
-                    console.log(result.data.message);
+
                     //쿠폰 사용가능 목록 배열처리
                     let couponlist = result.data.data.coupon;
                     couponlist.forEach((el) => {
@@ -77,7 +77,7 @@ module.exports = {
         }
         //결제 금액, 사용할 포인트, 사용할 쿠폰, 사용될 가게, 금액
         const { useGpoint, couponData, storeId, price } = req.body;
-        console.log(req.body);
+
         let findStore = await store.findOne({ where: { id: storeId } });
         if (!findStore) {
             return res
@@ -122,7 +122,7 @@ module.exports = {
                         return result; //최대 할인 금액 보다 높음
                     }
                 }
-                if (!data.provider_list) {
+                if (data.provider_list.length >= 1) {
                     if (!data.provider_list.includes(storeId)) {
                         result.price = false;
                         result.message = "사용할수있는 가게가 아님";
@@ -186,7 +186,7 @@ module.exports = {
         data.append("orderNo", newTransaction.id);
         data.append("payMoney", price);
         data.append("storeId", storeId);
-        console.log(data);
+
         let config = {
             method: "post",
             url: `${process.env.TEST_API}/app/buy`,
@@ -198,18 +198,17 @@ module.exports = {
         try {
             let result = await axios(config);
             let resultData = result.data.data;
+
             if (resultData.result === "success") {
                 User.gMoney = User.gMoney - resultPrice;
                 User.save();
                 newTransaction.state = "결제완료";
                 newTransaction.save();
                 pushEvent.data("/user/info", User.fcmToken);
-                return res
-                    .status(200)
-                    .send({
-                        data: User.gMoney,
-                        message: "결제가 성공하였습니다",
-                    });
+                return res.status(200).send({
+                    data: User.gMoney,
+                    message: "결제가 성공하였습니다",
+                });
             }
         } catch (error) {
             console.log(error);

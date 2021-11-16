@@ -30,6 +30,7 @@ module.exports = {
                 if (!word) {
                     result = await storeNotice.findAndCountAll({
                         where: {
+                            isShow: true,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
                             },
@@ -47,6 +48,7 @@ module.exports = {
                 if (word) {
                     result = await storeNotice.findAndCountAll({
                         where: {
+                            isShow: true,
                             [Op.or]: [
                                 {
                                     title: {
@@ -78,6 +80,7 @@ module.exports = {
             if (!date && word) {
                 result = await storeNotice.findAndCountAll({
                     where: {
+                        isShow: true,
                         [Op.or]: [
                             {
                                 title: {
@@ -101,6 +104,7 @@ module.exports = {
             }
             if (!word && !date) {
                 result = await storeNotice.findAndCountAll({
+                    where: { isShow: true },
                     limit: Number(limit),
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
@@ -111,7 +115,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return res.send("이게안되나");
+            return res.status(500).send({ data: error, message: "오류" });
         }
     },
     delete: async (req, res) => {},

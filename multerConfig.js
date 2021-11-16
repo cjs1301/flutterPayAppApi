@@ -3,7 +3,6 @@ const path = require("path");
 const imageStorage = multer.diskStorage({
     // Destination to store image
     destination: function (req, file, cb) {
-        console.log(req.url, "aldskfja;lskdjfa;lksdjf;lakdsjf;laksdjf");
         if (req.url === "/admin/event") {
             return cb(null, "eventImg");
         } else {

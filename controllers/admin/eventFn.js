@@ -16,6 +16,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -34,6 +35,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -66,6 +68,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     state: {
                         [Op.or]: stateArr, //["시작전,진행중,종료"]
                     },
@@ -89,9 +92,9 @@ module.exports = {
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
-            console.log("여기", date);
             result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     state: state,
                 },
                 limit: Number(limit),
@@ -112,6 +115,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -130,6 +134,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -162,6 +167,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     state: state,
                     [Op.or]: [
                         {
@@ -183,9 +189,9 @@ module.exports = {
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
-            console.log("여기", date);
             result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     state: state,
                 },
                 order: [["createdAt", "DESC"]],
@@ -206,6 +212,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -224,6 +231,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -254,8 +262,9 @@ module.exports = {
         }
 
         if (!date && word) {
-            result = await transaction.findAndCountAll({
+            result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     state: state,
                     [Op.or]: [
                         {
@@ -277,9 +286,9 @@ module.exports = {
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
-            console.log("여기", date);
-            result = await transaction.findAndCountAll({
+            result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     state: state,
                 },
                 order: [["createdAt", "DESC"]],
@@ -301,6 +310,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -318,6 +328,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -349,6 +360,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     [Op.or]: [
                         {
                             title: {
@@ -369,8 +381,8 @@ module.exports = {
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
-            console.log("여기", date);
             result = await event.findAndCountAll({
+                where: { isShow: true },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
@@ -389,6 +401,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -406,6 +419,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -437,6 +451,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     [Op.or]: [
                         {
                             title: {
@@ -457,8 +472,8 @@ module.exports = {
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
-            console.log("여기", date);
             result = await event.findAndCountAll({
+                where: { isShow: true },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
@@ -477,6 +492,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -494,6 +510,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -523,8 +540,9 @@ module.exports = {
         }
 
         if (!date && word) {
-            result = await transaction.findAndCountAll({
+            result = await event.findAndCountAll({
                 where: {
+                    isShow: true,
                     [Op.or]: [
                         {
                             title: {
@@ -545,8 +563,8 @@ module.exports = {
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
-            console.log("여기", date);
-            result = await transaction.findAndCountAll({
+            result = await event.findAndCountAll({
+                where: { isShow: true },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),

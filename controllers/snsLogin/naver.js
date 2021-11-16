@@ -59,7 +59,6 @@ module.exports = {
                                     : snsUser.cellphone,
                             gMoney: 0,
                             notiAlarm: true,
-                            activityArea: "",
                             rute: "naver",
                             couponCount:
                                 snsUser.coupon === null ? 0 : snsUser.coupon,

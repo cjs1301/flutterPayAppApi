@@ -51,7 +51,6 @@ router.post(
     gMoney.subscriptionUpload,
     (error, req, res, next) => {
         console.log(error);
-        console.log(req.file, "파일!!!");
         res.status(400).send({ message: error.message });
     }
 );
@@ -80,6 +79,7 @@ router.get("/admin/transaction", adminTransactionHandler.search);
 router.get("/admin/calculate", adminTransactionHandler.transaction);
 router.get("/admin/storelist", adminTransactionHandler.storelist);
 router.get("/admin/event", eventHandler.search);
+router.get("/admin/event/data", eventHandler.event);
 router.post("/admin/event/copy", eventHandler.copy);
 router.post(
     "/admin/event",
@@ -90,7 +90,6 @@ router.post(
     eventHandler.uploadAndEdit,
     (error, req, res, next) => {
         console.log(error);
-        console.log(req.files, "파일!!!");
         res.status(400).send({ message: error.message });
     }
 );
@@ -102,6 +101,8 @@ router.get("/admin/stroenotice", storeNoticeHandler.notice);
 router.post("/admin/stroenotice", storeNoticeHandler.uploadEdit);
 router.delete("/admin/stroenotice", storeNoticeHandler.delete);
 router.get("/admin/stroequestion", storeQuestionHandler.storeQuestion);
+router.post("/admin/stroequestion", storeQuestionHandler.answer);
+router.delete("/admin/stroequestion", storeQuestionHandler.delete);
 router.get("/admin/faq", faqHandler.faq);
 router.post("/admin/faq", faqHandler.uploadEdit);
 router.delete("/admin/faq", faqHandler.delete);
@@ -137,7 +138,7 @@ router.get("/refreshdata", refreshData.storeList);
 
 //sns
 //`https://kauth.kakao.com/oauth/authorize?client_id=${}&redirect_uri=${process.env.SERVER}/auth/kakao/callback&response_type=code&prompt=login`
-router.get("/auth/kakao/callback", kakao.callback);
+router.post("/auth/kakao/callback", kakao.callback);
 //`https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${}&redirect_uri=${process.env.SERVER}/auth/naver/callback&state=1234`
 router.get("/auth/naver/callback", naver.callback);
 

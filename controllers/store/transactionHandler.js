@@ -2,12 +2,14 @@ const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const store = require("../../models/index.js").store;
 const transaction = require("../../models/index.js").transaction;
+const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
 const axios = require("axios");
 const FormData = require("form-data");
 const token = require("../token/accessToken");
 const pushEvent = require("../push");
 require("dotenv").config();
+const ExcelJS = require("exceljs");
 
 module.exports = {
     search: async (req, res) => {
@@ -67,7 +69,7 @@ module.exports = {
                                 attributes: ["userName"],
                             },
                         ],
-                        order: [["updatedAt", "DESC"]],
+                        order: [["createdAt", "DESC"]],
                         limit: Number(limit),
                         offset: Number(offset),
                     });
@@ -88,12 +90,12 @@ module.exports = {
                                 [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                             },
                         },
-                        order: [["updatedAt", "DESC"]],
+                        order: [["createdAt", "DESC"]],
                         include: [
                             {
                                 model: user,
                                 where: {
-                                    userName: name,
+                                    userName: { [Op.like]: "%" + name + "%" },
                                 },
                                 attributes: ["userName"],
                             },
@@ -117,12 +119,12 @@ module.exports = {
                             [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                         },
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     include: [
                         {
                             model: user,
                             where: {
-                                userName: name,
+                                userName: { [Op.like]: "%" + name + "%" },
                             },
                             attributes: ["userName"],
                         },
@@ -135,7 +137,6 @@ module.exports = {
                     .send({ data: result, message: "검색 완료" });
             }
             if (!name && !date) {
-                console.log("여기", date);
                 result = await transaction.findAndCountAll({
                     where: {
                         storeId: storeId,
@@ -143,7 +144,7 @@ module.exports = {
                             [Op.or]: stateArr, //["결제완료","결제실패","결제취소"]
                         },
                     },
-                    order: [["updatedAt", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     include: [
                         {
                             model: user,
@@ -159,6 +160,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
+            return res.status(500).send({ data: error, message: "오류" });
         }
     },
     transaction: async (req, res) => {
@@ -289,20 +291,24 @@ module.exports = {
                         if (result.data.message === "취소 완료") {
                             find.state = "결제취소";
                             find.cancelDate = new Date();
-                            console.log(find);
                             find.user.gMoney = find.user.gMoney + find.gMoney;
-                            find.user.save();
-                            find.save();
+                            await find.user.save();
+                            await find.save();
                             let contents = {
                                 title: "결제취소 안내",
                                 body:
                                     find.store.name +
                                     "에서 결제하신 \n" +
-                                    find.price +
+                                    find.gMoney +
                                     "광이 취소 되었습니다.\n" +
                                     "결제시 이용하신 포인트나 쿠폰정보는 \n" +
                                     "내 정보 보기를 이용해주세요",
                             };
+                            await alarm.create({
+                                userId: find.userId,
+                                title: contents.title,
+                                content: contents.body,
+                            });
                             pushEvent.data("/user/info", find.user.fcmToken);
                             pushEvent.noti(contents, find.user.fcmToken);
                             return res.status(200).send({
@@ -334,6 +340,27 @@ module.exports = {
             return res.status(400).send({
                 data: null,
                 message: "취소중 에러가 발생하였습니다.",
+            });
+        }
+    },
+    excel: async (req, res) => {
+        try {
+            const authorization = req.headers.authorization;
+            let storeId = await token.storeCheck(authorization);
+            if (!storeId) {
+                //실패
+                return res
+                    .status(403)
+                    .send({ data: null, message: "만료된 토큰입니다" });
+            } else {
+                //성공
+                const workbook = new ExcelJS.Workbook();
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(400).send({
+                data: null,
+                message: "에러가 발생하였습니다.",
             });
         }
     },

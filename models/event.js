@@ -19,7 +19,14 @@ module.exports = (sequelize, DataTypes) => {
             writer: DataTypes.STRING,
             content: DataTypes.TEXT,
             title: DataTypes.STRING,
-            isShow: DataTypes.BOOLEAN,
+            isShow: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
+            },
+            hide: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
             state: {
                 type: DataTypes.STRING,
                 comment: "시작전,진행중,종료",

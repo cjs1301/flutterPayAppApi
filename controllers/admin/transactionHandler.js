@@ -127,6 +127,7 @@ module.exports = {
                 count: 1,
                 rows: [],
             };
+
             if (storeId) {
                 let priceData = await transaction.sum("price", {
                     where: {
@@ -169,7 +170,7 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                     attributes: ["id", "name"],
-                    order: [["updatedAt", "DESC"]],
+                    order: [["name", "ASC"]],
                 });
                 for (let el of storeData.rows) {
                     let priceData = await transaction.sum("price", {
@@ -217,6 +218,7 @@ module.exports = {
 
             let result = await store.findAll({
                 attributes: ["id", "name"],
+                order: [["name", "ASC"]],
             });
 
             return res.status(200).send({ data: result, message: "가게목록" });

@@ -42,9 +42,9 @@ module.exports = {
     myQuestions: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
-            console.log(authorization);
+
             let userId = await token.check(authorization);
-            console.log(userId);
+
             if (!userId) {
                 //실패
                 return res
@@ -54,7 +54,10 @@ module.exports = {
                 //성공
                 try {
                     const myQuestion = await question.findAll({
-                        where: { userId: userId },
+                        where: {
+                            isShow: true,
+                            userId: userId,
+                        },
                         include: answer,
                         order: [["updatedAt", "DESC"]],
                     });

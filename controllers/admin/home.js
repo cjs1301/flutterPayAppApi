@@ -15,7 +15,6 @@ module.exports = {
     homeInfo: async (req, res) => {
         //운영자 계정 확인
         const authorization = req.headers.authorization;
-        console.log(authorization);
         let adminId = 1;
         //정보 리스트
         let result = {
@@ -76,6 +75,7 @@ module.exports = {
         const qasyncA = async () => {
             userQ = await question.count({
                 where: {
+                    isShow: true,
                     isAnswer: false,
                     createdAt: {
                         [Op.between]: [startDay, endDay],
@@ -87,6 +87,7 @@ module.exports = {
         const qasyncB = async () => {
             storeQ = await storeQuestion.count({
                 where: {
+                    isShow: true,
                     isAnswer: false,
                     createdAt: {
                         [Op.between]: [startDay, endDay],
@@ -108,6 +109,7 @@ module.exports = {
             order: [["createdAt", "DESC"]],
         });
         result.recentEvent = await event.findAll({
+            where: { isShow: true, hide: false },
             order: [["createdAt", "DESC"]],
             limit: 4,
         });

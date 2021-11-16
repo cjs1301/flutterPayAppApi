@@ -109,6 +109,7 @@ module.exports = {
                 if (!word) {
                     result = await storeQuestion.findAndCountAll({
                         where: {
+                            isShow: true,
                             storeId: storeId,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
@@ -139,6 +140,7 @@ module.exports = {
                 if (word) {
                     result = await storeQuestion.findAndCountAll({
                         where: {
+                            isShow: true,
                             storeId: storeId,
                             [Op.or]: [
                                 {
@@ -183,6 +185,7 @@ module.exports = {
             if (!date && word) {
                 result = await storeQuestion.findAndCountAll({
                     where: {
+                        isShow: true,
                         storeId: storeId,
                         [Op.or]: [
                             {
@@ -218,9 +221,9 @@ module.exports = {
                     .send({ data: result, message: "검색 완료" });
             }
             if (!word && !date) {
-                console.log("여기", date);
                 result = await storeQuestion.findAndCountAll({
                     where: {
+                        isShow: true,
                         storeId: storeId,
                         state: {
                             [Op.or]: stateArr, //["정산문의","결제문의","기타"]
@@ -245,6 +248,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
+            return res.status(500).send({ data: error, message: "오류" });
         }
     },
     delete: async (req, res) => {

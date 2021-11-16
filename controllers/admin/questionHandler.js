@@ -8,9 +8,9 @@ const pushEvent = require("../../controllers/push");
 
 module.exports = {
     delete: async (req, res) => {
-        const { questionId } = req.body;
+        const { id } = req.body;
         const deletQuestion = await question.findOne({
-            where: { id: questionId },
+            where: { id: id },
         });
         if (!deletQuestion) {
             return res.status(400).send({
@@ -84,7 +84,6 @@ module.exports = {
             //관리자 확인
 
             const { word, date, state, limit, pageNum } = req.query;
-            console.log(state);
             let offset = 0;
 
             if (pageNum > 1) {
@@ -104,7 +103,6 @@ module.exports = {
             }
             let stateArr = state.split(",");
             stateArr = stateArr.map((el) => {
-                console.log(el);
                 if (el === "답변대기") {
                     return false;
                 }
@@ -112,7 +110,6 @@ module.exports = {
                     return true;
                 }
             });
-            console.log(stateArr);
             let result;
             if (!state) {
                 return res
@@ -130,6 +127,7 @@ module.exports = {
                 if (!word) {
                     result = await question.findAndCountAll({
                         where: {
+                            isShow: true,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
                             },
@@ -160,6 +158,7 @@ module.exports = {
                 if (word) {
                     result = await question.findAndCountAll({
                         where: {
+                            isShow: true,
                             [Op.or]: [
                                 {
                                     title: {
@@ -203,6 +202,7 @@ module.exports = {
             if (!date && word) {
                 result = await question.findAndCountAll({
                     where: {
+                        isShow: true,
                         [Op.or]: [
                             {
                                 title: {
@@ -237,9 +237,9 @@ module.exports = {
                     .send({ data: result, message: "검색 완료" });
             }
             if (!word && !date) {
-                console.log("여기", date);
                 result = await question.findAndCountAll({
                     where: {
+                        isShow: true,
                         isAnswer: {
                             [Op.or]: stateArr,
                         },

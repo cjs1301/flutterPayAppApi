@@ -16,7 +16,7 @@ module.exports = {
                 offset = limit * (pageNum - 1);
             }
             if (word === undefined || date === undefined) {
-                res.status(400).send({
+                return res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
                 });
@@ -34,6 +34,7 @@ module.exports = {
                 if (!word) {
                     result = await notice.findAndCountAll({
                         where: {
+                            isShow: true,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
                             },
@@ -51,6 +52,7 @@ module.exports = {
                 if (word) {
                     result = await notice.findAndCountAll({
                         where: {
+                            isShow: true,
                             [Op.or]: [
                                 {
                                     title: {
@@ -82,6 +84,7 @@ module.exports = {
             if (!date && word) {
                 result = await notice.findAndCountAll({
                     where: {
+                        isShow: true,
                         [Op.or]: [
                             {
                                 title: {
@@ -105,6 +108,7 @@ module.exports = {
             }
             if (!word && !date) {
                 result = await notice.findAndCountAll({
+                    where: { isShow: true },
                     limit: Number(limit),
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
@@ -115,19 +119,15 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
-            return res.send("이게안되나");
+            return res.status(500).send({ data: error, message: "오류" });
         }
     },
     uploadEdit: async (req, res) => {
         try {
             const { title, content, isShow, id } = req.body;
 
-            if (
-                title === undefined ||
-                content === undefined ||
-                isShow === undefined
-            ) {
-                res.status(400).send({
+            if (!title || !content || isShow === undefined) {
+                return res.status(400).send({
                     data: null,
                     message: "항목이 빠져 있습니다",
                 });
@@ -138,21 +138,25 @@ module.exports = {
                     where: { id: id },
                 });
                 if (findNotice) {
-                    findNotice.scontenttate = content;
+                    findNotice.content = content;
                     findNotice.title = title;
-                    findNotice.isShow = isShow;
-                    findEvent.save();
+                    findNotice.hide = isShow;
+                    await findNotice.save();
+                    return res.status(200).send({
+                        data: null,
+                        message: "수정 완료",
+                    });
                 }
                 return res.status(400).send({
                     data: null,
-                    message: "해당글은 없는 글입니다.",
+                    message: "해당글을 찾을수 없습니다.",
                 });
             }
 
             await notice.create({
                 content: content,
                 title: title,
-                isShow: isShow,
+                hide: isShow,
             });
 
             return res.status(200).send({
@@ -161,7 +165,7 @@ module.exports = {
             });
         } catch (error) {
             console.log(error);
-            return res.send("이게안되나");
+            return res.status(500).send({ data: error, message: "오류" });
         }
     },
     delete: async (req, res) => {

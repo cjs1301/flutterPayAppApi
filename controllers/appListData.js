@@ -10,17 +10,23 @@ require("dotenv").config();
 
 module.exports = {
     event: async (req, res) => {
-        let eventList = await event.findAll();
+        let eventList = await event.findAll({
+            where: { isShow: true, hide: false },
+        });
         res.send({ data: eventList, message: "성공" });
     },
 
     faq: async (req, res) => {
-        let faqList = await faq.findAll();
+        let faqList = await faq.findAll({
+            where: { isShow: true },
+        });
         res.send({ data: faqList, message: "성공" });
     },
 
     notice: async (req, res) => {
-        let noticeList = await notice.findAll();
+        let noticeList = await notice.findAll({
+            where: { isShow: true },
+        });
         res.send({ data: noticeList, message: "성공" });
     },
 

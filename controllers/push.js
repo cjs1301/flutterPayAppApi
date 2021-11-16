@@ -10,14 +10,12 @@ admin.initializeApp({
 module.exports = {
     data: async (updateType, fcmToken) => {
         try {
-            console.log(updateType, fcmToken, "체크!!!!");
             var payload = {
                 data: {
                     updateUrl: updateType,
                 },
                 token: fcmToken,
             };
-            console.log("푸쉬 알림 작동");
             return await admin.messaging().send(payload);
         } catch (error) {
             console.log(error);
@@ -37,7 +35,6 @@ module.exports = {
                 },
                 token: fcmToken,
             };
-            console.log("푸쉬 알림 작동");
             return await admin.messaging().send(payload);
             //}
         } catch (error) {
@@ -63,7 +60,28 @@ module.exports = {
                 },
                 tokens: registrationTokens,
             };
-            console.log("푸쉬 알림 작동");
+            return await admin.messaging().sendMulticast(message);
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    dataAll: async () => {
+        const registrationTokens = [];
+        let checkNoti = await user.findAll({
+            attributes: ["fcmToken"],
+        });
+        checkNoti.forEach((element) => {
+            if (element.fcmToken !== null) {
+                registrationTokens.push(element.fcmToken);
+            }
+        });
+        try {
+            var message = {
+                data: {
+                    updateUrl: "/user/info",
+                },
+                tokens: registrationTokens,
+            };
             return await admin.messaging().sendMulticast(message);
         } catch (error) {
             console.log(error);

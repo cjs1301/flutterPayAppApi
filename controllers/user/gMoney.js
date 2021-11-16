@@ -4,6 +4,7 @@ const charge = require("../../models/index.js").charge;
 const subscription = require("../../models/index.js").subscription;
 const transaction = require("../../models/index.js").transaction;
 const alarm = require("../../models/index.js").alarm;
+const { Op } = require("sequelize");
 const axios = require("axios");
 const token = require("../token/accessToken");
 const pushEvent = require("../push");
@@ -81,11 +82,20 @@ module.exports = {
     sendUserSearch: async (req, res) => {
         try {
             const { word } = req.query;
-            console.log(typeof word);
-            const list = await user.sequelize.query(
-                `SELECT id, userName, idValue FROM users WHERE userName LIKE '${word}%'`,
-                { type: QueryTypes.SELECT }
-            );
+
+            const authorization = req.headers.authorization;
+            let userId = await token.check(authorization);
+            const list = await user.findAll({
+                where: {
+                    userName: { [Op.like]: "%" + word + "%" },
+                    id: { [Op.not]: userId },
+                },
+                attributes: ["userName", "id", "idValue"],
+            });
+            // const list = await user.sequelize.query(
+            //     `SELECT id, userName, idValue FROM users WHERE userName LIKE '${word}%' AND NOT id = '${userId}'`,
+            //     { type: QueryTypes.SELECT }
+            // );
             res.send({ data: list, message: "검색성공" });
         } catch (error) {
             console.log(error);
@@ -105,7 +115,7 @@ module.exports = {
         }
         //금액
         const { chargegMoney, name } = req.body;
-        console.log(typeof chargegMoney, chargegMoney, typeof name, name);
+
         if (!chargegMoney || !name) {
             return res.status(400).send({
                 data: null,
@@ -254,8 +264,7 @@ module.exports = {
     subscriptionDownload: async (req, res) => {
         //약정충전 신청서 다운로드
         var path = require("path");
-        console.log(req.params);
-        console.log(__dirname);
+
         var file = path.join(__dirname, "../../" + req.params.name);
         res.download(file, function (err) {
             if (err) {
@@ -305,14 +314,15 @@ module.exports = {
                 .send({ data: null, message: "회원정보를 확인할수 없습니다" });
         }
 
-        let find = await subscription.findOne({
+        let find = await subscription.findAll({
             where: {
                 userId: userId,
             },
+            order: [["createdAt", "DESC"]],
         });
-        if (find) {
+        if (find[0]) {
             return res.status(200).send({
-                data: find,
+                data: find[0],
                 message: "완료",
             });
         }
@@ -339,6 +349,7 @@ module.exports = {
         });
         if (find) {
             find.state = "해지신청";
+            find.cancelDate = new Date();
             find.save();
             return res.status(200).send({
                 data: null,

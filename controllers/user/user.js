@@ -3,7 +3,7 @@ const user = require("../../models/index.js").user;
 const transaction = require("../../models/index.js").transaction;
 const store = require("../../models/index.js").store;
 const alarm = require("../../models/index.js").alarm;
-//const question = require("../../models/index.js").question;
+const subscription = require("../../models/index.js").subscription;
 const { Op } = require("sequelize");
 const axios = require("axios");
 const crypto = require("crypto");
@@ -11,7 +11,7 @@ const FormData = require("form-data");
 const token = require("../token/accessToken");
 
 const arrByDate = (array) => {
-    console.log(array);
+    //console.log(array);
     let day;
     if (array.length === 0) {
         return [];
@@ -68,11 +68,7 @@ module.exports = {
                     });
                 }
                 let nowDate = new Date();
-                console.log(
-                    nowDate.getFullYear(),
-                    nowDate.getMonth(),
-                    nowDate.getHours()
-                );
+
                 let userGpoint = await axios.get(
                     `${
                         process.env.TEST_API
@@ -136,7 +132,7 @@ module.exports = {
                 .send({ data: null, message: "만료된 토큰입니다" });
         }
         const { resulttype, month, year } = req.query;
-        console.log(year);
+
         let from = Number(month) - 1;
         let to = Number(month);
         const startOfMonth = new Date(year, from, 1);
@@ -144,8 +140,6 @@ module.exports = {
         endOfMonth.setDate(endOfMonth.getDate() + 1);
 
         let transactionData;
-
-        console.log(resulttype, startOfMonth, endOfMonth);
 
         switch (resulttype) {
             case "전체":
@@ -176,7 +170,7 @@ module.exports = {
                             attributes: ["userName"],
                         },
                     ],
-                    order: [["createdAt", "DESC"]],
+                    order: [["updatedAt", "DESC"]],
                 });
 
                 return res.status(200).send({
@@ -215,7 +209,7 @@ module.exports = {
                             [Op.between]: [startOfMonth, endOfMonth],
                         },
                         state: {
-                            [Op.or]: ["결제완료"],
+                            [Op.or]: ["결제완료", "결제취소"],
                         },
                     },
                     include: [
@@ -228,7 +222,7 @@ module.exports = {
                             attributes: ["userName"],
                         },
                     ],
-                    order: [["createdAt", "DESC"]],
+                    order: [["updatedAt", "DESC"]],
                 });
                 return res.status(200).send({
                     data: arrByDate(transactionData),
@@ -262,7 +256,6 @@ module.exports = {
         let userId = await token.check(authorization);
         const User = await user.findOne({ where: { id: userId } });
         if (User) {
-            console.log(User.notiAlarm);
             if (User.notiAlarm) {
                 User.notiAlarm = false;
                 User.save();
@@ -279,7 +272,10 @@ module.exports = {
         let userId = await token.check(authorization);
 
         let list = await alarm.findAll({
-            where: { userId: userId },
+            where: {
+                isShow: true,
+                userId: userId,
+            },
         });
         return res.send({ data: list, message: "알림 목록" });
     },
@@ -287,7 +283,7 @@ module.exports = {
         const authorization = req.headers.authorization;
         let userId = await token.check(authorization);
         let { id } = req.query;
-        let read = await alarm.findAll({
+        let read = await alarm.findOne({
             where: {
                 id: id,
                 userId: userId,
@@ -320,7 +316,7 @@ module.exports = {
                 .status(400)
                 .send({ data: null, message: "기기토큰값이 누락되었습니다" });
         }
-        console.log(typeof fcmToken, fcmToken, "fcmToken");
+
         if (
             typeof id !== "string" ||
             typeof password !== "string" ||
@@ -341,7 +337,7 @@ module.exports = {
             let data = new FormData();
             data.append("id", id);
             data.append("password", hashedPassword);
-            console.log(id, hashedPassword);
+
             let config = {
                 method: "post",
                 url: `${process.env.TEST_API}/app/login`,
@@ -353,14 +349,12 @@ module.exports = {
             apiResult = await axios(config);
         } catch (error) {
             console.log(error);
-            console.log(error.response);
             return res
                 .status(403)
                 .send({ data: null, message: error.response.data.message });
         }
         //페이 데이터베이스에 저장
         const userInfo = apiResult.data.data;
-        console.log(userInfo);
         try {
             const [User, created] = await user.findOrCreate({
                 where: { id: userInfo.user_id },

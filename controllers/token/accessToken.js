@@ -3,14 +3,9 @@ const user = require("../../models/index").user;
 require("dotenv").config();
 module.exports = {
     make: (userId) => {
-        console.log("userId", userId, typeof userId);
-        const accessToken = jwt.sign(
-            { id: userId },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "30d",
-            }
-        );
+        const accessToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+            expiresIn: "30d",
+        });
         return accessToken;
     },
     check: async (authorization) => {
@@ -26,7 +21,6 @@ module.exports = {
         if (!accessTokenData) {
             return false;
         } else {
-            console.log(accessTokenData);
             let userInfo = await user.findOne({
                 where: { id: accessTokenData.id },
             });
@@ -45,15 +39,14 @@ module.exports = {
         try {
             accessTokenData = jwt.verify(token, process.env.JWT_SECRET);
         } catch (e) {
-            console.log(e)
+            console.log(e);
             accessTokenData = null;
         }
 
         if (!accessTokenData) {
             return false;
         } else {
-            console.log(accessTokenData,"token fn");
-            return accessTokenData.store_id
+            return accessTokenData.store_id;
         }
     },
 };

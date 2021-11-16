@@ -21,16 +21,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/eventImg", static(path.join(__dirname, "eventImg")));
-//app.use("/files", static(path.join(__dirname, "files")));
+app.use("/iconbox", static(path.join(__dirname, "iconbox")));
 
 app.use(cookieParser());
 app.use(cors());
 
 sequelize
     .sync(/* { force: true } */)
-    .then(() => {
-        console.log("데이터베이스 연결 성공");
-    })
     .then(() => {
         defultData();
         testData();
@@ -88,9 +85,6 @@ server.listen(port, "0.0.0.0", () => {
 });
 server.on("error", onError);
 server.on("listening", onListening);
-server.on("connection", function (socket) {
-    console.log("클라이언트가 접속");
-});
 
 //---------------------------------------------------------------------------------------------------------------
 /**
