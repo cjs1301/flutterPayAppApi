@@ -30,7 +30,6 @@ sequelize
     .sync(/* { force: true } */)
     .then(() => {
         defultData();
-        testData();
     })
     .catch((err) => {
         console.log(err);
