@@ -13,7 +13,6 @@ require("dotenv").config();
 
 const { sequelize } = require("./models");
 const defultData = require("./defultData");
-const testData = require("./testData");
 const router = require("./router/index");
 
 app.use(logger("dev"));
