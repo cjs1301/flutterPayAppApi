@@ -136,9 +136,7 @@ router.get("/store");
 //         "intent://re:https://m.maeulstory.net#Intent;scheme=maeulstory;end"
 //     )
 // );kakaoebc76af1aa2ccce7c4576a7fb2f48c5b://
-router.get("/moveapp", (req, res) =>
-    res.redirect("kakaoebc76af1aa2ccce7c4576a7fb2f48c5b://")
-);
+router.get("/moveapp", (req, res) => res.redirect("maeulstorypay://"));
 router.get("/refreshdata", refreshData.storeList);
 
 //sns
@@ -148,27 +146,27 @@ router.post("/auth/kakao/callback", kakao.callback);
 router.get("/auth/naver/callback/andriod", naver.callback); //andriod
 router.get("/auth/naver/callback/ios", naver.callback); //ios
 
-router.get("/m", async function (req, res) {
-    try {
-        const { name } = req.query;
-        const user = require("../models/index.js").user;
-        const pushEvent = require("../controllers/push");
-        let give = await user.findOne({
-            where: { userName: name },
-        });
-        give.gMoney = give.gMoney + 10000;
-        give.save();
-        let contents = {
-            title: "충전완료 알림",
-            body: "신청하신 " + 10000 + "화\n 충전이\\n 완료\n되었습니다",
-        };
-        pushEvent.data("/user/info", give.fcmToken);
-        pushEvent.noti(contents, give.fcmToken);
-        res.send("ok");
-    } catch (error) {
-        console.log(error);
-        res.send("no");
-    }
-});
+// router.get("/m", async function (req, res) {
+//     try {
+//         const { name } = req.query;
+//         const user = require("../models/index.js").user;
+//         const pushEvent = require("../controllers/push");
+//         let give = await user.findOne({
+//             where: { userName: name },
+//         });
+//         give.gMoney = give.gMoney + 10000;
+//         give.save();
+//         let contents = {
+//             title: "충전완료 알림",
+//             body: "신청하신 " + 10000 + "화\n 충전이\\n 완료\n되었습니다",
+//         };
+//         pushEvent.data("/user/info", give.fcmToken);
+//         pushEvent.noti(contents, give.fcmToken);
+//         res.send("ok");
+//     } catch (error) {
+//         console.log(error);
+//         res.send("no");
+//     }
+// });
 
 module.exports = router;
