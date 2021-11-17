@@ -1,7 +1,6 @@
 const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const charge = require("../../models/index.js").charge;
-let myRegPkey = "09abc7fc-964e-4445-b488-a4209a39b08f";
 const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
 const axios = require("axios");
@@ -12,7 +11,7 @@ const pushEvent = require("../../controllers/push");
 module.exports = {
     rtpay: async (req, res) => {
         const { regPkey, BnakName, ugrd, rtpayData } = req.body;
-        if (regPkey !== myRegPkey) {
+        if (regPkey !== process.env.RTPAY_KEY) {
             return res.json({ RCODE: 400, PCHK: "NO" }); //실패
         }
         let data = qs.stringify({

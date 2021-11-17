@@ -26,7 +26,7 @@ module.exports = {
                 limit === undefined ||
                 pageNum === undefined
             ) {
-                res.status(400).send({
+                return res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
                 });
@@ -80,6 +80,13 @@ module.exports = {
                         ],
                     });
                     if (result) {
+                        result.total = (await storeQuestion.count({
+                            where: { isShow: true },
+                        }))
+                            ? await storeQuestion.count({
+                                  where: { isShow: true },
+                              })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -123,6 +130,13 @@ module.exports = {
                         ],
                     });
                     if (result) {
+                        result.total = (await storeQuestion.count({
+                            where: { isShow: true },
+                        }))
+                            ? await storeQuestion.count({
+                                  where: { isShow: true },
+                              })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -164,6 +178,11 @@ module.exports = {
                         },
                     ],
                 });
+                result.total = (await storeQuestion.count({
+                    where: { isShow: true },
+                }))
+                    ? await storeQuestion.count({ where: { isShow: true } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
@@ -190,6 +209,11 @@ module.exports = {
                         },
                     ],
                 });
+                result.total = (await storeQuestion.count({
+                    where: { isShow: true },
+                }))
+                    ? await storeQuestion.count({ where: { isShow: true } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
@@ -239,30 +263,33 @@ module.exports = {
     answer: async (req, res) => {
         const { title, content, questionId } = req.body;
         console.log(req.body);
-        const saveAnswer = await storeQuestion.findOne({
-            where: { id: questionId },
-            include: [
-                {
-                    model: storeAnswer,
-                },
-            ],
-        });
-        if (!saveAnswer.storeAnswer) {
-            const newAnswer = await storeAnswer.create({
-                title: title,
-                content: content,
-                storeQuestionId: questionId,
+        try {
+            const saveAnswer = await storeQuestion.findOne({
+                where: { id: questionId },
             });
-
+            const [newAnswer, created] = await storeAnswer.findOrCreate({
+                where: { storeQuestionId: questionId },
+                defaults: {
+                    title: title,
+                    content: content,
+                    storeQuestionId: questionId,
+                },
+            });
             saveAnswer.isAnswer = true;
             saveAnswer.save();
+            if (!created) {
+                newAnswer.title = title;
+                newAnswer.content = content;
+                newAnswer.save();
+                return res
+                    .status(200)
+                    .send({ data: null, message: "수정 완료" });
+            }
 
             return res.status(200).send({ data: null, message: "등록 완료" });
-        } else {
-            saveAnswer.storeAnswer.title = title;
-            saveAnswer.storeAnswer.content = content;
-            await saveAnswer.storeAnswer.save();
-            return res.status(200).send({ data: null, message: "수정 완료" });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ data: null, message: "등록 실패" });
         }
     },
 };

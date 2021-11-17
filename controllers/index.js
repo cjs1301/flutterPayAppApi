@@ -11,6 +11,7 @@ const storeHome = require("./store/home");
 const noticeBoard = require("./store/noticeBoard");
 
 //admin
+const adminLogin = require("./admin/adminlogin");
 const adminHome = require("./admin/home");
 const chargeHandler = require("./admin/chargeHandler");
 const adminTransactionHandler = require("./admin/transactionHandler");
@@ -47,6 +48,7 @@ module.exports = {
     qnaHandler,
 
     adminHome, //admin
+    adminLogin,
     chargeHandler,
     adminTransactionHandler,
     eventHandler,

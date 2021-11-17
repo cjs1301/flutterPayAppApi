@@ -66,6 +66,31 @@ module.exports = {
                         order: [["updatedAt", "DESC"]],
                     });
                     if (result) {
+                        result.total = (await transaction.count({
+                            where: {
+                                storeId: storeId,
+                                state: {
+                                    [Op.or]: [
+                                        "결제완료",
+                                        "결제실패",
+                                        "결제취소",
+                                    ],
+                                },
+                            },
+                        }))
+                            ? await transaction.count({
+                                  where: {
+                                      storeId: storeId,
+                                      state: {
+                                          [Op.or]: [
+                                              "결제완료",
+                                              "결제실패",
+                                              "결제취소",
+                                          ],
+                                      },
+                                  },
+                              })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -98,6 +123,25 @@ module.exports = {
                     offset: Number(offset),
                 });
                 if (result) {
+                    result.total = (await transaction.count({
+                        where: {
+                            state: {
+                                [Op.or]: ["결제완료", "결제실패", "결제취소"],
+                            },
+                        },
+                    }))
+                        ? await transaction.count({
+                              where: {
+                                  state: {
+                                      [Op.or]: [
+                                          "결제완료",
+                                          "결제실패",
+                                          "결제취소",
+                                      ],
+                                  },
+                              },
+                          })
+                        : 0;
                     return res
                         .status(200)
                         .send({ data: result, message: "검색 완료" });

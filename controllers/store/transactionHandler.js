@@ -39,7 +39,8 @@ module.exports = {
                 });
             }
             let stateArr = state.split(",");
-            let result;
+            let result = {};
+
             if (!state) {
                 return res
                     .status(400)
@@ -74,6 +75,9 @@ module.exports = {
                         offset: Number(offset),
                     });
                     if (result) {
+                        result.total = (await transaction.count())
+                            ? await transaction.count()
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -104,6 +108,9 @@ module.exports = {
                         offset: Number(offset),
                     });
                     if (result) {
+                        result.total = (await transaction.count())
+                            ? await transaction.count()
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -132,6 +139,11 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
+                result.total = (await transaction.count({
+                    where: { storeId: storeId },
+                }))
+                    ? await transaction.count({ where: { storeId: storeId } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
@@ -154,6 +166,11 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
+                result.total = (await transaction.count({
+                    where: { storeId: storeId },
+                }))
+                    ? await transaction.count({ where: { storeId: storeId } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });

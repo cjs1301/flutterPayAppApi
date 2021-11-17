@@ -79,8 +79,11 @@ module.exports = {
                         );
                     }
                     let createToken = await token.make(User.id);
+                    // return res.redirect(
+                    //     `intent://pay?token=${createToken}&status="ok"#Intent;scheme=maeulstorypay;end`
+                    // );
                     return res.redirect(
-                        `intent://pay?token=${createToken}&status="ok"#Intent;scheme=maeulstorypay;end`
+                        `kakaoebc76af1aa2ccce7c4576a7fb2f48c5b://?token=${createToken}`
                     );
                 }
             } catch (error) {

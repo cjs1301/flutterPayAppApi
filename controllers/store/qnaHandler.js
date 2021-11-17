@@ -132,6 +132,13 @@ module.exports = {
                         ],
                     });
                     if (result) {
+                        result.total = (await storeQuestion.count({
+                            where: { isShow: true, storeId: storeId },
+                        }))
+                            ? await storeQuestion.count({
+                                  where: { isShow: true, storeId: storeId },
+                              })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -175,6 +182,13 @@ module.exports = {
                         ],
                     });
                     if (result) {
+                        result.total = (await storeQuestion.count({
+                            where: { isShow: true, storeId: storeId },
+                        }))
+                            ? await storeQuestion.count({
+                                  where: { isShow: true, storeId: storeId },
+                              })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -216,6 +230,13 @@ module.exports = {
                         },
                     ],
                 });
+                result.total = (await storeQuestion.count({
+                    where: { isShow: true, storeId: storeId },
+                }))
+                    ? await storeQuestion.count({
+                          where: { isShow: true, storeId: storeId },
+                      })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
@@ -242,6 +263,13 @@ module.exports = {
                         },
                     ],
                 });
+                result.total = (await storeQuestion.count({
+                    where: { isShow: true, storeId: storeId },
+                }))
+                    ? await storeQuestion.count({
+                          where: { isShow: true, storeId: storeId },
+                      })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });

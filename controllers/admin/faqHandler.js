@@ -43,6 +43,11 @@ module.exports = {
                         order: [["createdAt", "DESC"]],
                     });
                     if (result) {
+                        result.total = (await faq.count({
+                            where: { isShow: true },
+                        }))
+                            ? await faq.count({ where: { isShow: true } })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -73,6 +78,11 @@ module.exports = {
                         order: [["createdAt", "DESC"]],
                     });
                     if (result) {
+                        result.total = (await faq.count({
+                            where: { isShow: true },
+                        }))
+                            ? await faq.count({ where: { isShow: true } })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -101,6 +111,11 @@ module.exports = {
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
                 });
+                result.total = (await faq.count({
+                    where: { isShow: true },
+                }))
+                    ? await faq.count({ where: { isShow: true } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
@@ -112,6 +127,11 @@ module.exports = {
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
                 });
+                result.total = (await faq.count({
+                    where: { isShow: true },
+                }))
+                    ? await faq.count({ where: { isShow: true } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });

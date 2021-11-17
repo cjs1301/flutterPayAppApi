@@ -117,6 +117,6 @@ module.exports = {
         result.newQuestion.user = userQ;
         result.newQuestion.store = storeQ;
 
-        res.status(200).send({ data: result, message: "완료" });
+        return res.status(200).send({ data: result, message: "완료" });
     },
 };

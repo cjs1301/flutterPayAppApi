@@ -19,6 +19,7 @@ const {
     qnaHandler,
 
     adminHome, //admin
+    adminLogin,
     chargeHandler,
     adminTransactionHandler,
     eventHandler,
@@ -69,6 +70,7 @@ router.get("/user/point", gMoney.point); //월별 포인트 사용적립 내역
 
 //appAdmin
 router.get("/admin/home", adminHome.homeInfo);
+router.post("/admin/login", adminLogin.login);
 router.get("/admin/charge/search", chargeHandler.chargeSearch);
 router.put("/admin/charge/state", chargeHandler.stateChange);
 router.get("/admin/subscription/search", chargeHandler.subscriptionSearch);
@@ -129,10 +131,13 @@ router.get("/noticelist", appListData.notice);
 router.get("/eventlist", appListData.event);
 router.get("/storeinfo", appListData.store);
 router.get("/store");
+// router.get("/moveapp", (req, res) =>
+//     res.redirect(
+//         "intent://re:https://m.maeulstory.net#Intent;scheme=maeulstory;end"
+//     )
+// );kakaoebc76af1aa2ccce7c4576a7fb2f48c5b://
 router.get("/moveapp", (req, res) =>
-    res.redirect(
-        "intent://re:https://m.maeulstory.net#Intent;scheme=maeulstory;end"
-    )
+    res.redirect("kakaoebc76af1aa2ccce7c4576a7fb2f48c5b://")
 );
 router.get("/refreshdata", refreshData.storeList);
 
@@ -140,7 +145,8 @@ router.get("/refreshdata", refreshData.storeList);
 //`https://kauth.kakao.com/oauth/authorize?client_id=${}&redirect_uri=${process.env.SERVER}/auth/kakao/callback&response_type=code&prompt=login`
 router.post("/auth/kakao/callback", kakao.callback);
 //`https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${}&redirect_uri=${process.env.SERVER}/auth/naver/callback&state=1234`
-router.get("/auth/naver/callback", naver.callback);
+router.get("/auth/naver/callback/andriod", naver.callback); //andriod
+router.get("/auth/naver/callback/ios", naver.callback); //ios
 
 router.get("/m", async function (req, res) {
     try {

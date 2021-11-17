@@ -28,23 +28,29 @@ module.exports = {
     answer: async (req, res) => {
         const { title, content, questionId } = req.body;
 
-        const saveAnswer = await question.findOne({
-            where: { id: questionId },
-            include: [
-                {
-                    model: answer,
-                },
-            ],
-        });
-        if (!saveAnswer.answer) {
-            const newAnswer = await answer.create({
-                title: title,
-                content: content,
-                questionId: questionId,
+        try {
+            const saveAnswer = await question.findOne({
+                where: { id: questionId },
             });
-
+            const [newAnswer, created] = await answer.findOrCreate({
+                where: { questionId: questionId },
+                defaults: {
+                    title: title,
+                    content: content,
+                    questionId: questionId,
+                },
+            });
             saveAnswer.isAnswer = true;
             saveAnswer.save();
+            if (!created) {
+                newAnswer.title = title;
+                newAnswer.content = content;
+                newAnswer.save();
+                return res
+                    .status(200)
+                    .send({ data: null, message: "수정 완료" });
+            }
+
             const findUser = await user.findOne({
                 where: { id: saveAnswer.userId },
             });
@@ -58,12 +64,11 @@ module.exports = {
                 content: notiMessage.body,
             });
             pushEvent.noti(notiMessage, findUser.fcmToken);
+
             return res.status(200).send({ data: null, message: "등록 완료" });
-        } else {
-            saveAnswer.answer.title = title;
-            saveAnswer.answer.content = content;
-            await saveAnswer.answer.save();
-            return res.status(200).send({ data: null, message: "수정 완료" });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ data: null, message: "등록 실패" });
         }
     },
     questionEdit: async (req, res) => {
@@ -150,6 +155,11 @@ module.exports = {
                         ],
                     });
                     if (result) {
+                        result.total = (await question.count({
+                            where: { isShow: true },
+                        }))
+                            ? await question.count({ where: { isShow: true } })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -192,6 +202,11 @@ module.exports = {
                         ],
                     });
                     if (result) {
+                        result.total = (await question.count({
+                            where: { isShow: true },
+                        }))
+                            ? await question.count({ where: { isShow: true } })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -232,6 +247,11 @@ module.exports = {
                         },
                     ],
                 });
+                result.total = (await question.count({
+                    where: { isShow: true },
+                }))
+                    ? await question.count({ where: { isShow: true } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
@@ -257,6 +277,11 @@ module.exports = {
                         },
                     ],
                 });
+                result.total = (await question.count({
+                    where: { isShow: true },
+                }))
+                    ? await question.count({ where: { isShow: true } })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });

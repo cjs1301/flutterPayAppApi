@@ -40,6 +40,13 @@ module.exports = {
                         offset: Number(offset),
                     });
                     if (result) {
+                        result.total = (await storeNotice.count({
+                            where: { isShow: true },
+                        }))
+                            ? await storeNotice.count({
+                                  where: { isShow: true },
+                              })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -70,6 +77,13 @@ module.exports = {
                         offset: Number(offset),
                     });
                     if (result) {
+                        result.total = (await storeNotice.count({
+                            where: { isShow: true },
+                        }))
+                            ? await storeNotice.count({
+                                  where: { isShow: true },
+                              })
+                            : 0;
                         return res
                             .status(200)
                             .send({ data: result, message: "검색 완료" });
@@ -98,6 +112,13 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
+                result.total = (await storeNotice.count({
+                    where: { isShow: true },
+                }))
+                    ? await storeNotice.count({
+                          where: { isShow: true },
+                      })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
@@ -109,6 +130,13 @@ module.exports = {
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
                 });
+                result.total = (await storeNotice.count({
+                    where: { isShow: true },
+                }))
+                    ? await storeNotice.count({
+                          where: { isShow: true },
+                      })
+                    : 0;
                 return res
                     .status(200)
                     .send({ data: result, message: "검색 완료" });
