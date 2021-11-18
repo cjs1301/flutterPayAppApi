@@ -52,7 +52,7 @@ module.exports = {
                 findEvent.bannerImg = bannerImg[0].path;
                 findEvent.content = content;
                 findEvent.title = title;
-                findEvent.hide = isShow;
+                findEvent.hide = isShow ? false : true;
                 findEvent.startDate = new Date(startDate);
                 findEvent.endDate = new Date(endDate);
                 findEvent.state = state;
@@ -74,7 +74,7 @@ module.exports = {
                 bannerImg: bannerImg[0].path,
                 content: content,
                 title: title,
-                hide: isShow,
+                hide: isShow ? false : true,
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
                 state: state,
