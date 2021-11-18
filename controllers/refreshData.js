@@ -124,6 +124,7 @@ module.exports = {
     },
     storeState: async (res, req) => {
         const { store_id, state } = req.query;
+        console.log(req.query);
         try {
             let storeState = await store.findOne({
                 where: { id: store_id },
@@ -197,7 +198,7 @@ module.exports = {
 
             return res.send({ data: null, message: "성공" });
         } catch (error) {
-            return res.status(500).send({ data: null, message: "성공" });
+            return res.status(500).send({ data: null, message: "실패" });
         }
     },
 };
