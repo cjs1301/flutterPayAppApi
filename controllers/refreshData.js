@@ -1,4 +1,4 @@
-const { Request, Response, response } = require("express");
+const { Request, Response } = require("express");
 const event = require("../models/index.js").event;
 const faq = require("../models/index.js").faq;
 const notice = require("../models/index.js").notice;
