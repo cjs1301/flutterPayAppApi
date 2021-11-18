@@ -143,8 +143,8 @@ router.get("/refreshdata", refreshData.storeList);
 //`https://kauth.kakao.com/oauth/authorize?client_id=${}&redirect_uri=${process.env.SERVER}/auth/kakao/callback&response_type=code&prompt=login`
 router.post("/auth/kakao/callback", kakao.callback);
 //`https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${}&redirect_uri=${process.env.SERVER}/auth/naver/callback&state=1234`
-router.get("/auth/naver/callback/andriod", naver.callback); //andriod
-router.get("/auth/naver/callback/ios", naver.callback); //ios
+router.get("/auth/naver/callback/android", naver.callbackAndroid); //andriod
+router.get("/auth/naver/callback/ios", naver.callbackIos); //ios
 
 // router.get("/m", async function (req, res) {
 //     try {
