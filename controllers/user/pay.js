@@ -78,7 +78,9 @@ module.exports = {
         //결제 금액, 사용할 포인트, 사용할 쿠폰, 사용될 가게, 금액
         const { useGpoint, couponData, storeId, price } = req.body;
 
-        let findStore = await store.findOne({ where: { id: storeId } });
+        let findStore = await store.findOne({
+            where: { isShow: true, id: storeId },
+        });
         if (!findStore) {
             return res
                 .status(400)

@@ -79,6 +79,7 @@ router.get("/files/:name", chargeHandler.downLoad); //약정신청서 다운로�
 router.delete("/admin/subscription", chargeHandler.termination); //약정신청 해지
 router.get("/admin/transaction", adminTransactionHandler.search);
 router.get("/admin/calculate", adminTransactionHandler.transaction);
+router.get("/admin/calculate/download", adminTransactionHandler.download);
 router.get("/admin/storelist", adminTransactionHandler.storelist);
 router.get("/admin/event", eventHandler.search);
 router.get("/admin/event/data", eventHandler.event);
@@ -129,7 +130,6 @@ router.get("/storelist", appListData.storeList);
 router.get("/faqlist", appListData.faq);
 router.get("/noticelist", appListData.notice);
 router.get("/eventlist", appListData.event);
-router.get("/storeinfo", appListData.store);
 router.get("/store");
 // router.get("/moveapp", (req, res) =>
 //     res.redirect(
@@ -137,7 +137,9 @@ router.get("/store");
 //     )
 // );kakaoebc76af1aa2ccce7c4576a7fb2f48c5b://
 router.get("/moveapp", (req, res) => res.redirect("maeulstorypay://"));
-router.get("/refreshdata", refreshData.storeList);
+router.get("/update/store/list", refreshData.storeList);
+router.get("/update/store/state", refreshData.storeState);
+router.get("/update/store", refreshData.storeUpdate);
 
 //sns
 //`https://kauth.kakao.com/oauth/authorize?client_id=${}&redirect_uri=${process.env.SERVER}/auth/kakao/callback&response_type=code&prompt=login`

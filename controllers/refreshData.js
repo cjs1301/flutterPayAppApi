@@ -122,28 +122,82 @@ module.exports = {
         }
         return;
     },
-    finish: async (res, req) => {
-        let storeList = await store.findAll();
-        return res.send({ data: storeList, message: "성공" });
-    },
-    store: async (req, res) => {
-        const { storeid } = req.query;
-        let orginData = await axios.get(
-            `${process.env.PY_API}/app/store?storeid=${storeid}`
-        );
-        let findStore = await store.findOne({
-            where: {
-                storeCode: storeid,
-                [Op.or]: {
-                    ceo: null,
-                    introduction: null,
-                    logoImg: null,
-                },
-            },
-        });
-        if (findStore) {
-            findStore.ceo = orginData.data.ceo;
+    storeState: async (res, req) => {
+        const { store_id, state } = req.query;
+        try {
+            let storeState = await store.findOne({
+                where: { id: store_id },
+            });
+            storeState.isShow = state;
+            await storeState.save();
+            return res.send({ data: state, message: "성공" });
+        } catch (error) {
+            return res.status(500).send({ data: null, message: "실패" });
         }
-        res.send({ data: noticeList, message: "성공" });
+    },
+    storeUpdate: async (req, res) => {
+        const { store_id } = req.query;
+        try {
+            let origin = await axios.get(
+                `${process.env.PY_API}/app/store?storeid=${store_id}`
+            );
+            let originData = origin.data.data;
+
+            let [newStore, created] = await store.findOrCreate({
+                where: { id: store_id },
+                defaults: {
+                    id: store_id,
+                    name:
+                        originData.name === null
+                            ? ""
+                            : `${originData.name}`.trim(),
+                    introduction:
+                        originData.introduction === null
+                            ? ""
+                            : `${originData.introduction}`.trim(),
+                    ceo:
+                        originData.ceo === null
+                            ? ""
+                            : `${originData.ceo}`.trim(),
+                    address:
+                        originData.address === null
+                            ? ""
+                            : `${originData.address}`.trim(),
+                    phone:
+                        originData.phone === null
+                            ? ""
+                            : `${originData.phone}`.trim(),
+                    logoImg:
+                        originData.logoImg === null
+                            ? ""
+                            : `${originData.logoImg}`.trim(),
+                    img: `${originData.img}`.trim(),
+                },
+            });
+            if (created && originData.address !== "") {
+                let result = await axios.get(
+                    `https://dapi.kakao.com/v2/local/search/address.json?page=1&size=10&query=${encodeURI(
+                        originData.address
+                    )}`,
+                    {
+                        headers: {
+                            Authorization:
+                                "KakaoAK 39079f0bc75652e1041282420d8f0bf1",
+                        },
+                    }
+                );
+                newStore.x = result.data.documents[0].address.x;
+                newStore.y = result.data.documents[0].address.y;
+                newStore.save();
+            } else if (created && originData.address === "") {
+                newStore.x = "";
+                newStore.y = "";
+                newStore.save();
+            }
+
+            return res.send({ data: null, message: "성공" });
+        } catch (error) {
+            return res.status(500).send({ data: null, message: "성공" });
+        }
     },
 };

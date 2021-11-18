@@ -31,27 +31,9 @@ module.exports = {
     },
 
     storeList: async (req, res) => {
-        let storeList = await store.findAll();
-        return res.send({ data: storeList, message: "성공" });
-    },
-    store: async (req, res) => {
-        const { storeid } = req.query;
-        let orginData = await axios.get(
-            `${process.env.PY_API}/app/store?storeid=${storeid}`
-        );
-        let findStore = await store.findOne({
-            where: {
-                storeCode: storeid,
-                [Op.or]: {
-                    ceo: null,
-                    introduction: null,
-                    logoImg: null,
-                },
-            },
+        let storeList = await store.findAll({
+            where: { isShow: true },
         });
-        if (findStore) {
-            findStore.ceo = orginData.data.ceo;
-        }
-        res.send({ data: noticeList, message: "성공" });
+        return res.send({ data: storeList, message: "성공" });
     },
 };
