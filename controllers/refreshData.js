@@ -123,9 +123,9 @@ module.exports = {
         return;
     },
     storeState: async (res, req) => {
-        const { store_id, state } = req.query;
-        console.log(req.query);
         try {
+            const { store_id, state } = req.query;
+            console.log(req.query);
             let storeState = await store.findOne({
                 where: { id: store_id },
             });
