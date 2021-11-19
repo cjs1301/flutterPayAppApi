@@ -3,13 +3,13 @@ const user = require("../../models/index.js").user;
 const store = require("../../models/index.js").store;
 const transaction = require("../../models/index.js").transaction;
 const alarm = require("../../models/index.js").alarm;
+const excel = require("../admin/excel");
 const { Op } = require("sequelize");
 const axios = require("axios");
 const FormData = require("form-data");
 const token = require("../token/accessToken");
 const pushEvent = require("../push");
 require("dotenv").config();
-const ExcelJS = require("exceljs");
 
 module.exports = {
     search: async (req, res) => {
@@ -360,19 +360,57 @@ module.exports = {
             });
         }
     },
-    excel: async (req, res) => {
+    download: async (req, res) => {
         try {
+            console.log(req.headers);
             const authorization = req.headers.authorization;
             let storeId = await token.storeCheck(authorization);
-            if (!storeId) {
-                //실패
-                return res
-                    .status(403)
-                    .send({ data: null, message: "만료된 토큰입니다" });
-            } else {
-                //성공
-                const workbook = new ExcelJS.Workbook();
-            }
+            const { year, month } = req.query;
+            let from = Number(month) - 1;
+            let to = Number(month);
+            const startOfMonth = new Date(year, from, 1);
+            const endOfMonth = new Date(year, to, 0);
+            endOfMonth.setDate(endOfMonth.getDate() + 1);
+            let transactionData = await transaction.findAll({
+                where: {
+                    storeId: storeId,
+                    createdAt: {
+                        [Op.between]: [startOfMonth, endOfMonth],
+                    },
+                    state: "결제완료",
+                },
+                include: [
+                    {
+                        model: user,
+                        attributes: ["userName"],
+                    },
+                ],
+                order: [["createdAt", "DESC"]],
+                attributes: ["id", "createdAt", "price", "gMoney"],
+            });
+            let totalPrice = await transaction.sum("price", {
+                where: {
+                    storeId: storeId,
+                    createdAt: {
+                        [Op.between]: [startOfMonth, endOfMonth],
+                    },
+                    state: "결제완료",
+                },
+            });
+            let totalgMoney = await transaction.sum("gMoney", {
+                where: {
+                    storeId: storeId,
+                    createdAt: {
+                        [Op.between]: [startOfMonth, endOfMonth],
+                    },
+                    state: "결제완료",
+                },
+            });
+
+            let total = (await totalPrice) * 0.98 - (totalPrice - totalgMoney);
+
+            let raw = { arr: transactionData, total: total };
+            await excel(raw, req, res);
         } catch (error) {
             console.log(error);
             return res.status(400).send({

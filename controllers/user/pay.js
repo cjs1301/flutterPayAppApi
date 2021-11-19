@@ -206,6 +206,22 @@ module.exports = {
                 User.save();
                 newTransaction.state = "결제완료";
                 newTransaction.save();
+                let contents = {
+                    title: "결제완료 안내",
+                    body:
+                        findStore.name +
+                        "에서\n" +
+                        resultPrice +
+                        "광이 결제 되었습니다.\n" +
+                        "결제시 이용하신 포인트나 쿠폰정보는 \n" +
+                        "내 정보 보기를 이용해주세요",
+                };
+                await alarm.create({
+                    userId: User.id,
+                    title: contents.title,
+                    content: contents.body,
+                });
+                pushEvent.noti(contents, User.fcmToken);
                 pushEvent.data("/user/info", User.fcmToken);
                 return res.status(200).send({
                     data: User.gMoney,

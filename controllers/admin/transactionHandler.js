@@ -324,16 +324,17 @@ module.exports = {
                     fees: priceData * 0.02,
                     deductible_money: priceData - gMoneyData,
                 });
-                return res
-                    .status(200)
-                    .send({ data: result, message: "내역 출력" });
+                await excel(result.rows, req, res);
+                // return res
+                //     .status(200)
+                //     .send({ data: result, message: "내역 출력" });
             } else {
-                let storeData = await store.findAndCountAll({
+                let storeData = await store.findAll({
                     where: { isShow: true },
                     attributes: ["id", "name"],
                     order: [["name", "ASC"]],
                 });
-                for (let el of storeData.rows) {
+                for (let el of storeData) {
                     let priceData = await transaction.sum("price", {
                         where: {
                             storeId: el.id,
@@ -362,13 +363,7 @@ module.exports = {
                     });
                 }
 
-                result.count = storeData.count;
-                await excel(result.rows, res);
-                // var path = require("path");
-                // var file = path.join(
-                //     __dirname,
-                //     "../../files/" + req.params.name
-                // );
+                await excel(result.rows, req, res);
             }
         } catch (error) {
             console.log(error);

@@ -33,6 +33,7 @@ module.exports = {
     storeList: async (req, res) => {
         let storeList = await store.findAll({
             where: { isShow: true },
+            order: [["name", "ASC"]],
         });
         return res.send({ data: storeList, message: "성공" });
     },

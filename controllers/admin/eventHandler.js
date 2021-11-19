@@ -14,81 +14,121 @@ const {
 
 module.exports = {
     uploadAndEdit: async (req, res) => {
-        let today = new Date();
-        let state;
-        const { title, content, startDate, endDate, isShow, id } = req.body;
+        try {
+            let today = new Date();
+            let state;
+            const { title, content, startDate, endDate, hide, id } = req.body;
+            console.log(req.body);
+            const { img, bannerImg } = req.files;
+            console.log(req.files);
 
-        const { img, bannerImg } = req.files;
+            if (!title || !content || !startDate || !endDate) {
+                return res
+                    .status(500)
+                    .send({ data: null, message: "누락된 항목이 있습니다." });
+            }
 
-        if (
-            !title ||
-            !content ||
-            !startDate ||
-            !endDate ||
-            !img ||
-            !bannerImg
-        ) {
-            return res
-                .status(500)
-                .send({ data: null, message: "누락된 항목이 있습니다." });
-        }
+            if (today < new Date(startDate)) {
+                state = "시작전";
+            }
+            if (new Date(startDate) <= today && today <= new Date(endDate)) {
+                state = "진행중";
+            }
+            if (new Date(endDate) < today) {
+                state = "종료";
+            }
 
-        if (today < new Date(startDate)) {
-            state = "시작전";
-        }
-        if (new Date(startDate) <= today && today <= new Date(endDate)) {
-            state = "진행중";
-        }
-        if (new Date(endDate) < today) {
-            state = "종료";
-        }
-
-        if (id) {
-            let findEvent = await event.findOne({
+            const [find, created] = await event.findOrCreate({
                 where: { id: id },
+                defaults: {
+                    img: img !== undefined ? img[0].path : "",
+                    bannerImg: bannerImg !== undefined ? bannerImg[0].path : "",
+                    content: content,
+                    title: title,
+                    hide: hide,
+                    startDate: new Date(startDate),
+                    endDate: new Date(endDate),
+                    state: state,
+                },
             });
-            if (findEvent) {
-                findEvent.img = img[0].path;
-                findEvent.bannerImg = bannerImg[0].path;
-                findEvent.content = content;
-                findEvent.title = title;
-                findEvent.hide = isShow ? false : true;
-                findEvent.startDate = new Date(startDate);
-                findEvent.endDate = new Date(endDate);
-                findEvent.state = state;
-                await findEvent.save();
+            if (!created) {
+                if (img !== undefined) {
+                    find.img = img[0].path;
+                }
+                if (bannerImg !== undefined) {
+                    find.bannerImg = bannerImg[0].path;
+                }
+                find.content = content;
+                find.title = title;
+                find.hide = hide;
+                find.startDate = new Date(startDate);
+                find.endDate = new Date(endDate);
+                find.state = state;
+                await find.save();
                 return res.status(200).send({
                     data: null,
                     message: "수정 완료",
                 });
             }
-            return res.status(400).send({
-                data: null,
-                message: "해당글은 없는 글입니다.",
-            });
-        }
-
-        if (img[0] && bannerImg[0]) {
-            await event.create({
-                img: img[0].path,
-                bannerImg: bannerImg[0].path,
-                content: content,
-                title: title,
-                hide: isShow ? false : true,
-                startDate: new Date(startDate),
-                endDate: new Date(endDate),
-                state: state,
-            });
-
             return res.status(200).send({
                 data: null,
                 message: "작성 완료",
             });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ data: null, message: "오류" });
         }
 
-        return res
-            .status(500)
-            .send({ data: null, message: "누락된 항목이 있습니다." });
+        // if (id) {
+        //     let findEvent = await event.findOne({
+        //         where: { id: id },
+        //     });
+        //     if (findEvent) {
+        //         console.log(img);
+        //         if (img !== undefined) {
+        //             findEvent.img = img[0].path;
+        //         }
+        //         if (bannerImg !== undefined) {
+        //             findEvent.bannerImg = bannerImg[0].path;
+        //         }
+        //         findEvent.content = content;
+        //         findEvent.title = title;
+        //         findEvent.hide = hide;
+        //         findEvent.startDate = new Date(startDate);
+        //         findEvent.endDate = new Date(endDate);
+        //         findEvent.state = state;
+        //         await findEvent.save();
+        //         return res.status(200).send({
+        //             data: null,
+        //             message: "수정 완료",
+        //         });
+        //     }
+        //     return res.status(400).send({
+        //         data: null,
+        //         message: "해당글은 없는 글입니다.",
+        //     });
+        // }
+
+        // if (img && bannerImg) {
+        //     await event.create({
+        //         img: img[0].path,
+        //         bannerImg: bannerImg[0].path,
+        //         content: content,
+        //         title: title,
+        //         hide: hide,
+        //         startDate: new Date(startDate),
+        //         endDate: new Date(endDate),
+        //         state: state,
+        //     });
+
+        //     return res.status(200).send({
+        //         data: null,
+        //         message: "작성 완료",
+        //     });
+        // }
+        // return res
+        //     .status(500)
+        //     .send({ data: null, message: "누락된 항목이 있습니다." });
     },
     delete: async (req, res) => {
         const { id } = req.body;

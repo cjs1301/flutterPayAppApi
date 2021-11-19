@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const router = express.Router();
+const { imageUpload } = require("../multerConfig");
 const {
     user, //user
     pay,
@@ -31,19 +32,38 @@ const {
     rtpay,
 } = require("../controllers/index");
 
-const { imageUpload } = require("../multerConfig");
-
 router.get("/", (req, res) => {
-    res.send({ title: "Hello World" });
+    res.send("Hello World");
 });
+
+//sns
+router.post("/auth/kakao/callback", kakao.callback);
+router.get("/auth/naver/callback/android", naver.callbackAndroid); //andriod
+router.get("/auth/naver/callback/ios", naver.callbackIos); //ios
 //user
+router.post("/user/login", user.login);
 router.get("/user/info", user.info);
+
+router.post("/user/fcmtoken", user.snsLoginGetFcmToken); //유저 기기토큰정보 저장하기
 router.get("/user/transaction", user.monthTransaction); //월별 거래내역
+router.get("/user/alarm", user.alarm); //알람 켜고 끄기
+router.get("/user/alarm/list", user.alarmList); //내 알림 목록
+router.get("/user/alarm/check", user.alarmCheck); //알림 읽음 처리
+router.post("/user/info", user.uploadAndEditInfo); //소속 그룹 등록 및 수정
+
 router.post("/user/buy", pay.buy);
 router.get("/user/buy/check", pay.check); //결제전 포인트 쿠폰 상태 확인
+
+router.get("/user/question", question.myQuestions); //1:1문의 목록
+router.post("/user/question", question.upload); //문의글 등록
+
+router.post("/user/wire", gMoney.send); //송금
+router.get("/user/search", gMoney.sendUserSearch); //송금 대상 검색
+router.get("/user/point", gMoney.point); //월별 포인트 사용적립 내역
 router.get("/user/coupon", gMoney.coupon); //내가 가진 쿠폰 정보(사용된것 포함)
 router.post("/user/coupon", gMoney.getCoupon); //쿠폰 코드 등록
 router.post("/user/charge", gMoney.charge);
+router.get("/user/file/:name", gMoney.subscriptionDownload); //사용자 약정신청서 양식 다운로드
 router.get("/user/subscription", gMoney.mySubscription); //약정충전 상태 확인
 router.delete("/user/subscription", gMoney.deleteSubscription); //약정충전 해지 신청
 router.post(
@@ -55,35 +75,28 @@ router.post(
         res.status(400).send({ message: error.message });
     }
 );
-router.get("/user/file/:name", gMoney.subscriptionDownload); //사용자 약정신청서 양식 다운로드
-router.get("/user/alarm", user.alarm); //알람 켜고 끄기
-router.get("/user/alarm/list", user.alarmList); //내 알림 목록
-router.get("/user/alarm/check", user.alarmCheck); //알림 읽음 처리
-router.post("/user/wire", gMoney.send); //송금
-router.get("/user/search", gMoney.sendUserSearch); //송금 대상 검색
-router.post("/user/info", user.uploadAndEditInfo); //소속 그룹 등록 및 수정
-router.post("/user/login", user.login);
-router.post("/user/fcmtoken", user.snsLoginGetFcmToken); //유저 기기토큰정보 저장하기
-router.get("/user/question", question.myQuestions); //1:1문의 목록
-router.post("/user/question", question.upload); //문의글 등록
-router.get("/user/point", gMoney.point); //월별 포인트 사용적립 내역
 
 //appAdmin
 router.get("/admin/home", adminHome.homeInfo);
 router.post("/admin/login", adminLogin.login);
+
 router.get("/admin/charge/search", chargeHandler.chargeSearch);
 router.put("/admin/charge/state", chargeHandler.stateChange);
+
 router.get("/admin/subscription/search", chargeHandler.subscriptionSearch);
 router.put("/admin/subscription", chargeHandler.proceeding); //약정신청 진행중 변경
-router.get("/files/:name", chargeHandler.downLoad); //약정신청서 다운로드
 router.delete("/admin/subscription", chargeHandler.termination); //약정신청 해지
+router.get("/files/:name", chargeHandler.downLoad); //약정신청서 다운로드
+
 router.get("/admin/transaction", adminTransactionHandler.search);
 router.get("/admin/calculate", adminTransactionHandler.transaction);
 router.get("/admin/calculate/download", adminTransactionHandler.download);
 router.get("/admin/storelist", adminTransactionHandler.storelist);
+
 router.get("/admin/event", eventHandler.search);
 router.get("/admin/event/data", eventHandler.event);
 router.post("/admin/event/copy", eventHandler.copy);
+router.delete("/admin/event", eventHandler.delete);
 router.post(
     "/admin/event",
     imageUpload.fields([
@@ -96,30 +109,38 @@ router.post(
         res.status(400).send({ message: error.message });
     }
 );
-router.delete("/admin/event", eventHandler.delete);
-router.get("/admin/notice", noticeHandler.notice);
+router.get("/admin/notice", noticeHandler.notice); //전체 공지
 router.post("/admin/notice", noticeHandler.uploadEdit);
 router.delete("/admin/notice", noticeHandler.delete);
-router.get("/admin/stroenotice", storeNoticeHandler.notice);
+
+router.get("/admin/stroenotice", storeNoticeHandler.notice); //운영공지
 router.post("/admin/stroenotice", storeNoticeHandler.uploadEdit);
 router.delete("/admin/stroenotice", storeNoticeHandler.delete);
-router.get("/admin/stroequestion", storeQuestionHandler.storeQuestion);
+
+router.get("/admin/stroequestion", storeQuestionHandler.storeQuestion); //운영문의
 router.post("/admin/stroequestion", storeQuestionHandler.answer);
 router.delete("/admin/stroequestion", storeQuestionHandler.delete);
-router.get("/admin/faq", faqHandler.faq);
+
+router.get("/admin/faq", faqHandler.faq); //자주묻는 질문
 router.post("/admin/faq", faqHandler.uploadEdit);
 router.delete("/admin/faq", faqHandler.delete);
-router.get("/admin/qna", questionHandler.questionList);
+
+router.get("/admin/qna", questionHandler.questionList); //1:1문의
 router.post("/admin/qna", questionHandler.answer);
 router.put("/admin/qna", questionHandler.questionEdit);
 router.delete("/admin/qna", questionHandler.delete);
 
 router.post("/check/rtpay", rtpay.rtpay);
+
 //storeAdmin
 router.get("/store/admin/home", storeHome.homeInfo);
-router.get("/store/admin/transaction", storeTransaction.search);
-router.get("/store/admin/calculate", storeTransaction.transaction);
+
+router.get("/store/admin/transaction", storeTransaction.search); //결제관리
 router.put("/store/admin/transaction", storeTransaction.cancel);
+
+router.get("/store/admin/calculate", storeTransaction.transaction); //정산관리
+router.get("/store/admin/calculate/download", storeTransaction.download);
+
 router.get("/store/admin/notice", noticeBoard.search);
 router.post("/store/admin/qna", qnaHandler.question);
 router.get("/store/admin/qna", qnaHandler.questionList);
@@ -130,45 +151,8 @@ router.get("/storelist", appListData.storeList);
 router.get("/faqlist", appListData.faq);
 router.get("/noticelist", appListData.notice);
 router.get("/eventlist", appListData.event);
-router.get("/store");
-// router.get("/moveapp", (req, res) =>
-//     res.redirect(
-//         "intent://re:https://m.maeulstory.net#Intent;scheme=maeulstory;end"
-//     )
-// );kakaoebc76af1aa2ccce7c4576a7fb2f48c5b://
-router.get("/moveapp", (req, res) => res.redirect("maeulstorypay://"));
 router.get("/update/store/list", refreshData.storeList);
 router.get("/update/store/state", refreshData.storeState);
 router.get("/update/store", refreshData.storeUpdate);
-
-//sns
-//`https://kauth.kakao.com/oauth/authorize?client_id=${}&redirect_uri=${process.env.SERVER}/auth/kakao/callback&response_type=code&prompt=login`
-router.post("/auth/kakao/callback", kakao.callback);
-//`https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${}&redirect_uri=${process.env.SERVER}/auth/naver/callback&state=1234`
-router.get("/auth/naver/callback/android", naver.callbackAndroid); //andriod
-router.get("/auth/naver/callback/ios", naver.callbackIos); //ios
-
-// router.get("/m", async function (req, res) {
-//     try {
-//         const { name } = req.query;
-//         const user = require("../models/index.js").user;
-//         const pushEvent = require("../controllers/push");
-//         let give = await user.findOne({
-//             where: { userName: name },
-//         });
-//         give.gMoney = give.gMoney + 10000;
-//         give.save();
-//         let contents = {
-//             title: "충전완료 알림",
-//             body: "신청하신 " + 10000 + "화\n 충전이\\n 완료\n되었습니다",
-//         };
-//         pushEvent.data("/user/info", give.fcmToken);
-//         pushEvent.noti(contents, give.fcmToken);
-//         res.send("ok");
-//     } catch (error) {
-//         console.log(error);
-//         res.send("no");
-//     }
-// });
 
 module.exports = router;
