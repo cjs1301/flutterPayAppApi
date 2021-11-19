@@ -162,7 +162,7 @@ module.exports = {
                 findfaq.content = content;
                 findfaq.title = title;
                 findfaq.isShow = isShow;
-                findfaq.save();
+                await findfaq.save();
                 return res.status(200).send({
                     data: null,
                     message: "수정 완료",
