@@ -150,29 +150,24 @@ module.exports = {
                     message: "항목이 빠져 있습니다",
                 });
             }
-
-            if (id) {
-                let findfaq = await faq.findOne({
-                    where: { id: id },
-                });
-                if (findfaq) {
-                    findfaq.content = content;
-                    findfaq.title = title;
-                    findfaq.isShow = isShow;
-                    findfaq.save();
-                }
-                return res.status(400).send({
+            let [findfaq, created] = await faq.findOrCreate({
+                where: { id: id !== undefined ? id : "" },
+                defaults: {
+                    content: content,
+                    title: title,
+                    isShow: isShow,
+                },
+            });
+            if (!created) {
+                findfaq.content = content;
+                findfaq.title = title;
+                findfaq.isShow = isShow;
+                findfaq.save();
+                return res.status(200).send({
                     data: null,
-                    message: "해당글은 없는 글입니다.",
+                    message: "수정 완료",
                 });
             }
-
-            await faq.create({
-                content: content,
-                title: title,
-                isShow: isShow,
-            });
-
             return res.status(200).send({
                 data: null,
                 message: "작성 완료",
