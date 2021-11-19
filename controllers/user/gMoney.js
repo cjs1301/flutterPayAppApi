@@ -198,7 +198,7 @@ module.exports = {
                 console.log(error);
                 return res.status(500).send({
                     data: null,
-                    message: error.response.data.message,
+                    message: error.userCoupon.data.message,
                 });
             }
         }
