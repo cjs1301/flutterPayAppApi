@@ -414,7 +414,7 @@ module.exports = {
                     });
                 }
             }
-            return res.status(200).send({ data: null, message: "삭제 완료" });
+            return res.status(200).send({ data: null, message: "해지완료" });
         } catch (error) {
             console.log(error);
             return res

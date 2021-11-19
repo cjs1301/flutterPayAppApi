@@ -15,7 +15,7 @@ module.exports = {
 
             const { word, date, state, isAnswer, limit, pageNum } = req.query;
             let offset = 0;
-            console.log(isAnswer);
+            console.log(state);
             if (pageNum > 1) {
                 offset = limit * (pageNum - 1);
             }
@@ -39,6 +39,7 @@ module.exports = {
                     return true;
                 }
             });
+            console.log(stateArr);
             let result;
             if (!state) {
                 return res

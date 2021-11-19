@@ -37,9 +37,8 @@ module.exports = {
             if (new Date(endDate) < today) {
                 state = "종료";
             }
-
             const [find, created] = await event.findOrCreate({
-                where: { id: id },
+                where: { id: id !== undefined ? id : "" },
                 defaults: {
                     img: img !== undefined ? img[0].path : "",
                     bannerImg: bannerImg !== undefined ? bannerImg[0].path : "",
