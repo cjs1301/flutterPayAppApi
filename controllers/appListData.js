@@ -49,9 +49,11 @@ module.exports = {
             };
             let result = await axios(config);
             let arr = [];
+            console.log(result.data);
             result.data.data.forEach((el) => {
                 arr.push(el.id);
             });
+            console.log(arr);
             let searchResult = await store.findAll({
                 where: {
                     id: {
@@ -60,6 +62,7 @@ module.exports = {
                 },
                 order: [["name", "ASC"]],
             });
+            console.log(searchResult);
             return res.send({ data: searchResult, message: "성공" });
         } catch (error) {
             console.log(error);
