@@ -154,5 +154,6 @@ router.get("/eventlist", appListData.event);
 router.get("/update/store/list", refreshData.storeList);
 router.get("/update/store/state", refreshData.storeState);
 router.get("/update/store", refreshData.storeUpdate);
+router.get("/store/search", appListData.searchStore);
 
 module.exports = router;

@@ -37,4 +37,20 @@ module.exports = {
         });
         return res.send({ data: storeList, message: "성공" });
     },
+    searchStore: async (req, res) => {
+        const { word, address } = req.query;
+        try {
+            let response = await axios.get(
+                process.env.PY_API +
+                    "/app/store?word=" +
+                    word +
+                    "&address=" +
+                    address
+            );
+            return res.send({ data: response.data, message: "성공" });
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
 };
