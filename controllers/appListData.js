@@ -58,6 +58,7 @@ module.exports = {
                         [Op.or]: arr,
                     },
                 },
+                order: [["name", "ASC"]],
             });
             return res.send({ data: searchResult, message: "성공" });
         } catch (error) {
