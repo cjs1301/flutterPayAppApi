@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 comment: "제목",
             },
-
             content: DataTypes.TEXT,
+            writer: DataTypes.STRING,
             isExpanded: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,

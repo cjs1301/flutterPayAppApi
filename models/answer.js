@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             questionId: DataTypes.INTEGER,
             title: DataTypes.STRING,
             content: DataTypes.TEXT,
+            writer: DataTypes.STRING,
             isShow: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true,

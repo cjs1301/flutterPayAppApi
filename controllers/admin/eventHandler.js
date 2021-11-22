@@ -18,6 +18,7 @@ module.exports = {
             let today = new Date();
             let state;
             const { title, content, startDate, endDate, hide, id } = req.body;
+            console.log(req);
             console.log(req.body);
             const { img, bannerImg } = req.files;
             console.log(req.files);
