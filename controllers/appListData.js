@@ -41,12 +41,9 @@ module.exports = {
         const { word, address } = req.query;
         try {
             let result = await axios.get(
-                process.env.PY_API +
-                    "/app/store?word=" +
-                    word +
-                    "&address=" +
-                    address
+                `${process.env.PY_API}/app/store?word=${word}&address=${address}`
             );
+            console.log(result);
             return res.send({ data: result.data, message: "성공" });
         } catch (error) {
             console.log(error);
