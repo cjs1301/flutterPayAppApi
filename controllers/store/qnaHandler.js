@@ -281,34 +281,17 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            const authorization = req.headers.authorization;
-            let storeId = await token.storeCheck(authorization);
-            if (!storeId) {
-                //실패
-                return res
-                    .status(403)
-                    .send({ data: null, message: "만료된 토큰입니다" });
-            } else {
-                //성공
-                const { id } = req.body;
-                try {
-                    let find = await storeQuestion.findOne({
-                        where: { id: id },
-                    });
-                    find.isShow = false;
-                    await find.save();
-                    return res.status(200).send({
-                        data: null,
-                        message: "삭제 완료",
-                    });
-                } catch (error) {
-                    console.log(error);
-                    return res.status(403).send({
-                        data: null,
-                        message: "일치하는 회원정보를 찾지 못했습니다",
-                    });
-                }
-            }
+            const { id } = req.body;
+            console.log(req.body);
+            let find = await storeQuestion.findOne({
+                where: { id: id },
+            });
+            find.isShow = false;
+            await find.save();
+            return res.status(200).send({
+                data: null,
+                message: "삭제 완료",
+            });
         } catch (error) {
             console.log(error);
             return res.status(400).send({
