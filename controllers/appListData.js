@@ -54,6 +54,9 @@ module.exports = {
                 arr.push(el.id);
             });
             console.log(arr);
+            if (arr.length === 0) {
+                return res.send({ data: null, message: "성공" });
+            }
             let searchResult = await store.findAll({
                 where: {
                     id: {
