@@ -48,7 +48,18 @@ module.exports = {
                 url: encodedURI,
             };
             let result = await axios(config);
-            return res.send({ data: result.data, message: "성공" });
+            let arr = [];
+            result.data.data.forEach((el) => {
+                arr.push(el.id);
+            });
+            let searchResult = await store.findAll({
+                where: {
+                    id: {
+                        [Op.or]: arr,
+                    },
+                },
+            });
+            return res.send({ data: searchResult, message: "성공" });
         } catch (error) {
             console.log(error);
             throw error;
