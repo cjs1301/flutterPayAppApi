@@ -76,7 +76,7 @@ module.exports = {
                             },
                             {
                                 model: store,
-                                attributes: ["ceo"],
+                                attributes: ["name"],
                             },
                         ],
                     });
@@ -126,7 +126,7 @@ module.exports = {
                             },
                             {
                                 model: store,
-                                attributes: ["ceo"],
+                                attributes: ["name"],
                             },
                         ],
                     });
@@ -175,7 +175,7 @@ module.exports = {
                         },
                         {
                             model: store,
-                            attributes: ["ceo"],
+                            attributes: ["name"],
                         },
                     ],
                 });
@@ -206,7 +206,7 @@ module.exports = {
                         },
                         {
                             model: store,
-                            attributes: ["ceo"],
+                            attributes: ["name"],
                         },
                     ],
                 });
