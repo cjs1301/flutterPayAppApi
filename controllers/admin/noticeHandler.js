@@ -144,7 +144,7 @@ module.exports = {
     },
     uploadEdit: async (req, res) => {
         try {
-            const { title, content, isShow, id } = req.body;
+            const { title, content, isShow, id, writer } = req.body;
 
             if (!title || !content || isShow === undefined) {
                 return res.status(400).send({
@@ -153,31 +153,27 @@ module.exports = {
                 });
             }
 
-            if (id) {
-                let findNotice = await notice.findOne({
-                    where: { id: id },
-                });
-                if (findNotice) {
-                    findNotice.content = content;
-                    findNotice.title = title;
-                    findNotice.hide = isShow;
-                    await findNotice.save();
-                    return res.status(200).send({
-                        data: null,
-                        message: "수정 완료",
-                    });
-                }
-                return res.status(400).send({
+            let [findNotice, created] = await notice.findOrCreate({
+                where: { id: id ? id : "" },
+                defaults: {
+                    content: content,
+                    title: title,
+                    hide: isShow,
+                    writer: writer,
+                },
+            });
+
+            if (!created) {
+                findNotice.content = content;
+                findNotice.title = title;
+                findNotice.hide = isShow;
+                findNotice.writer = writer;
+                await findNotice.save();
+                return res.status(200).send({
                     data: null,
-                    message: "해당글을 찾을수 없습니다.",
+                    message: "수정 완료",
                 });
             }
-
-            await notice.create({
-                content: content,
-                title: title,
-                hide: isShow,
-            });
 
             return res.status(200).send({
                 data: null,

@@ -17,7 +17,8 @@ module.exports = {
         try {
             let today = new Date();
             let state;
-            const { title, content, startDate, endDate, hide, id } = req.body;
+            const { title, content, startDate, endDate, hide, id, writer } =
+                req.body;
             console.log(req);
             console.log(req.body);
             const { img, bannerImg } = req.files;
@@ -46,6 +47,7 @@ module.exports = {
                     content: content,
                     title: title,
                     hide: hide,
+                    writer: writer,
                     startDate: new Date(startDate),
                     endDate: new Date(endDate),
                     state: state,
@@ -61,6 +63,7 @@ module.exports = {
                 find.content = content;
                 find.title = title;
                 find.hide = hide;
+                find.writer = writer;
                 find.startDate = new Date(startDate);
                 find.endDate = new Date(endDate);
                 find.state = state;

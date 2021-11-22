@@ -253,10 +253,10 @@ module.exports = {
         }
     },
     answer: async (req, res) => {
-        const { title, content, questionId } = req.body;
+        const { title, content, questionId, writer } = req.body;
         console.log(req.body);
         try {
-            const saveAnswer = await storeQuestion.findOne({
+            const findQuestion = await storeQuestion.findOne({
                 where: { id: questionId },
             });
             const [newAnswer, created] = await storeAnswer.findOrCreate({
@@ -265,13 +265,15 @@ module.exports = {
                     title: title,
                     content: content,
                     storeQuestionId: questionId,
+                    writer: writer,
                 },
             });
-            saveAnswer.isAnswer = true;
-            saveAnswer.save();
+            findQuestion.isAnswer = true;
+            findQuestion.save();
             if (!created) {
                 newAnswer.title = title;
                 newAnswer.content = content;
+                newAnswer.writer = writer;
                 newAnswer.save();
                 return res
                     .status(200)

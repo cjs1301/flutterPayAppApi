@@ -26,7 +26,7 @@ module.exports = {
         });
     },
     answer: async (req, res) => {
-        const { title, content, questionId } = req.body;
+        const { title, content, questionId, writer } = req.body;
 
         try {
             const saveAnswer = await question.findOne({
@@ -38,6 +38,7 @@ module.exports = {
                     title: title,
                     content: content,
                     questionId: questionId,
+                    writer: writer,
                 },
             });
             saveAnswer.isAnswer = true;
@@ -45,6 +46,7 @@ module.exports = {
             if (!created) {
                 newAnswer.title = title;
                 newAnswer.content = content;
+                newAnswer.writer = writer;
                 newAnswer.save();
                 return res
                     .status(200)

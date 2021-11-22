@@ -147,7 +147,7 @@ module.exports = {
     },
     uploadEdit: async (req, res) => {
         try {
-            const { title, content, isShow, id } = req.body;
+            const { title, content, isShow, id, writer } = req.body;
 
             if (!title || !content || isShow === undefined) {
                 return res.status(400).send({
@@ -156,31 +156,27 @@ module.exports = {
                 });
             }
 
-            if (id) {
-                let findNotice = await storeNotice.findOne({
-                    where: { id: id },
-                });
-                if (findNotice) {
-                    findNotice.content = content;
-                    findNotice.title = title;
-                    findNotice.isShow = isShow;
-                    await findNotice.save();
-                    return res.status(200).send({
-                        data: null,
-                        message: "완료",
-                    });
-                }
-                return res.status(400).send({
+            let [findNotice, created] = await storeNotice.findOrCreate({
+                where: { id: id ? id : "" },
+                defaults: {
+                    content: content,
+                    title: title,
+                    isShow: isShow,
+                    writer: writer,
+                },
+            });
+
+            if (!created) {
+                findNotice.content = content;
+                findNotice.title = title;
+                findNotice.isShow = isShow;
+                findNotice.writer = writer;
+                await findNotice.save();
+                return res.status(200).send({
                     data: null,
-                    message: "해당글은 없는 글입니다.",
+                    message: "완료",
                 });
             }
-
-            await storeNotice.create({
-                content: content,
-                title: title,
-                isShow: isShow,
-            });
 
             return res.status(200).send({
                 data: null,

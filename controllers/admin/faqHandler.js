@@ -143,7 +143,7 @@ module.exports = {
     },
     uploadEdit: async (req, res) => {
         try {
-            const { title, content, isShow, id } = req.body;
+            const { title, content, isShow, id, writer } = req.body;
             if (!title || !content || isShow === undefined) {
                 return res.status(400).send({
                     data: null,
@@ -156,11 +156,13 @@ module.exports = {
                     content: content,
                     title: title,
                     isShow: isShow,
+                    writer: writer,
                 },
             });
             if (!created) {
                 findfaq.content = content;
                 findfaq.title = title;
+                findfaq.writer = writer;
                 findfaq.isShow = isShow;
                 await findfaq.save();
                 return res.status(200).send({

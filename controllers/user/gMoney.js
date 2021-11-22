@@ -252,14 +252,16 @@ module.exports = {
         }
     },
     subscriptionDown: async (req, res) => {
-        await subscription.findOne({
+        await subscription.findAll({
             where: {
                 userId: User.id,
             },
         });
-        subscription.state = "약정충전해지신청";
-        subscription.save();
-        res.status(200).send({ data: null, message: "취소신청 되었습니다" });
+        subscription[0].state = "약정충전해지신청";
+        await subscription[0].save();
+        return res
+            .status(200)
+            .send({ data: null, message: "취소신청 되었습니다" });
     },
 
     subscriptionDownload: async (req, res) => {
