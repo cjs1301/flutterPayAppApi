@@ -308,9 +308,9 @@ module.exports = {
             where: {
                 userId: userId,
             },
-            order: [["createdAt", "DESC"]],
+            order: [["updatedAt", "DESC"]],
         });
-        if (find[0]) {
+        if (find.length !== 0) {
             return res.status(200).send({
                 data: find[0],
                 message: "완료",
@@ -330,6 +330,7 @@ module.exports = {
             where: {
                 userId: userId,
             },
+            order: [["updatedAt", "DESC"]],
         });
         if (find.length !== 0) {
             find[0].state = "해지신청";
