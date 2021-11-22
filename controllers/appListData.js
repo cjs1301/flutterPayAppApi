@@ -40,10 +40,12 @@ module.exports = {
     searchStore: async (req, res) => {
         const { word, address } = req.query;
         console.log(req.query);
+        const URI = `${process.env.PY_API}/app/store?word=${word}&address=${address}`;
+        const encodedURI = encodeURI(URI);
         try {
             let config = {
                 method: "get",
-                url: `${process.env.PY_API}/app/store?word=${word}&address=${address}`,
+                url: encodedURI,
             };
             let result = await axios(config);
             console.log(result);
