@@ -40,14 +40,14 @@ module.exports = {
     searchStore: async (req, res) => {
         const { word, address } = req.query;
         try {
-            let response = await axios.get(
+            let result = await axios.get(
                 process.env.PY_API +
                     "/app/store?word=" +
                     word +
                     "&address=" +
                     address
             );
-            return res.send({ data: response.data, message: "성공" });
+            return res.send({ data: result.data, message: "성공" });
         } catch (error) {
             console.log(error);
             throw error;
