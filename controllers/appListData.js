@@ -39,6 +39,7 @@ module.exports = {
     },
     searchStore: async (req, res) => {
         const { word, address } = req.query;
+        console.log(req.query);
         try {
             let result = await axios.get(
                 `${process.env.PY_API}/app/store?word=${word}&address=${address}`
