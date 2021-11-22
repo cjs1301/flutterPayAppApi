@@ -23,8 +23,6 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
-            createdAt: DataTypes.DATEONLY,
-            updatedAt: DataTypes.DATEONLY,
             isShow: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true,
