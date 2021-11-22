@@ -62,7 +62,7 @@ module.exports = {
                 },
                 order: [["name", "ASC"]],
             });
-            console.log(searchResult);
+            //console.log(searchResult);
             return res.send({ data: searchResult, message: "성공" });
         } catch (error) {
             console.log(error);
