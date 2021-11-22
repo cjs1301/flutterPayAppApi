@@ -251,19 +251,6 @@ module.exports = {
             });
         }
     },
-    subscriptionDown: async (req, res) => {
-        await subscription.findAll({
-            where: {
-                userId: User.id,
-            },
-        });
-        subscription[0].state = "약정충전해지신청";
-        await subscription[0].save();
-        return res
-            .status(200)
-            .send({ data: null, message: "취소신청 되었습니다" });
-    },
-
     subscriptionDownload: async (req, res) => {
         //약정충전 신청서 다운로드
         var path = require("path");
@@ -338,22 +325,16 @@ module.exports = {
 
         const authorization = req.headers.authorization;
         let userId = await token.check(authorization);
-        let User = await user.findOne({ where: { id: userId } });
-        if (!User) {
-            return res
-                .status(403)
-                .send({ data: null, message: "회원정보를 확인할수 없습니다" });
-        }
 
-        let find = await subscription.findOne({
+        let find = await subscription.findAll({
             where: {
                 userId: userId,
             },
         });
-        if (find) {
-            find.state = "해지신청";
-            find.cancelDate = new Date();
-            find.save();
+        if (find.length !== 0) {
+            find[0].state = "해지신청";
+            find[0].cancelDate = new Date();
+            find[0].save();
             return res.status(200).send({
                 data: null,
                 message: "완료",
