@@ -48,7 +48,6 @@ module.exports = {
                 url: encodedURI,
             };
             let result = await axios(config);
-            console.log(result);
             return res.send({ data: result.data, message: "성공" });
         } catch (error) {
             console.log(error);

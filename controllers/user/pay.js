@@ -2,6 +2,7 @@ const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const transaction = require("../../models/index.js").transaction;
 const store = require("../../models/index.js").store;
+const alarm = require("../../models/index.js").alarm;
 const pushEvent = require("../push");
 const token = require("../token/accessToken");
 const axios = require("axios");
