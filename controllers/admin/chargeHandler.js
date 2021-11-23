@@ -407,7 +407,10 @@ module.exports = {
             });
         }
         var path = require("path");
-        var file = path.join(__dirname, "../../files/" + req.params.name);
+        var file = path.join(
+            __dirname,
+            "../../subscription/upload" + req.params.name
+        );
         res.download(file, function (err) {
             if (err) {
                 console.log("Error");
