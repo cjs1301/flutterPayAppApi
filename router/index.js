@@ -74,7 +74,7 @@ router.post(
     gMoney.subscriptionUpload,
     (error, req, res, next) => {
         console.log(error);
-        res.status(400).send({ message: error.message });
+        return res.status(400).send({ message: error.message });
     }
 );
 

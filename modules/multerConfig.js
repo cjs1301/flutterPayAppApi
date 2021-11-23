@@ -6,7 +6,7 @@ const imageStorage = multer.diskStorage({
         if (req.url === "/admin/event") {
             return cb(null, "../eventImg");
         } else {
-            return cb(null, "../subscriptionFile/upload");
+            return cb(null, "./subscriptionFile/upload");
         }
     },
     filename: (req, file, cb) => {
