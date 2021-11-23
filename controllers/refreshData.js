@@ -1,10 +1,5 @@
 const { Request, Response } = require("express");
-const event = require("../models/index.js").event;
-const faq = require("../models/index.js").faq;
-const notice = require("../models/index.js").notice;
 const store = require("../models/index.js").store;
-const storeImg = require("../models/index.js").storeImg;
-const { Op } = require("sequelize");
 const axios = require("axios");
 require("dotenv").config();
 
@@ -50,7 +45,7 @@ module.exports = {
                     );
                     newStore.x = result.data.documents[0].address.x;
                     newStore.y = result.data.documents[0].address.y;
-                    newStore.save();
+                    await newStore.save();
                 }
             });
         } catch (error) {

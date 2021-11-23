@@ -7,8 +7,8 @@ const excel = require("../admin/excel");
 const { Op } = require("sequelize");
 const axios = require("axios");
 const FormData = require("form-data");
-const token = require("../token/accessToken");
-const pushEvent = require("../push");
+const token = require("../../modules/token");
+const pushEvent = require("../../modules/push");
 require("dotenv").config();
 
 module.exports = {

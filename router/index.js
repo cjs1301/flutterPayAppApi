@@ -1,7 +1,6 @@
 const express = require("express");
-const fs = require("fs");
 const router = express.Router();
-const { imageUpload } = require("../multerConfig");
+const { imageUpload } = require("./modules/multerConfig");
 const {
     user, //user
     pay,
@@ -62,11 +61,12 @@ router.get("/user/search", gMoney.sendUserSearch); //송금 대상 검색
 router.get("/user/point", gMoney.point); //월별 포인트 사용적립 내역
 router.get("/user/coupon", gMoney.coupon); //내가 가진 쿠폰 정보(사용된것 포함)
 router.post("/user/coupon", gMoney.getCoupon); //쿠폰 코드 등록
-router.post("/user/charge", gMoney.charge);
+router.post("/user/charge", gMoney.charge); //충전신청
 router.get("/user/file/:name", gMoney.subscriptionDownload); //사용자 약정신청서 양식 다운로드
 router.get("/user/subscription", gMoney.mySubscription); //약정충전 상태 확인
 router.delete("/user/subscription", gMoney.deleteSubscription); //약정충전 해지 신청
 router.post(
+    //약정충전 신청서 업로드
     "/user/upload",
     imageUpload.single("file"),
     gMoney.subscriptionUpload,
@@ -77,11 +77,11 @@ router.post(
 );
 
 //appAdmin
-router.get("/admin/home", adminHome.homeInfo);
-router.post("/admin/login", adminLogin.login);
+router.get("/admin/home", adminHome.homeInfo); //메인화면 정보
+router.post("/admin/login", adminLogin.login); //가게관리자 로그인,운영관리자 로그인
 
-router.get("/admin/charge/search", chargeHandler.chargeSearch);
-router.put("/admin/charge/state", chargeHandler.stateChange);
+router.get("/admin/charge/search", chargeHandler.chargeSearch); //충전신청자 검색
+router.put("/admin/charge/state", chargeHandler.stateChange); //충전진행상태 변경
 
 router.get("/admin/subscription/search", chargeHandler.subscriptionSearch);
 router.put("/admin/subscription", chargeHandler.proceeding); //약정신청 진행중 변경

@@ -5,7 +5,7 @@ const storeNotice = require("../../models/index.js").storeNotice;
 const transaction = require("../../models/index.js").transaction;
 const storeQuestion = require("../../models/index.js").storeQuestion;
 const storeAnswer = require("../../models/index.js").storeAnswer;
-const token = require("../token/accessToken");
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
 const moment = require("moment");
 
@@ -123,6 +123,6 @@ module.exports = {
             ],
         });
 
-        res.status(200).send({ data: result, message: "완료" });
+        return res.status(200).send({ data: result, message: "완료" });
     },
 };

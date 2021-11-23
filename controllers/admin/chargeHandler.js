@@ -5,7 +5,7 @@ const subscription = require("../../models/index.js").subscription;
 const transaction = require("../../models/index.js").transaction;
 const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
+const pushEvent = require("../../modules/push");
 
 module.exports = {
     chargeSearch: async (req, res) => {

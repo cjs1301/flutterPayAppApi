@@ -4,7 +4,7 @@ const question = require("../../models/index.js").question;
 const answer = require("../../models/index.js").answer;
 const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
+const pushEvent = require("../../modules/push");
 
 module.exports = {
     delete: async (req, res) => {

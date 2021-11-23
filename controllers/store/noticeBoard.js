@@ -146,5 +146,4 @@ module.exports = {
             return res.status(500).send({ data: error, message: "오류" });
         }
     },
-    delete: async (req, res) => {},
 };

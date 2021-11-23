@@ -1,8 +1,7 @@
 const { Request, Response } = require("express");
 const axios = require("axios");
 const user = require("../../models/index.js").user;
-const token = require("../token/accessToken");
-const qs = require("qs");
+const token = require("../../modules/token");
 const FormData = require("form-data");
 require("dotenv").config();
 

@@ -1,11 +1,8 @@
 const { Request, Response } = require("express");
-const user = require("../../models/index.js").user;
 const storeQuestion = require("../../models/index.js").storeQuestion;
 const storeAnswer = require("../../models/index.js").storeAnswer;
 const store = require("../../models/index.js").store;
-const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
 
 module.exports = {
     storeQuestion: async (req, res) => {

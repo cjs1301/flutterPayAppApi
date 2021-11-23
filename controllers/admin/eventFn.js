@@ -1,7 +1,5 @@
 const { Request, Response } = require("express");
-const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
 const event = require("../../models/index.js").event;
 
 module.exports = {

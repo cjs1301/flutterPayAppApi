@@ -3,12 +3,11 @@ const user = require("../../models/index.js").user;
 const transaction = require("../../models/index.js").transaction;
 const store = require("../../models/index.js").store;
 const alarm = require("../../models/index.js").alarm;
-const subscription = require("../../models/index.js").subscription;
 const { Op } = require("sequelize");
 const axios = require("axios");
 const crypto = require("crypto");
 const FormData = require("form-data");
-const token = require("../token/accessToken");
+const token = require("../../modules/token");
 
 const arrByDate = (array) => {
     //console.log(array);
@@ -388,7 +387,7 @@ module.exports = {
                 }
                 User.save();
                 let userToken = token.make(User.id);
-                res.status(200).send({
+                return res.status(200).send({
                     data: userToken,
                     message: "로그인 성공",
                 });
@@ -420,8 +419,8 @@ module.exports = {
                     });
                 }
                 userInfo.fcmToken = fcmToken;
-                userInfo.save();
-                res.status(200).send({
+                await userInfo.save();
+                return res.status(200).send({
                     data: null,
                     message: "토큰 저장",
                 });

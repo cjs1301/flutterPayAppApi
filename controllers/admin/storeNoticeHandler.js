@@ -1,9 +1,6 @@
 const { Request, Response } = require("express");
-const user = require("../../models/index.js").user;
 const storeNotice = require("../../models/index.js").storeNotice;
-const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
 
 module.exports = {
     notice: async (req, res) => {
@@ -192,7 +189,7 @@ module.exports = {
         const del = await storeNotice.findOne({ where: { id: id } });
         del.isShow = false;
         await del.save();
-        res.status(200).send({
+        return res.status(200).send({
             data: null,
             message: "성공적으로 삭제 하였습니다.",
         });
