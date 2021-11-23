@@ -105,6 +105,6 @@ dist
 
 testData.js
 package-lock.json
-supcriptionFile/upload/
+supcriptionFile/upload/*
 eventImg/
 path/to/
