@@ -411,7 +411,7 @@ module.exports = {
         var path = require("path");
         var file = path.join(
             __dirname,
-            "./subscription/upload" + req.params.name
+            "../../subscription/upload" + req.params.name
         );
         res.download(file, function (err) {
             if (err) {

@@ -32,7 +32,6 @@ module.exports = {
                 notification: {
                     title: message.title,
                     body: message.body,
-                    sound: "default",
                 },
                 token: fcmToken,
             };
@@ -58,7 +57,6 @@ module.exports = {
                 notification: {
                     title: message.title,
                     body: message.body,
-                    sound: "default",
                 },
                 tokens: registrationTokens,
             };

@@ -256,7 +256,7 @@ module.exports = {
 
         var file = path.join(
             __dirname,
-            "../../subscriptionFile/download/" + req.params.name
+            "./subscriptionFile/download/" + req.params.name
         );
         res.download(file, function (err) {
             if (err) {
