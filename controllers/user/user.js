@@ -106,7 +106,7 @@ module.exports = {
                     ? ""
                     : result.data.data.cellphone;
                 userInfo.couponCount = userCoupon.data.data.active.length;
-                res.status(200).send({
+                return res.status(200).send({
                     data: userInfo,
                     message: "유저정보 확인",
                 });
@@ -375,23 +375,19 @@ module.exports = {
                 return res
                     .status(200)
                     .send({ data: userToken, message: "로그인 성공" });
-            } else {
-                User.id = userInfo.user_id;
-                User.userName = userInfo.name;
-                User.email = userInfo.email;
-                if (User.phoneNumber !== null) {
-                    User.phoneNumber = userInfo.callphone;
-                }
-                if (User.couponCount !== 0) {
-                    User.couponCount = userInfo.coupon;
-                }
-                User.save();
-                let userToken = token.make(User.id);
-                return res.status(200).send({
-                    data: userToken,
-                    message: "로그인 성공",
-                });
             }
+            User.id = userInfo.user_id;
+            User.userName = userInfo.name;
+            User.email = userInfo.email;
+            User.phoneNumber = userInfo.callphone;
+            User.couponCount = userInfo.coupon;
+            User.fcmToken = fcmToken;
+            await User.save();
+            let userToken = await token.make(User.id);
+            return res.status(200).send({
+                data: userToken,
+                message: "로그인 성공",
+            });
         } catch (error) {
             console.log(error);
             throw error;
