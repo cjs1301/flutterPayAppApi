@@ -17,14 +17,14 @@ module.exports = {
 
     faq: async (req, res) => {
         let faqList = await faq.findAll({
-            where: { isShow: true },
+            where: { isShow: true, hide: false },
         });
         res.send({ data: faqList, message: "성공" });
     },
 
     notice: async (req, res) => {
         let noticeList = await notice.findAll({
-            where: { isShow: true },
+            where: { isShow: true, hide: false },
         });
         res.send({ data: noticeList, message: "성공" });
     },

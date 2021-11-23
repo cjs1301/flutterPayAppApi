@@ -157,7 +157,7 @@ module.exports = {
                     message: "유효하지 않은 토큰 입니다.",
                 });
             }
-            const { title, content, isShow, id, writer } = req.body;
+            const { title, content, hide, id, writer } = req.body;
 
             if (!title || !content || isShow === undefined) {
                 return res.status(400).send({
@@ -171,7 +171,7 @@ module.exports = {
                 defaults: {
                     content: content,
                     title: title,
-                    hide: isShow,
+                    hide: hide,
                     writer: writer,
                 },
             });
@@ -179,7 +179,7 @@ module.exports = {
             if (!created) {
                 findNotice.content = content;
                 findNotice.title = title;
-                findNotice.hide = isShow;
+                findNotice.hide = hide;
                 findNotice.writer = writer;
                 await findNotice.save();
                 return res.status(200).send({

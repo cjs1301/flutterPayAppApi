@@ -101,7 +101,7 @@ module.exports = {
             ],
         });
         result.recentNotice = await storeNotice.findAll({
-            where: { isShow: true },
+            where: { isShow: true, hide: false },
             order: [["createdAt", "DESC"]],
             limit: 4,
         });

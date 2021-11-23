@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             content: DataTypes.TEXT,
             writer: DataTypes.STRING,
-            isExpanded: {
+            hide: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
