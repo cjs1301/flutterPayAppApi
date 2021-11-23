@@ -88,7 +88,7 @@ router.put("/admin/charge/state", chargeHandler.stateChange); //충전진행상�
 router.get("/admin/subscription/search", chargeHandler.subscriptionSearch);
 router.put("/admin/subscription", chargeHandler.proceeding); //약정신청 진행중 변경
 router.delete("/admin/subscription", chargeHandler.termination); //약정신청 해지
-router.get("/files/:name", chargeHandler.downLoad); //약정신청서 다운로드
+router.get("/subscriptionFile/upload/:name", chargeHandler.downLoad); //약정신청서 다운로드
 
 router.get("/admin/transaction", adminTransactionHandler.search);
 router.get("/admin/calculate", adminTransactionHandler.transaction);
