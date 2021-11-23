@@ -7,8 +7,8 @@ const excel = require("../admin/excel");
 const { Op } = require("sequelize");
 const axios = require("axios");
 const FormData = require("form-data");
-const token = require("../token/accessToken");
-const pushEvent = require("../push");
+const token = require("../../modules/token");
+const pushEvent = require("../../modules/push");
 require("dotenv").config();
 
 module.exports = {
@@ -183,15 +183,12 @@ module.exports = {
     transaction: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
-            //let storeUserId = await token.storeCheck(authorization);
-            //정보 리스트
             let storeId = await token.storeCheck(authorization);
             if (!storeId) {
                 return res
                     .status(403)
                     .send({ data: null, message: "만료된 토큰입니다" });
             }
-
             const { year, month, limit, pageNum } = req.query;
             let offset = 0;
 
@@ -259,7 +256,6 @@ module.exports = {
             const authorization = req.headers.authorization;
             let storeId = await token.storeCheck(authorization);
             if (!storeId) {
-                //실패
                 return res
                     .status(403)
                     .send({ data: null, message: "만료된 토큰입니다" });
@@ -362,9 +358,13 @@ module.exports = {
     },
     download: async (req, res) => {
         try {
-            console.log(req.headers);
             const authorization = req.headers.authorization;
             let storeId = await token.storeCheck(authorization);
+            if (!storeId) {
+                return res
+                    .status(403)
+                    .send({ data: null, message: "만료된 토큰입니다" });
+            }
             const { year, month } = req.query;
             let from = Number(month) - 1;
             let to = Number(month);

@@ -1,7 +1,7 @@
 const { Request, Response } = require("express");
 const question = require("../../models/index.js").question;
 const answer = require("../../models/index.js").answer;
-const token = require("../token/accessToken");
+const token = require("../../modules/token");
 
 module.exports = {
     upload: async (req, res) => {

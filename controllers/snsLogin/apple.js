@@ -9,9 +9,9 @@ module.exports = {
     callback: async (req, res) => {
         try {
             const { userID } = req.body;
-            let kakaoId = "kko" + userID;
+            let appleId = userID;
             let dataForm = new FormData();
-            dataForm.append("id", kakaoId);
+            dataForm.append("id", appleId);
 
             let snsConfig = {
                 method: "post",
@@ -31,7 +31,7 @@ module.exports = {
                         },
                         defaults: {
                             id: snsUser.user_id,
-                            idValue: kakaoId,
+                            idValue: appleId,
                             userName: snsUser.name,
                             email: snsUser.email === null ? "" : snsUser.email,
                             phoneNumber:
@@ -43,7 +43,7 @@ module.exports = {
                                 snsUser.gPoint === null ? 0 : snsUser.gPoint,
                             notiAlarm: true,
                             belongGroup: "",
-                            rute: "kakao",
+                            rute: "apple",
                             couponCount:
                                 snsUser.coupon === null ? 0 : snsUser.coupon,
                         },
@@ -60,13 +60,13 @@ module.exports = {
                         let createToken = await token.make(User.id);
                         return res.send({
                             data: createToken,
-                            message: "카카오로 로그인하셨습니다",
+                            message: "애플로 로그인하셨습니다",
                         });
                     }
                     let createToken = await token.make(User.id);
                     return res.send({
                         data: createToken,
-                        message: "카카오로 로그인하셨습니다",
+                        message: "애플로 로그인하셨습니다",
                     });
                 }
             } catch (error) {
@@ -80,7 +80,7 @@ module.exports = {
             console.log(error);
             return res.status(500).send({
                 data: null,
-                message: "카카오 로그인이 되지 않았습니다.",
+                message: "애플 로그인이 되지 않았습니다.",
             });
         }
     },

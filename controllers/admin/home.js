@@ -4,10 +4,9 @@ const question = require("../../models/index.js").question;
 const charge = require("../../models/index.js").charge;
 const subscription = require("../../models/index.js").subscription;
 const event = require("../../models/index.js").event;
-const store = require("../../models/index.js").store;
 const transaction = require("../../models/index.js").transaction;
 const storeQuestion = require("../../models/index.js").storeQuestion;
-const token = require("../token/accessToken");
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
 const moment = require("moment");
 
@@ -15,7 +14,13 @@ module.exports = {
     homeInfo: async (req, res) => {
         //운영자 계정 확인
         const authorization = req.headers.authorization;
-        let adminId = 1;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         //정보 리스트
         let result = {
             today: {

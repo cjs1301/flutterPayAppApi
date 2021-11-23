@@ -6,11 +6,10 @@ const transaction = require("../../models/index.js").transaction;
 const alarm = require("../../models/index.js").alarm;
 const { Op } = require("sequelize");
 const axios = require("axios");
-const token = require("../token/accessToken");
-const pushEvent = require("../push");
+const token = require("../../modules/token");
+const pushEvent = require("../../modules/push");
 const FormData = require("form-data");
 const moment = require("moment");
-const { QueryTypes } = require("sequelize");
 const db = require("../../models/index.js");
 require("dotenv").config();
 
@@ -255,7 +254,10 @@ module.exports = {
         //약정충전 신청서 다운로드
         var path = require("path");
 
-        var file = path.join(__dirname, "../../" + req.params.name);
+        var file = path.join(
+            __dirname,
+            "../../subscruptionFile/download/" + req.params.name
+        );
         res.download(file, function (err) {
             if (err) {
                 console.log("Error");
@@ -288,7 +290,7 @@ module.exports = {
             file: file.path,
         });
 
-        res.status(200).send({
+        return res.status(200).send({
             data: null,
             message: "신청이 접수되었습니다.",
         });

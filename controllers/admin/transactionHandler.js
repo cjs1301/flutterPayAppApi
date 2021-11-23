@@ -2,18 +2,22 @@ const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const store = require("../../models/index.js").store;
 const transaction = require("../../models/index.js").transaction;
-const alarm = require("../../models/index.js").alarm;
+const token = require("../../modules/token");
 const excel = require("./excel");
 const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
 
 module.exports = {
     search: async (req, res) => {
         try {
             //관리자 확인
             const authorization = req.headers.authorization;
-            let adminId = 1;
-
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { date, state, limit, pageNum, storeId } = req.query;
 
             let offset = 0;
@@ -155,8 +159,13 @@ module.exports = {
     transaction: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
-            let adminId = 1;
-
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { year, month, limit, pageNum, storeId } = req.query;
 
             let offset = 0;
@@ -261,8 +270,13 @@ module.exports = {
     storelist: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
-            let adminId = 1;
-
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             let result = await store.findAll({
                 where: { isShow: true },
                 attributes: ["id", "name"],

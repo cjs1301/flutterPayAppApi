@@ -1,8 +1,6 @@
 const { Request, Response } = require("express");
-const alarm = require("../../models/index.js").alarm;
-const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
 const event = require("../../models/index.js").event;
+const token = require("../../modules/token");
 const {
     start,
     end,
@@ -15,6 +13,14 @@ const {
 module.exports = {
     uploadAndEdit: async (req, res) => {
         try {
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             let today = new Date();
             let state;
             const { title, content, startDate, endDate, hide, id, writer } =
@@ -81,59 +87,16 @@ module.exports = {
             console.log(error);
             return res.status(500).send({ data: null, message: "오류" });
         }
-
-        // if (id) {
-        //     let findEvent = await event.findOne({
-        //         where: { id: id },
-        //     });
-        //     if (findEvent) {
-        //         console.log(img);
-        //         if (img !== undefined) {
-        //             findEvent.img = img[0].path;
-        //         }
-        //         if (bannerImg !== undefined) {
-        //             findEvent.bannerImg = bannerImg[0].path;
-        //         }
-        //         findEvent.content = content;
-        //         findEvent.title = title;
-        //         findEvent.hide = hide;
-        //         findEvent.startDate = new Date(startDate);
-        //         findEvent.endDate = new Date(endDate);
-        //         findEvent.state = state;
-        //         await findEvent.save();
-        //         return res.status(200).send({
-        //             data: null,
-        //             message: "수정 완료",
-        //         });
-        //     }
-        //     return res.status(400).send({
-        //         data: null,
-        //         message: "해당글은 없는 글입니다.",
-        //     });
-        // }
-
-        // if (img && bannerImg) {
-        //     await event.create({
-        //         img: img[0].path,
-        //         bannerImg: bannerImg[0].path,
-        //         content: content,
-        //         title: title,
-        //         hide: hide,
-        //         startDate: new Date(startDate),
-        //         endDate: new Date(endDate),
-        //         state: state,
-        //     });
-
-        //     return res.status(200).send({
-        //         data: null,
-        //         message: "작성 완료",
-        //     });
-        // }
-        // return res
-        //     .status(500)
-        //     .send({ data: null, message: "누락된 항목이 있습니다." });
     },
     delete: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.body;
         const deletEvent = await event.findOne({ where: { id: id } });
         deletEvent.isShow = false;
@@ -147,7 +110,13 @@ module.exports = {
         try {
             //관리자 확인
             const authorization = req.headers.authorization;
-            let admin = 1;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { word, date, state, limit, pageNum, registration } =
                 req.query;
             let offset = 0;
@@ -221,6 +190,14 @@ module.exports = {
         }
     },
     copy: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.body;
         const findEvent = await event.findOne({ where: { id: id } });
         await event.create({
@@ -240,6 +217,14 @@ module.exports = {
         });
     },
     event: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.query;
         const findEvent = await event.findOne({ where: { id: id } });
         return res.status(200).send({

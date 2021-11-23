@@ -5,7 +5,7 @@ const storeNotice = require("../../models/index.js").storeNotice;
 const transaction = require("../../models/index.js").transaction;
 const storeQuestion = require("../../models/index.js").storeQuestion;
 const storeAnswer = require("../../models/index.js").storeAnswer;
-const token = require("../token/accessToken");
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
 const moment = require("moment");
 
@@ -15,9 +15,10 @@ module.exports = {
         const authorization = req.headers.authorization;
         let storeId = await token.storeCheck(authorization);
         if (!storeId) {
-            return res
-                .status(403)
-                .send({ data: null, message: "만료된 토큰입니다" });
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
         }
         //정보 리스트
         let result = {
@@ -123,6 +124,6 @@ module.exports = {
             ],
         });
 
-        res.status(200).send({ data: result, message: "완료" });
+        return res.status(200).send({ data: result, message: "완료" });
     },
 };

@@ -12,7 +12,7 @@ const app = express();
 require("dotenv").config();
 
 const { sequelize } = require("./models");
-const defultData = require("./defultData");
+const defultData = require("./modules/defultData");
 const router = require("./router/index");
 
 app.use(logger("dev"));

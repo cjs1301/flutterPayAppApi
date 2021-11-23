@@ -4,17 +4,21 @@ const charge = require("../../models/index.js").charge;
 const subscription = require("../../models/index.js").subscription;
 const transaction = require("../../models/index.js").transaction;
 const alarm = require("../../models/index.js").alarm;
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
-const pushEvent = require("../../controllers/push");
+const pushEvent = require("../../modules/push");
 
 module.exports = {
     chargeSearch: async (req, res) => {
         try {
-            //관리자 확인
-            //운영자 계정 확인
             const authorization = req.headers.authorization;
-            let adminId = 1;
-
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { name, date, state, limit, pageNum } = req.query;
             let offset = 0;
 
@@ -158,6 +162,14 @@ module.exports = {
     },
     stateChange: async (req, res) => {
         try {
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { ids, state } = req.body;
             let idsArr = ids.split(",");
             idsArr = idsArr.map((el) => (el = Number(el)));
@@ -258,10 +270,14 @@ module.exports = {
     subscriptionSearch: async (req, res) => {
         try {
             //관리자 확인
-            //운영자 계정 확인
             const authorization = req.headers.authorization;
-            let adminId = 1;
-
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { name, state, limit, pageNum } = req.query;
             let offset = 0;
 
@@ -338,6 +354,14 @@ module.exports = {
         }
     },
     proceeding: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { ids } = req.body;
         try {
             for (let el of ids) {
@@ -374,6 +398,14 @@ module.exports = {
         }
     },
     downLoad: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         var path = require("path");
         var file = path.join(__dirname, "../../files/" + req.params.name);
         res.download(file, function (err) {
@@ -386,6 +418,14 @@ module.exports = {
         });
     },
     termination: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { ids } = req.body;
 
         try {
