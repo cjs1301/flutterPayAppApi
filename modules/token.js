@@ -11,7 +11,7 @@ module.exports = {
     check: async (authorization) => {
         let accessTokenData;
         if (!authorization) {
-            return false;
+            return false; //dd
         }
         let token = authorization.split(" ")[1];
         try {
