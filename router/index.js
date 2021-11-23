@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { imageUpload } = require("./modules/multerConfig");
+const { imageUpload } = require("../modules/multerConfig");
 const {
     user, //user
     pay,
