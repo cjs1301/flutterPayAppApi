@@ -15,9 +15,10 @@ module.exports = {
         const authorization = req.headers.authorization;
         let storeId = await token.storeCheck(authorization);
         if (!storeId) {
-            return res
-                .status(403)
-                .send({ data: null, message: "만료된 토큰입니다" });
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
         }
         //정보 리스트
         let result = {

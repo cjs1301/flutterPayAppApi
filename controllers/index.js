@@ -30,6 +30,7 @@ const refreshData = require("./refreshData");
 //snsLogin
 const kakao = require("./snsLogin/kakao");
 const naver = require("./snsLogin/naver");
+const apple = require("./snsLogin/apple");
 module.exports = {
     user, //user
     pay,
@@ -38,6 +39,7 @@ module.exports = {
 
     kakao, //sns
     naver,
+    apple,
 
     refreshData, //app
     appListData,

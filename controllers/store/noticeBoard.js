@@ -1,10 +1,19 @@
 const { Request, Response } = require("express");
 const storeNotice = require("../../models/index.js").storeNotice;
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
 
 module.exports = {
     search: async (req, res) => {
         try {
+            const authorization = req.headers.authorization;
+            let storeId = await token.storeCheck(authorization);
+            if (!storeId) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { word, date, limit, pageNum } = req.query;
             let offset = 0;
 
@@ -12,7 +21,7 @@ module.exports = {
                 offset = limit * (pageNum - 1);
             }
             if (word === undefined || date === undefined) {
-                res.status(400).send({
+                return res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
                 });

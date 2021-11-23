@@ -2,14 +2,21 @@ const { Request, Response } = require("express");
 const storeQuestion = require("../../models/index.js").storeQuestion;
 const storeAnswer = require("../../models/index.js").storeAnswer;
 const store = require("../../models/index.js").store;
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
 
 module.exports = {
     storeQuestion: async (req, res) => {
         try {
-            const authorization = req.headers.authorization;
             //관리자 확인
-
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { word, date, state, isAnswer, limit, pageNum } = req.query;
             let offset = 0;
             console.log(state);
@@ -222,7 +229,14 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            //성공
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { id } = req.body;
             try {
                 let find = await storeQuestion.findOne({
@@ -250,6 +264,14 @@ module.exports = {
         }
     },
     answer: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { title, content, questionId, writer } = req.body;
         console.log(req.body);
         try {

@@ -11,10 +11,10 @@ module.exports = {
             const authorization = req.headers.authorization;
             let storeId = await token.storeCheck(authorization);
             if (!storeId) {
-                //실패
-                return res
-                    .status(403)
-                    .send({ data: null, message: "만료된 토큰입니다" });
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
             } else {
                 //성공
                 const { title, state, content, id } = req.body;
@@ -67,12 +67,12 @@ module.exports = {
     questionList: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
-            //관리자 확인
             let storeId = await token.storeCheck(authorization);
             if (!storeId) {
-                return res
-                    .status(403)
-                    .send({ data: null, message: "만료된 토큰입니다" });
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
             }
             const { word, date, state, limit, pageNum } = req.query;
             let offset = 0;
@@ -281,6 +281,14 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
+            const authorization = req.headers.authorization;
+            let storeId = await token.storeCheck(authorization);
+            if (!storeId) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { id } = req.body;
             console.log(req.body);
             let find = await storeQuestion.findOne({

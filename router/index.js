@@ -9,6 +9,7 @@ const {
 
     kakao, //sns
     naver,
+    apple,
 
     refreshData, //app
     appListData,
@@ -37,6 +38,7 @@ router.get("/", (req, res) => {
 
 //sns
 router.post("/auth/kakao/callback", kakao.callback);
+router.post("/auth/apple/callback", apple.callback);
 router.get("/auth/naver/callback/android", naver.callbackAndroid); //andriod
 router.get("/auth/naver/callback/ios", naver.callbackIos); //ios
 //user

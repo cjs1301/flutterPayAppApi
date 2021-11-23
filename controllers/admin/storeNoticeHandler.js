@@ -1,10 +1,19 @@
 const { Request, Response } = require("express");
 const storeNotice = require("../../models/index.js").storeNotice;
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
 
 module.exports = {
     notice: async (req, res) => {
         try {
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { word, date, limit, pageNum } = req.query;
             let offset = 0;
 
@@ -144,6 +153,14 @@ module.exports = {
     },
     uploadEdit: async (req, res) => {
         try {
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { title, content, isShow, id, writer } = req.body;
 
             if (!title || !content || isShow === undefined) {
@@ -185,6 +202,14 @@ module.exports = {
         }
     },
     delete: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.body;
         const del = await storeNotice.findOne({ where: { id: id } });
         del.isShow = false;

@@ -1,5 +1,6 @@
 const { Request, Response } = require("express");
 const event = require("../../models/index.js").event;
+const token = require("../../modules/token");
 const {
     start,
     end,
@@ -12,6 +13,14 @@ const {
 module.exports = {
     uploadAndEdit: async (req, res) => {
         try {
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             let today = new Date();
             let state;
             const { title, content, startDate, endDate, hide, id, writer } =
@@ -80,6 +89,14 @@ module.exports = {
         }
     },
     delete: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.body;
         const deletEvent = await event.findOne({ where: { id: id } });
         deletEvent.isShow = false;
@@ -93,7 +110,13 @@ module.exports = {
         try {
             //관리자 확인
             const authorization = req.headers.authorization;
-            let admin = 1;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { word, date, state, limit, pageNum, registration } =
                 req.query;
             let offset = 0;
@@ -167,6 +190,14 @@ module.exports = {
         }
     },
     copy: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.body;
         const findEvent = await event.findOne({ where: { id: id } });
         await event.create({
@@ -186,6 +217,14 @@ module.exports = {
         });
     },
     event: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.query;
         const findEvent = await event.findOne({ where: { id: id } });
         return res.status(200).send({

@@ -3,11 +3,20 @@ const user = require("../../models/index.js").user;
 const question = require("../../models/index.js").question;
 const answer = require("../../models/index.js").answer;
 const alarm = require("../../models/index.js").alarm;
+const token = require("../../modules/token");
 const { Op } = require("sequelize");
 const pushEvent = require("../../modules/push");
 
 module.exports = {
     delete: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { id } = req.body;
         const deletQuestion = await question.findOne({
             where: { id: id },
@@ -19,7 +28,7 @@ module.exports = {
             });
         }
         deletQuestion.isShow = false;
-        deletQuestion.save();
+        await deletQuestion.save();
         return res.status(200).send({
             data: null,
             message: "성공적으로 삭제 하였습니다.",
