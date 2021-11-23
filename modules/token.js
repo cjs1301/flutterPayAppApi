@@ -10,7 +10,9 @@ module.exports = {
     },
     check: async (authorization) => {
         let accessTokenData;
-
+        if (!authorization) {
+            return false;
+        }
         let token = authorization.split(" ")[1];
         try {
             accessTokenData = jwt.verify(token, process.env.JWT_SECRET);
@@ -34,7 +36,9 @@ module.exports = {
     },
     storeCheck: async (authorization) => {
         let accessTokenData;
-
+        if (!authorization) {
+            return false;
+        }
         let token = authorization.split(" ")[1];
         try {
             accessTokenData = jwt.verify(token, process.env.JWT_SECRET);
