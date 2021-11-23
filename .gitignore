@@ -105,6 +105,7 @@ dist
 
 testData.js
 package-lock.json
-supcriptionFile/upload/
-eventImg/
-path/to/
+subcriptionFile/upload/**
+eventImg/**
+path/to/**
+!README.md
