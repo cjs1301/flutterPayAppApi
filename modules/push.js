@@ -34,6 +34,16 @@ module.exports = {
                     body: message.body,
                 },
                 token: fcmToken,
+                apns: {
+                    headers: {
+                        "apns-priority": "10",
+                    },
+                    payload: {
+                        aps: {
+                            sound: "default",
+                        },
+                    },
+                },
             };
             return await admin.messaging().send(payload);
             //}
@@ -59,6 +69,16 @@ module.exports = {
                     body: message.body,
                 },
                 tokens: registrationTokens,
+                apns: {
+                    headers: {
+                        "apns-priority": "10",
+                    },
+                    payload: {
+                        aps: {
+                            sound: "default",
+                        },
+                    },
+                },
             };
             return await admin.messaging().sendMulticast(message);
         } catch (error) {
