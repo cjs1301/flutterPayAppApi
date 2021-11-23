@@ -398,16 +398,6 @@ module.exports = {
         }
     },
     downLoad: async (req, res) => {
-        const authorization = req.headers.authorization;
-        console.log(authorization);
-        let admin = await token.storeCheck(authorization);
-
-        if (!admin) {
-            return res.status(403).send({
-                data: null,
-                message: "유효하지 않은 토큰 입니다.",
-            });
-        }
         var path = require("path");
         var file = path.join(
             __dirname,
