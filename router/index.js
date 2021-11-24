@@ -115,13 +115,13 @@ router.get("/admin/notice", noticeHandler.notice); //전체 공지
 router.post("/admin/notice", noticeHandler.uploadEdit);
 router.delete("/admin/notice", noticeHandler.delete);
 
-router.get("/admin/stroenotice", storeNoticeHandler.notice); //운영공지
-router.post("/admin/stroenotice", storeNoticeHandler.uploadEdit);
-router.delete("/admin/stroenotice", storeNoticeHandler.delete);
+router.get("/admin/storenotice", storeNoticeHandler.notice); //운영공지
+router.post("/admin/storenotice", storeNoticeHandler.uploadEdit);
+router.delete("/admin/storenotice", storeNoticeHandler.delete);
 
-router.get("/admin/stroequestion", storeQuestionHandler.storeQuestion); //운영문의
-router.post("/admin/stroequestion", storeQuestionHandler.answer);
-router.delete("/admin/stroequestion", storeQuestionHandler.delete);
+router.get("/admin/storequestion", storeQuestionHandler.storeQuestion); //운영문의
+router.post("/admin/storequestion", storeQuestionHandler.answer);
+router.delete("/admin/storequestion", storeQuestionHandler.delete);
 
 router.get("/admin/faq", faqHandler.faq); //자주묻는 질문
 router.post("/admin/faq", faqHandler.uploadEdit);
