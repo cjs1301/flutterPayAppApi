@@ -1,7 +1,6 @@
 const { Request, Response } = require("express");
 const { Op } = require("sequelize");
 const event = require("../../models/index.js").event;
-const moment = require("moment");
 
 module.exports = {
     start: async (word, date, state, limit, offset, result, res) => {
@@ -15,7 +14,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -23,30 +22,23 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -66,32 +58,25 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
         }
 
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     state: {
                         [Op.or]: stateArr, //["시작전,진행중,종료"]
                     },
@@ -110,48 +95,26 @@ module.exports = {
                 },
                 limit: Number(limit),
                 offset: Number(offset),
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     state: state,
                 },
                 limit: Number(limit),
                 offset: Number(offset),
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -166,38 +129,31 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
-                        createdAt: {
+                        isShow: true,
+                        endDate: {
                             [Op.between]: [startDay, endDay],
                         },
                         state: state,
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -215,34 +171,27 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
         }
 
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     state: state,
                     [Op.or]: [
                         {
@@ -257,50 +206,28 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     state: state,
                 },
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -315,38 +242,31 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
                         state: state,
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -364,34 +284,27 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
         }
 
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     state: state,
                     [Op.or]: [
                         {
@@ -406,50 +319,28 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     state: state,
                 },
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -465,37 +356,30 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -512,34 +396,27 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
         }
 
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     [Op.or]: [
                         {
                             title: {
@@ -553,47 +430,25 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
-                where: { delete: false },
-                order: [["endDate", "DESC"]],
+                where: { isShow: true },
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -608,37 +463,30 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
                     },
                     limit: Number(limit),
                     offset: Number(offset),
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -655,34 +503,27 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
         }
 
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     [Op.or]: [
                         {
                             title: {
@@ -696,47 +537,25 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
-                where: { delete: false },
-                order: [["endDate", "DESC"]],
+                where: { isShow: true },
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -751,37 +570,30 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        delete: false,
+                        isShow: true,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -798,34 +610,27 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["endDate", "DESC"]],
+                    order: [["createdAt", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                result.total = (await event.count({
-                    where: { delete: false },
-                }))
-                    ? await event.count({ where: { delete: false } })
-                    : 0;
-                let today = new Date(moment()).getTime;
-                if (result.rows.length !== 0) {
-                    result.rows.sort((a, b) => {
-                        return (
-                            Math.abs(new Date(a.endDate).getTime - today) >
-                            Math.abs(new Date(b.endDate).getTime - today)
-                        );
-                    });
+                if (result) {
+                    result.total = (await event.count({
+                        where: { isShow: true },
+                    }))
+                        ? await event.count({ where: { isShow: true } })
+                        : 0;
+                    return res
+                        .status(200)
+                        .send({ data: result, message: "검색 완료" });
                 }
-                return res
-                    .status(200)
-                    .send({ data: result, message: "검색 완료" });
             }
         }
 
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    delete: false,
+                    isShow: true,
                     [Op.or]: [
                         {
                             title: {
@@ -839,47 +644,25 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["endDate", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
-                where: { delete: false },
-                order: [["endDate", "DESC"]],
+                where: { isShow: true },
+                order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({
-                where: { delete: false },
-            }))
-                ? await event.count({ where: { delete: false } })
+            result.total = (await event.count({ where: { isShow: true } }))
+                ? await event.count({ where: { isShow: true } })
                 : 0;
-            let today = new Date(moment()).getTime;
-            if (result.rows.length !== 0) {
-                result.rows.sort((a, b) => {
-                    return (
-                        Math.abs(new Date(a.endDate).getTime - today) >
-                        Math.abs(new Date(b.endDate).getTime - today)
-                    );
-                });
-            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
