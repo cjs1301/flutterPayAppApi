@@ -158,7 +158,7 @@ module.exports = {
                 });
             }
             const { title, content, hide, id, writer } = req.body;
-            if (!title || !content || isShow === undefined) {
+            if (!title || !content || hide === undefined) {
                 return res.status(400).send({
                     data: null,
                     message: "항목이 빠져 있습니다",

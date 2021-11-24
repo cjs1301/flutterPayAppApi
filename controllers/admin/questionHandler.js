@@ -36,7 +36,14 @@ module.exports = {
     },
     answer: async (req, res) => {
         const { title, content, questionId, writer } = req.body;
-
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         try {
             const saveAnswer = await question.findOne({
                 where: { id: questionId },
@@ -83,22 +90,46 @@ module.exports = {
         }
     },
     questionEdit: async (req, res) => {
+        const authorization = req.headers.authorization;
+        let admin = await token.storeCheck(authorization);
+        if (!admin) {
+            return res.status(403).send({
+                data: null,
+                message: "유효하지 않은 토큰 입니다.",
+            });
+        }
         const { title, content, questionId } = req.body;
+        try {
+            const saveAnswer = await question.findOne({
+                where: { id: questionId ? questionId : "" },
+            });
+            if (saveAnswer) {
+                saveAnswer.title = title;
+                saveAnswer.content = content;
+                await saveAnswer.save();
 
-        const saveAnswer = await question.findOne({
-            where: { id: questionId },
-        });
-        saveAnswer.title = title;
-        saveAnswer.content = content;
-        saveAnswer.save();
-
-        return res.status(200).send({ data: null, message: "수정 완료" });
+                return res
+                    .status(200)
+                    .send({ data: null, message: "수정 완료" });
+            }
+            return res
+                .status(400)
+                .send({ data: null, message: "없는 게시글 입니다" });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ data: error, message: "오류" });
+        }
     },
     questionList: async (req, res) => {
         try {
             const authorization = req.headers.authorization;
-            //관리자 확인
-
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
             const { word, date, state, limit, pageNum } = req.query;
             let offset = 0;
 
@@ -112,7 +143,7 @@ module.exports = {
                 limit === undefined ||
                 pageNum === undefined
             ) {
-                res.status(400).send({
+                return res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
                 });
@@ -299,6 +330,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error);
+            throw error;
         }
     },
 };
