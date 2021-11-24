@@ -22,7 +22,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                 });
                 if (result) {
                     result.total = (await event.count({
@@ -58,7 +58,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                 });
                 if (result) {
                     result.total = (await event.count({
@@ -95,7 +95,7 @@ module.exports = {
                 },
                 limit: Number(limit),
                 offset: Number(offset),
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
             });
             result.total = (await event.count({ where: { delete: false } }))
                 ? await event.count({ where: { delete: false } })
@@ -110,7 +110,7 @@ module.exports = {
                 },
                 limit: Number(limit),
                 offset: Number(offset),
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
             });
             result.total = (await event.count({ where: { delete: false } }))
                 ? await event.count({ where: { delete: false } })
@@ -130,12 +130,12 @@ module.exports = {
                 result = await event.findAndCountAll({
                     where: {
                         delete: false,
-                        endDate: {
+                        createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
                         state: state,
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -171,7 +171,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -206,7 +206,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -221,7 +221,7 @@ module.exports = {
                     delete: false,
                     state: state,
                 },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -248,7 +248,7 @@ module.exports = {
                         },
                         state: state,
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -284,7 +284,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -319,7 +319,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -334,7 +334,7 @@ module.exports = {
                     delete: false,
                     state: state,
                 },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -361,7 +361,7 @@ module.exports = {
                             [Op.between]: [startDay, endDay],
                         },
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -396,7 +396,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -430,7 +430,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -442,7 +442,7 @@ module.exports = {
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: { delete: false },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -470,7 +470,7 @@ module.exports = {
                     },
                     limit: Number(limit),
                     offset: Number(offset),
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                 });
                 if (result) {
                     result.total = (await event.count({
@@ -503,7 +503,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -537,7 +537,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -549,7 +549,7 @@ module.exports = {
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: { delete: false },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -575,7 +575,7 @@ module.exports = {
                             [Op.between]: [startDay, endDay],
                         },
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -610,7 +610,7 @@ module.exports = {
                             },
                         ],
                     },
-                    order: [["createdAt", "DESC"]],
+                    order: [["endDate", "DESC"]],
                     limit: Number(limit),
                     offset: Number(offset),
                 });
@@ -644,7 +644,7 @@ module.exports = {
                         },
                     ],
                 },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
@@ -656,7 +656,7 @@ module.exports = {
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: { delete: false },
-                order: [["createdAt", "DESC"]],
+                order: [["endDate", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
