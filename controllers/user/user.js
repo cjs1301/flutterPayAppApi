@@ -354,6 +354,7 @@ module.exports = {
         }
         //페이 데이터베이스에 저장
         const userInfo = apiResult.data.data;
+        console.log(userInfo);
         try {
             const [User, created] = await user.findOrCreate({
                 where: { id: userInfo.user_id ? userInfo.user_id : "" },
@@ -377,11 +378,20 @@ module.exports = {
                     .send({ data: userToken, message: "로그인 성공" });
             }
             User.id = userInfo.user_id;
-            User.userName = userInfo.name ? userInfo.name : "";
-            User.email = userInfo.email ? userInfo.email : "";
-            User.phoneNumber = userInfo.callphone ? userInfo.callphone : "";
+            if (userInfo.name) {
+                User.userName = userInfo.name;
+            }
+            if (userInfo.email) {
+                User.email = userInfo.email;
+            }
+            if (userInfo.callphone) {
+                User.phoneNumber = userInfo.callphone;
+            }
+            if (fcmToken) {
+                User.fcmToken = fcmToken;
+            }
             User.couponCount = userInfo.coupon;
-            User.fcmToken = fcmToken ? fcmToken : "";
+
             await User.save();
             let userToken = await token.make(User.id);
             return res.status(200).send({
