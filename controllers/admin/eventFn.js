@@ -1,6 +1,7 @@
 const { Request, Response } = require("express");
 const { Op } = require("sequelize");
 const event = require("../../models/index.js").event;
+const moment = require("moment");
 
 module.exports = {
     start: async (word, date, state, limit, offset, result, res) => {
@@ -24,16 +25,23 @@ module.exports = {
                     offset: Number(offset),
                     order: [["endDate", "DESC"]],
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
@@ -60,16 +68,23 @@ module.exports = {
                     offset: Number(offset),
                     order: [["endDate", "DESC"]],
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
         }
 
@@ -97,9 +112,20 @@ module.exports = {
                 offset: Number(offset),
                 order: [["endDate", "DESC"]],
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
@@ -112,9 +138,20 @@ module.exports = {
                 offset: Number(offset),
                 order: [["endDate", "DESC"]],
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -139,16 +176,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
@@ -175,16 +219,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
         }
 
@@ -210,9 +261,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
@@ -225,9 +287,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -252,16 +325,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
@@ -288,16 +368,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
         }
 
@@ -323,9 +410,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
@@ -338,9 +436,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -365,16 +474,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
@@ -400,16 +516,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
         }
 
@@ -434,9 +557,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
@@ -446,9 +580,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -472,16 +617,23 @@ module.exports = {
                     offset: Number(offset),
                     order: [["endDate", "DESC"]],
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
@@ -507,16 +659,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
         }
 
@@ -541,9 +700,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
@@ -553,9 +723,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },
@@ -579,16 +760,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
             if (word) {
                 result = await event.findAndCountAll({
@@ -614,16 +802,23 @@ module.exports = {
                     limit: Number(limit),
                     offset: Number(offset),
                 });
-                if (result) {
-                    result.total = (await event.count({
-                        where: { delete: false },
-                    }))
-                        ? await event.count({ where: { delete: false } })
-                        : 0;
-                    return res
-                        .status(200)
-                        .send({ data: result, message: "검색 완료" });
+                result.total = (await event.count({
+                    where: { delete: false },
+                }))
+                    ? await event.count({ where: { delete: false } })
+                    : 0;
+                let today = new Date(moment()).getTime;
+                if (result.rows.length !== 0) {
+                    result.rows.sort((a, b) => {
+                        return (
+                            Math.abs(new Date(a.endDate).getTime - today) >
+                            Math.abs(new Date(b.endDate).getTime - today)
+                        );
+                    });
                 }
+                return res
+                    .status(200)
+                    .send({ data: result, message: "검색 완료" });
             }
         }
 
@@ -648,9 +843,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
@@ -660,9 +866,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { delete: false } }))
+            result.total = (await event.count({
+                where: { delete: false },
+            }))
                 ? await event.count({ where: { delete: false } })
                 : 0;
+            let today = new Date(moment()).getTime;
+            if (result.rows.length !== 0) {
+                result.rows.sort((a, b) => {
+                    return (
+                        Math.abs(new Date(a.endDate).getTime - today) >
+                        Math.abs(new Date(b.endDate).getTime - today)
+                    );
+                });
+            }
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
     },

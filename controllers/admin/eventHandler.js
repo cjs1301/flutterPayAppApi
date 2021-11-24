@@ -135,7 +135,10 @@ module.exports = {
                 });
             }
 
-            let result;
+            let result = {
+                rows: [],
+                total: 0,
+            };
             if (!state) {
                 return res
                     .status(400)
