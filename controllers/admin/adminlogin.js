@@ -25,7 +25,9 @@ module.exports = {
                     .send({ data: result.data.data, message: "성공" });
             } catch (error) {
                 console.log(error);
-                return res.status(500).send({ data: null, message: "오류" });
+                return res
+                    .status(500)
+                    .send({ data: null, message: error.response.data.message });
             }
         } catch (error) {
             console.log(error);
