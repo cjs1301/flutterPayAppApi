@@ -356,17 +356,17 @@ module.exports = {
         const userInfo = apiResult.data.data;
         try {
             const [User, created] = await user.findOrCreate({
-                where: { id: userInfo.user_id },
+                where: { id: userInfo.user_id ? userInfo.user_id : "" },
                 defaults: {
                     id: userInfo.user_id,
                     idValue: id,
-                    userName: userInfo.name,
-                    email: userInfo.email,
-                    phoneNumber: userInfo.callphone,
+                    userName: userInfo.name ? userInfo.name : "",
+                    email: userInfo.email ? userInfo.email : "",
+                    phoneNumber: userInfo.callphone ? userInfo.callphone : "",
                     gMoney: 0,
                     couponCount: userInfo.coupon,
                     notiAlarm: true,
-                    fcmToken: fcmToken,
+                    fcmToken: fcmToken ? fcmToken : "",
                     //todo : rute 추가하기 => 로컬로그인인지 소셜로그인인지 파악
                 },
             });
@@ -377,11 +377,11 @@ module.exports = {
                     .send({ data: userToken, message: "로그인 성공" });
             }
             User.id = userInfo.user_id;
-            User.userName = userInfo.name;
-            User.email = userInfo.email;
-            User.phoneNumber = userInfo.callphone;
+            User.userName = userInfo.name ? userInfo.name : "";
+            User.email = userInfo.email ? userInfo.email : "";
+            User.phoneNumber = userInfo.callphone ? userInfo.callphone : "";
             User.couponCount = userInfo.coupon;
-            User.fcmToken = fcmToken;
+            User.fcmToken = fcmToken ? fcmToken : "";
             await User.save();
             let userToken = await token.make(User.id);
             return res.status(200).send({
