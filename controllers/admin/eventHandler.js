@@ -10,7 +10,7 @@ const {
     createdAll,
 } = require("./eventFn");
 
-let scheduler = (state, model) => {
+let scheduler = async (state, model) => {
     if (state !== "종료") {
         if (state === "진행중") {
             await event.sequelize.query(
