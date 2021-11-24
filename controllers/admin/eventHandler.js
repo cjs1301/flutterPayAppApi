@@ -10,25 +10,6 @@ const {
     createdAll,
 } = require("./eventFn");
 
-let scheduler = async (state, model) => {
-    if (state !== "종료") {
-        if (state === "진행중") {
-            await event.sequelize.query(
-                `CREATE EVENT event${model.id}` +
-                    ` ON SCHEDULE AT ${model.endDate}` +
-                    " DO" +
-                    ` UPDATE events SET state = '종료' WHERE id = ${model.id}`
-            );
-        }
-        await event.sequelize.query(
-            `CREATE EVENT event${model.id}` +
-                ` ON SCHEDULE AT ${model.startDate}` +
-                " DO" +
-                ` UPDATE events SET state = '진행중' WHERE id = ${model.id}`
-        );
-    }
-};
-
 module.exports = {
     uploadAndEdit: async (req, res) => {
         try {
@@ -44,7 +25,6 @@ module.exports = {
             let state;
             const { title, content, startDate, endDate, hide, id, writer } =
                 req.body;
-            console.log(req);
             console.log(req.body);
             const { img, bannerImg } = req.files;
             console.log(req.files);
@@ -94,8 +74,6 @@ module.exports = {
                 find.endDate = new Date(endDate);
                 find.state = state;
                 await find.save();
-                await event.sequelize.query(`DROP EVENT event${find.id}`);
-                scheduler(state, find);
                 return res.status(200).send({
                     data: null,
                     message: "수정 완료",
