@@ -101,14 +101,14 @@ module.exports = {
             ],
         });
         result.recentNotice = await storeNotice.findAll({
-            where: { isShow: true, hide: false },
+            where: { delete: false, hide: false },
             order: [["createdAt", "DESC"]],
             limit: 4,
         });
 
         result.myQuestion = await storeQuestion.findAll({
             where: {
-                isShow: true,
+                delete: false,
                 storeId: storeId,
             },
             order: [["createdAt", "DESC"]],

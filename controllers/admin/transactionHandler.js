@@ -187,7 +187,7 @@ module.exports = {
 
                 let storeName = await store.findOne({
                     where: {
-                        isShow: true,
+                        delete: false,
                         id: storeId,
                     },
                     attributes: ["name"],
@@ -205,7 +205,7 @@ module.exports = {
                     .send({ data: result, message: "내역 출력" });
             } else {
                 let storeData = await store.findAndCountAll({
-                    where: { isShow: true },
+                    where: { delete: false },
                     limit: Number(limit),
                     offset: Number(offset),
                     attributes: ["id", "name"],
@@ -261,7 +261,7 @@ module.exports = {
                 });
             }
             let result = await store.findAll({
-                where: { isShow: true },
+                where: { delete: false },
                 attributes: ["id", "name"],
                 order: [["name", "ASC"]],
             });
@@ -308,7 +308,7 @@ module.exports = {
 
                 let storeName = await store.findOne({
                     where: {
-                        isShow: true,
+                        delete: false,
                         id: storeId,
                     },
                     attributes: ["name"],
@@ -327,7 +327,7 @@ module.exports = {
                 //     .send({ data: result, message: "내역 출력" });
             } else {
                 let storeData = await store.findAll({
-                    where: { isShow: true },
+                    where: { delete: false },
                     attributes: ["id", "name"],
                     order: [["name", "ASC"]],
                 });

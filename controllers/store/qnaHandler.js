@@ -109,7 +109,7 @@ module.exports = {
                 if (!word) {
                     result = await storeQuestion.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             storeId: storeId,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
@@ -133,10 +133,10 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await storeQuestion.count({
-                            where: { isShow: true, storeId: storeId },
+                            where: { delete: false, storeId: storeId },
                         }))
                             ? await storeQuestion.count({
-                                  where: { isShow: true, storeId: storeId },
+                                  where: { delete: false, storeId: storeId },
                               })
                             : 0;
                         return res
@@ -147,7 +147,7 @@ module.exports = {
                 if (word) {
                     result = await storeQuestion.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             storeId: storeId,
                             [Op.or]: [
                                 {
@@ -183,10 +183,10 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await storeQuestion.count({
-                            where: { isShow: true, storeId: storeId },
+                            where: { delete: false, storeId: storeId },
                         }))
                             ? await storeQuestion.count({
-                                  where: { isShow: true, storeId: storeId },
+                                  where: { delete: false, storeId: storeId },
                               })
                             : 0;
                         return res
@@ -199,7 +199,7 @@ module.exports = {
             if (!date && word) {
                 result = await storeQuestion.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         storeId: storeId,
                         [Op.or]: [
                             {
@@ -231,10 +231,10 @@ module.exports = {
                     ],
                 });
                 result.total = (await storeQuestion.count({
-                    where: { isShow: true, storeId: storeId },
+                    where: { delete: false, storeId: storeId },
                 }))
                     ? await storeQuestion.count({
-                          where: { isShow: true, storeId: storeId },
+                          where: { delete: false, storeId: storeId },
                       })
                     : 0;
                 return res
@@ -244,7 +244,7 @@ module.exports = {
             if (!word && !date) {
                 result = await storeQuestion.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         storeId: storeId,
                         state: {
                             [Op.or]: stateArr, //["정산문의","결제문의","기타"]
@@ -264,10 +264,10 @@ module.exports = {
                     ],
                 });
                 result.total = (await storeQuestion.count({
-                    where: { isShow: true, storeId: storeId },
+                    where: { delete: false, storeId: storeId },
                 }))
                     ? await storeQuestion.count({
-                          where: { isShow: true, storeId: storeId },
+                          where: { delete: false, storeId: storeId },
                       })
                     : 0;
                 return res
@@ -294,7 +294,7 @@ module.exports = {
             let find = await storeQuestion.findOne({
                 where: { id: id },
             });
-            find.isShow = false;
+            find.delete = true;
             await find.save();
             return res.status(200).send({
                 data: null,

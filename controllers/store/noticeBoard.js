@@ -39,7 +39,7 @@ module.exports = {
                 if (!word) {
                     result = await storeNotice.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             hide: false,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
@@ -51,10 +51,10 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await storeNotice.count({
-                            where: { isShow: true, hide: false },
+                            where: { delete: false, hide: false },
                         }))
                             ? await storeNotice.count({
-                                  where: { isShow: true },
+                                  where: { delete: false },
                               })
                             : 0;
                         return res
@@ -65,7 +65,7 @@ module.exports = {
                 if (word) {
                     result = await storeNotice.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             hide: false,
                             [Op.or]: [
                                 {
@@ -89,10 +89,10 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await storeNotice.count({
-                            where: { isShow: true, hide: false },
+                            where: { delete: false, hide: false },
                         }))
                             ? await storeNotice.count({
-                                  where: { isShow: true },
+                                  where: { delete: false },
                               })
                             : 0;
                         return res
@@ -105,7 +105,7 @@ module.exports = {
             if (!date && word) {
                 result = await storeNotice.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         hide: false,
                         [Op.or]: [
                             {
@@ -125,10 +125,10 @@ module.exports = {
                     offset: Number(offset),
                 });
                 result.total = (await storeNotice.count({
-                    where: { isShow: true, hide: false },
+                    where: { delete: false, hide: false },
                 }))
                     ? await storeNotice.count({
-                          where: { isShow: true, hide: false },
+                          where: { delete: false, hide: false },
                       })
                     : 0;
                 return res
@@ -137,16 +137,16 @@ module.exports = {
             }
             if (!word && !date) {
                 result = await storeNotice.findAndCountAll({
-                    where: { isShow: true, hide: false },
+                    where: { delete: false, hide: false },
                     limit: Number(limit),
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
                 });
                 result.total = (await storeNotice.count({
-                    where: { isShow: true },
+                    where: { delete: false },
                 }))
                     ? await storeNotice.count({
-                          where: { isShow: true, hide: false },
+                          where: { delete: false, hide: false },
                       })
                     : 0;
                 return res

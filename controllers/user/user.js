@@ -272,7 +272,7 @@ module.exports = {
 
         let list = await alarm.findAll({
             where: {
-                isShow: true,
+                delete: false,
                 userId: userId,
             },
         });

@@ -123,7 +123,7 @@ module.exports = {
             let storeState = await store.findOne({
                 where: { id: store_id },
             });
-            storeState.isShow = state;
+            storeState.delete = state;
             await storeState.save();
             return res.send({ data: state, message: "성공" });
         } catch (error) {

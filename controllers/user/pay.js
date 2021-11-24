@@ -80,7 +80,7 @@ module.exports = {
         const { useGpoint, couponData, storeId, price } = req.body;
 
         let findStore = await store.findOne({
-            where: { isShow: true, id: storeId },
+            where: { delete: false, id: storeId },
         });
         if (!findStore) {
             return res

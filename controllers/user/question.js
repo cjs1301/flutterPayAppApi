@@ -55,7 +55,7 @@ module.exports = {
                 try {
                     const myQuestion = await question.findAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             userId: userId,
                         },
                         include: answer,

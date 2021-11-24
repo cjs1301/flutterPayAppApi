@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
-            isShow: {
+            delete: {
                 type: DataTypes.BOOLEAN,
-                defaultValue: true,
+                defaultValue: false,
             },
             isExpanded: {
                 type: DataTypes.BOOLEAN,

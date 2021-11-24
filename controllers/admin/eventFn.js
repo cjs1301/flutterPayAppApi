@@ -14,7 +14,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -26,9 +26,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -38,7 +38,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -62,9 +62,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -76,7 +76,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     state: {
                         [Op.or]: stateArr, //["시작전,진행중,종료"]
                     },
@@ -97,23 +97,23 @@ module.exports = {
                 offset: Number(offset),
                 order: [["createdAt", "DESC"]],
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     state: state,
                 },
                 limit: Number(limit),
                 offset: Number(offset),
                 order: [["createdAt", "DESC"]],
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -129,7 +129,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -141,9 +141,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -153,7 +153,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -177,9 +177,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -191,7 +191,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     state: state,
                     [Op.or]: [
                         {
@@ -210,23 +210,23 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     state: state,
                 },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -242,7 +242,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -254,9 +254,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -266,7 +266,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -290,9 +290,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -304,7 +304,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     state: state,
                     [Op.or]: [
                         {
@@ -323,23 +323,23 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     state: state,
                 },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -356,7 +356,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -367,9 +367,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -379,7 +379,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         startDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -402,9 +402,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -416,7 +416,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     [Op.or]: [
                         {
                             title: {
@@ -434,20 +434,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
-                where: { isShow: true },
+                where: { delete: false },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -463,7 +463,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -474,9 +474,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -486,7 +486,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         endDate: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -509,9 +509,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -523,7 +523,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     [Op.or]: [
                         {
                             title: {
@@ -541,20 +541,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
-                where: { isShow: true },
+                where: { delete: false },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
@@ -570,7 +570,7 @@ module.exports = {
             if (!word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -581,9 +581,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -593,7 +593,7 @@ module.exports = {
             if (word) {
                 result = await event.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         createdAt: {
                             [Op.between]: [startDay, endDay],
                         },
@@ -616,9 +616,9 @@ module.exports = {
                 });
                 if (result) {
                     result.total = (await event.count({
-                        where: { isShow: true },
+                        where: { delete: false },
                     }))
-                        ? await event.count({ where: { isShow: true } })
+                        ? await event.count({ where: { delete: false } })
                         : 0;
                     return res
                         .status(200)
@@ -630,7 +630,7 @@ module.exports = {
         if (!date && word) {
             result = await event.findAndCountAll({
                 where: {
-                    isShow: true,
+                    delete: false,
                     [Op.or]: [
                         {
                             title: {
@@ -648,20 +648,20 @@ module.exports = {
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }
         if (!word && !date) {
             result = await event.findAndCountAll({
-                where: { isShow: true },
+                where: { delete: false },
                 order: [["createdAt", "DESC"]],
                 limit: Number(limit),
                 offset: Number(offset),
             });
-            result.total = (await event.count({ where: { isShow: true } }))
-                ? await event.count({ where: { isShow: true } })
+            result.total = (await event.count({ where: { delete: false } }))
+                ? await event.count({ where: { delete: false } })
                 : 0;
             return res.status(200).send({ data: result, message: "검색 완료" });
         }

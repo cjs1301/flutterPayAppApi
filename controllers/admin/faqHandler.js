@@ -39,7 +39,7 @@ module.exports = {
                 if (!word) {
                     result = await faq.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
                             },
@@ -50,9 +50,9 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await faq.count({
-                            where: { isShow: true },
+                            where: { delete: false },
                         }))
-                            ? await faq.count({ where: { isShow: true } })
+                            ? await faq.count({ where: { delete: false } })
                             : 0;
                         return res
                             .status(200)
@@ -62,7 +62,7 @@ module.exports = {
                 if (word) {
                     result = await faq.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             [Op.or]: [
                                 {
                                     title: {
@@ -85,9 +85,9 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await faq.count({
-                            where: { isShow: true },
+                            where: { delete: false },
                         }))
-                            ? await faq.count({ where: { isShow: true } })
+                            ? await faq.count({ where: { delete: false } })
                             : 0;
                         return res
                             .status(200)
@@ -99,7 +99,7 @@ module.exports = {
             if (!date && word) {
                 result = await faq.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         [Op.or]: [
                             {
                                 title: {
@@ -118,9 +118,9 @@ module.exports = {
                     order: [["createdAt", "DESC"]],
                 });
                 result.total = (await faq.count({
-                    where: { isShow: true },
+                    where: { delete: false },
                 }))
-                    ? await faq.count({ where: { isShow: true } })
+                    ? await faq.count({ where: { delete: false } })
                     : 0;
                 return res
                     .status(200)
@@ -128,15 +128,15 @@ module.exports = {
             }
             if (!word && !date) {
                 result = await faq.findAndCountAll({
-                    where: { isShow: true },
+                    where: { delete: false },
                     limit: Number(limit),
                     offset: Number(offset),
                     order: [["createdAt", "DESC"]],
                 });
                 result.total = (await faq.count({
-                    where: { isShow: true },
+                    where: { delete: false },
                 }))
-                    ? await faq.count({ where: { isShow: true } })
+                    ? await faq.count({ where: { delete: false } })
                     : 0;
                 return res
                     .status(200)
@@ -204,7 +204,7 @@ module.exports = {
         }
         const { id } = req.body;
         const del = await faq.findOne({ where: { id: id } });
-        del.isShow = false;
+        del.delete = true;
         await del.save();
         return res.status(200).send({
             data: null,

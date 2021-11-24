@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
             logoImg: DataTypes.STRING,
             x: DataTypes.STRING,
             y: DataTypes.STRING,
-            isShow: {
+            delete: {
                 type: DataTypes.BOOLEAN,
-                defaultValue: true,
+                defaultValue: false,
             },
         },
         {

@@ -61,7 +61,7 @@ module.exports = {
                 if (!word) {
                     result = await storeQuestion.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             isAnswer: { [Op.or]: answerArr },
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
@@ -86,10 +86,10 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await storeQuestion.count({
-                            where: { isShow: true },
+                            where: { delete: false },
                         }))
                             ? await storeQuestion.count({
-                                  where: { isShow: true },
+                                  where: { delete: false },
                               })
                             : 0;
                         return res
@@ -100,7 +100,7 @@ module.exports = {
                 if (word) {
                     result = await storeQuestion.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             isAnswer: { [Op.or]: answerArr },
                             [Op.or]: [
                                 {
@@ -136,10 +136,10 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await storeQuestion.count({
-                            where: { isShow: true },
+                            where: { delete: false },
                         }))
                             ? await storeQuestion.count({
-                                  where: { isShow: true },
+                                  where: { delete: false },
                               })
                             : 0;
                         return res
@@ -152,7 +152,7 @@ module.exports = {
             if (!date && word) {
                 result = await storeQuestion.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         isAnswer: { [Op.or]: answerArr },
                         [Op.or]: [
                             {
@@ -184,9 +184,9 @@ module.exports = {
                     ],
                 });
                 result.total = (await storeQuestion.count({
-                    where: { isShow: true },
+                    where: { delete: false },
                 }))
-                    ? await storeQuestion.count({ where: { isShow: true } })
+                    ? await storeQuestion.count({ where: { delete: false } })
                     : 0;
                 return res
                     .status(200)
@@ -195,7 +195,7 @@ module.exports = {
             if (!word && !date) {
                 result = await storeQuestion.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         isAnswer: { [Op.or]: answerArr },
                         state: {
                             [Op.or]: stateArr, //["정산문의","결제문의","기타"]
@@ -215,9 +215,9 @@ module.exports = {
                     ],
                 });
                 result.total = (await storeQuestion.count({
-                    where: { isShow: true },
+                    where: { delete: false },
                 }))
-                    ? await storeQuestion.count({ where: { isShow: true } })
+                    ? await storeQuestion.count({ where: { delete: false } })
                     : 0;
                 return res
                     .status(200)
@@ -242,7 +242,7 @@ module.exports = {
                 let find = await storeQuestion.findOne({
                     where: { id: id },
                 });
-                find.isShow = false;
+                find.delete = true;
                 await find.save();
                 return res.status(200).send({
                     data: null,

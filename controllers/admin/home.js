@@ -80,7 +80,7 @@ module.exports = {
         const qasyncA = async () => {
             userQ = await question.count({
                 where: {
-                    isShow: true,
+                    delete: false,
                     isAnswer: false,
                     createdAt: {
                         [Op.between]: [startDay, endDay],
@@ -92,7 +92,7 @@ module.exports = {
         const qasyncB = async () => {
             storeQ = await storeQuestion.count({
                 where: {
-                    isShow: true,
+                    delete: false,
                     isAnswer: false,
                     createdAt: {
                         [Op.between]: [startDay, endDay],
@@ -114,7 +114,7 @@ module.exports = {
             order: [["createdAt", "DESC"]],
         });
         result.recentEvent = await event.findAll({
-            where: { isShow: true, hide: false },
+            where: { delete: false, hide: false },
             order: [["createdAt", "DESC"]],
             limit: 4,
         });

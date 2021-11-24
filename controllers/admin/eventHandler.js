@@ -99,7 +99,7 @@ module.exports = {
         }
         const { id } = req.body;
         const deletEvent = await event.findOne({ where: { id: id } });
-        deletEvent.isShow = false;
+        deletEvent.delete = true;
         await deletEvent.save();
         return res.status(200).send({
             data: null,
@@ -206,7 +206,7 @@ module.exports = {
             writer: findEvent.writer,
             content: findEvent.content,
             title: findEvent.title,
-            hide: findEvent.isShow,
+            hide: findEvent.delete,
             state: findEvent.state,
             startDate: findEvent.startDate,
             endDate: findEvent.endDate,

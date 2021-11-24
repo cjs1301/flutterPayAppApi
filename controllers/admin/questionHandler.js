@@ -27,7 +27,7 @@ module.exports = {
                 message: "해당 게시글은 없습니다.",
             });
         }
-        deletQuestion.isShow = false;
+        deletQuestion.delete = true;
         await deletQuestion.save();
         return res.status(200).send({
             data: null,
@@ -174,7 +174,7 @@ module.exports = {
                 if (!word) {
                     result = await question.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             createdAt: {
                                 [Op.between]: [startDay, endDay],
                             },
@@ -198,9 +198,9 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await question.count({
-                            where: { isShow: true },
+                            where: { delete: false },
                         }))
-                            ? await question.count({ where: { isShow: true } })
+                            ? await question.count({ where: { delete: false } })
                             : 0;
                         return res
                             .status(200)
@@ -210,7 +210,7 @@ module.exports = {
                 if (word) {
                     result = await question.findAndCountAll({
                         where: {
-                            isShow: true,
+                            delete: false,
                             [Op.or]: [
                                 {
                                     title: {
@@ -245,9 +245,9 @@ module.exports = {
                     });
                     if (result) {
                         result.total = (await question.count({
-                            where: { isShow: true },
+                            where: { delete: false },
                         }))
-                            ? await question.count({ where: { isShow: true } })
+                            ? await question.count({ where: { delete: false } })
                             : 0;
                         return res
                             .status(200)
@@ -259,7 +259,7 @@ module.exports = {
             if (!date && word) {
                 result = await question.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         [Op.or]: [
                             {
                                 title: {
@@ -290,9 +290,9 @@ module.exports = {
                     ],
                 });
                 result.total = (await question.count({
-                    where: { isShow: true },
+                    where: { delete: false },
                 }))
-                    ? await question.count({ where: { isShow: true } })
+                    ? await question.count({ where: { delete: false } })
                     : 0;
                 return res
                     .status(200)
@@ -301,7 +301,7 @@ module.exports = {
             if (!word && !date) {
                 result = await question.findAndCountAll({
                     where: {
-                        isShow: true,
+                        delete: false,
                         isAnswer: {
                             [Op.or]: stateArr,
                         },
@@ -320,9 +320,9 @@ module.exports = {
                     ],
                 });
                 result.total = (await question.count({
-                    where: { isShow: true },
+                    where: { delete: false },
                 }))
-                    ? await question.count({ where: { isShow: true } })
+                    ? await question.count({ where: { delete: false } })
                     : 0;
                 return res
                     .status(200)

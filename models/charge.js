@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 comment: "충전신청,입금미완료,충전완료,입금완료",
             },
-            isShow: {
+            delete: {
                 type: DataTypes.BOOLEAN,
-                defaultValue: true,
+                defaultValue: false,
             },
         },
         {

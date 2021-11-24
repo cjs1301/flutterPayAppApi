@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
             writer: DataTypes.STRING,
             content: DataTypes.TEXT,
             title: DataTypes.STRING,
-            isShow: {
+            delete: {
                 type: DataTypes.BOOLEAN,
-                defaultValue: true,
+                defaultValue: false,
             },
             hide: {
                 type: DataTypes.BOOLEAN,
