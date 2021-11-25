@@ -94,6 +94,9 @@ module.exports = {
                 User.phoneNumber = !result.data.data.cellphone
                     ? ""
                     : result.data.data.cellphone;
+                User.userName = !result.data.data.name
+                    ? ""
+                    : result.data.data.name;
                 await User.save();
                 let userInfo = {
                     ...User.dataValues,
