@@ -69,7 +69,6 @@ module.exports = {
         });
         result.today.subscriptionList = await subscription.count({
             where: {
-                state: "신청대기",
                 createdAt: {
                     [Op.between]: [startDay, endDay],
                 },
