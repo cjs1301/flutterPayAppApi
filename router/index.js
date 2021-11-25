@@ -84,6 +84,7 @@ router.post("/admin/login", adminLogin.login); //가게관리자 로그인,운�
 
 router.get("/admin/charge/search", chargeHandler.chargeSearch); //충전신청자 검색
 router.put("/admin/charge/state", chargeHandler.stateChange); //충전진행상태 변경
+router.put("/admin/charge", chargeHandler.giveGmoney); //광화 충전
 
 router.get("/admin/subscription/search", chargeHandler.subscriptionSearch);
 router.put("/admin/subscription", chargeHandler.proceeding); //약정신청 진행중 변경

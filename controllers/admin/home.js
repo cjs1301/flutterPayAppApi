@@ -113,11 +113,26 @@ module.exports = {
             ],
             order: [["createdAt", "DESC"]],
         });
-        result.recentEvent = await event.findAll({
-            where: { delete: false, hide: false },
-            order: [["createdAt", "DESC"]],
-            limit: 4,
+        let events = await event.findAll({
+            where: { delete: false, hide: false, state: "진행중" },
         });
+
+        events.sort((a, b) => {
+            if (a.endDate < b.endDate) {
+                return -1;
+            }
+            if (a.endDate > b.endDate) {
+                return 1;
+            }
+            return 0;
+        });
+        let i = 0;
+        let sortEvent = [];
+        while (i < 4) {
+            sortEvent.push(events[i]);
+            i++;
+        }
+        result.recentEvent = sortEvent;
 
         result.newQuestion.user = userQ;
         result.newQuestion.store = storeQ;

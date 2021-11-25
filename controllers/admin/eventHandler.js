@@ -140,11 +140,6 @@ module.exports = {
                 total: 0,
             };
 
-            // await event.sequelize.query("SELECT * FROM `events` WHERE 1 like %word%")
-
-            ("SELECT * FROM `events` WHERE title LIKE %word% AND startDate < ");
-            ("like %word%");
-
             if (!state) {
                 return res
                     .status(400)

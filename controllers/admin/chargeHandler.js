@@ -40,7 +40,7 @@ module.exports = {
             if (!state) {
                 return res
                     .status(400)
-                    .send({ data: null, message: "결제상태를 입력해주세요" });
+                    .send({ data: null, message: "충전상태를 입력해주세요" });
             }
             let stateArr = state.split(",");
             if (date) {
@@ -295,7 +295,7 @@ module.exports = {
             if (!state) {
                 return res
                     .status(400)
-                    .send({ data: null, message: "결제상태를 입력해주세요" });
+                    .send({ data: null, message: "충전상태를 입력해주세요" });
             }
             let stateArr = state.split(",");
             if (!name) {
@@ -455,6 +455,38 @@ module.exports = {
             return res
                 .status(500)
                 .send({ data: error, message: "삭제된 신청서 입니다." });
+        }
+    },
+
+    giveGmoney: async (req, res) => {
+        try {
+            const authorization = req.headers.authorization;
+            let admin = await token.storeCheck(authorization);
+            if (!admin) {
+                return res.status(403).send({
+                    data: null,
+                    message: "유효하지 않은 토큰 입니다.",
+                });
+            }
+            const { idValue, price } = req.body;
+            let find = await user.findOne({
+                where: {
+                    idValue: idValue,
+                },
+            });
+            if (!find) {
+                return res
+                    .status(300)
+                    .send({ data: null, message: "대상자를 찾을수 없습니다." });
+            }
+            find.gMoney += price;
+            await find.save();
+            return res
+                .status(200)
+                .send({ data: find.gMoney, message: "충전 완료" });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ data: error, message: "충전 실패" });
         }
     },
 };

@@ -18,6 +18,7 @@ module.exports = {
     faq: async (req, res) => {
         let faqList = await faq.findAll({
             where: { delete: false, hide: false },
+            order: [["createdAt", "DESC"]],
         });
         res.send({ data: faqList, message: "성공" });
     },
@@ -25,6 +26,7 @@ module.exports = {
     notice: async (req, res) => {
         let noticeList = await notice.findAll({
             where: { delete: false, hide: false },
+            order: [["createdAt", "DESC"]],
         });
         res.send({ data: noticeList, message: "성공" });
     },

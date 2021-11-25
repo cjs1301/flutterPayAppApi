@@ -27,7 +27,7 @@ module.exports = {
                             (findQna.title = title),
                                 (findQna.content = content),
                                 (findQna.state = state);
-                            findQna.save();
+                            await findQna.save();
                             return res.status(200).send({
                                 data: null,
                                 message: "수정 완료",
