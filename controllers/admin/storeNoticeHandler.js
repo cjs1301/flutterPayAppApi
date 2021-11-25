@@ -21,7 +21,7 @@ module.exports = {
                 offset = limit * (pageNum - 1);
             }
             if (word === undefined || date === undefined) {
-                res.status(400).send({
+                return res.status(400).send({
                     data: null,
                     message: "쿼리항목이 빠져 있습니다",
                 });

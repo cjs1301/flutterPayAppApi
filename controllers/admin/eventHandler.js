@@ -79,7 +79,6 @@ module.exports = {
                     message: "수정 완료",
                 });
             }
-            scheduler(state, find);
             return res.status(200).send({
                 data: null,
                 message: "작성 완료",
@@ -140,6 +139,12 @@ module.exports = {
                 rows: [],
                 total: 0,
             };
+
+            // await event.sequelize.query("SELECT * FROM `events` WHERE 1 like %word%")
+
+            ("SELECT * FROM `events` WHERE title LIKE %word% AND startDate < ");
+            ("like %word%");
+
             if (!state) {
                 return res
                     .status(400)
