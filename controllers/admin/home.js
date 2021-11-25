@@ -62,7 +62,6 @@ module.exports = {
 
         result.today.chargeList = await charge.count({
             where: {
-                state: "충전신청",
                 createdAt: {
                     [Op.between]: [startDay, endDay],
                 },

@@ -210,7 +210,7 @@ module.exports = {
             writer: findEvent.writer,
             content: findEvent.content,
             title: findEvent.title,
-            hide: findEvent.delete,
+            hide: findEvent.hide,
             state: findEvent.state,
             startDate: findEvent.startDate,
             endDate: findEvent.endDate,
