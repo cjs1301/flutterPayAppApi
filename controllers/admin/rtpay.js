@@ -2,6 +2,7 @@ const { Request, Response } = require("express");
 const user = require("../../models/index.js").user;
 const charge = require("../../models/index.js").charge;
 const alarm = require("../../models/index.js").alarm;
+const transaction = require("../../models/index.js").transaction;
 const { Op } = require("sequelize");
 const axios = require("axios");
 const qs = require("qs");
