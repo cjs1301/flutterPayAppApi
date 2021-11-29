@@ -28,6 +28,7 @@ module.exports = {
             //     attributes: ["notiAlarm"],
             // });
             // if (checkNoti.notiAlarm) {
+            console.log("푸쉬알림 작동", message, fcmToken);
             var payload = {
                 notification: {
                     title: message.title,

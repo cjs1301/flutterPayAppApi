@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
+            resultLog: {
+                type: DataTypes.STRING,
+                comment: "처리결과",
+            },
         },
         {
             sequelize,

@@ -159,4 +159,57 @@ router.get("/update/store/state", refreshData.storeState);
 router.get("/update/store", refreshData.storeUpdate);
 router.get("/store/search", appListData.searchStore);
 
+//test
+router.get("/test", async (req, res) => {
+    const user = require("../models/index").user;
+    const charge = require("../models/index").charge;
+    let find = user.findOne({
+        where: { id: 1 },
+    });
+    for (let i = 0; i < 4; i++) {
+        await charge.create({
+            userId: find.id,
+            userName: find.name,
+            money: 1000,
+            phoneNumber: find.phoneNumber,
+            email: find.email,
+            state: "충전신청",
+        });
+    }
+    let a = await user.create({
+        userName: "김수진",
+        email: "doubleCar@gmail.com",
+        phoneNumber: "01001120112",
+        gMoney: 0,
+        fcmToken: "test",
+    });
+    await charge.create({
+        userId: a.id,
+        userName: a.name,
+        money: 1000,
+        phoneNumber: a.phoneNumber,
+        email: a.email,
+        state: "충전신청",
+    });
+    res.send("ok");
+});
+router.get("/test2", async (req, res) => {
+    const user = require("../models/index").user;
+    const charge = require("../models/index").charge;
+    let find = await user.findOne({
+        where: { id: 1 },
+    });
+    for (let i = 0; i < 4; i++) {
+        await charge.create({
+            userId: find.id,
+            userName: find.name,
+            money: 1000,
+            phoneNumber: find.phoneNumber,
+            email: find.email,
+            state: "충전신청",
+        });
+    }
+    res.send("ok");
+});
+
 module.exports = router;
