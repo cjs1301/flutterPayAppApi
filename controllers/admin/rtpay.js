@@ -113,6 +113,10 @@ module.exports = {
                                     RPAY +
                                     "화 충전이 완료되었습니다",
                             });
+                            await pushEvent.data(
+                                "/user/info",
+                                giveMoneyUser.fcmToken
+                            );
                             await pushEvent.noti(
                                 contents,
                                 giveMoneyUser.fcmToken
@@ -166,6 +170,10 @@ module.exports = {
                             content:
                                 "신청하신 " + RPAY + "화 충전이 완료되었습니다",
                         });
+                        await pushEvent.data(
+                            "/user/info",
+                            giveMoneyUser.fcmToken
+                        );
                         await pushEvent.noti(contents, giveMoneyUser.fcmToken);
                         return res.json({ RCODE: 200, PCHK: "OK" });
                     } catch (error) {
