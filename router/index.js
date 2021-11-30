@@ -145,6 +145,7 @@ router.put("/admin/qna", questionHandler.questionEdit);
 router.delete("/admin/qna", questionHandler.delete);
 
 router.post("/check/rtpay", rtpay.rtpay);
+router.post("/log/rtpay", rtpay.log);
 
 //storeAdmin
 router.get("/store/admin/home", storeHome.homeInfo);
