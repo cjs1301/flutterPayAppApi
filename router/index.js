@@ -92,7 +92,7 @@ router.put("/admin/subscription", chargeHandler.proceeding); //약정신청 진�
 router.delete("/admin/subscription", chargeHandler.termination); //약정신청 해지
 router.get("/subscriptionFile/upload/:name", chargeHandler.downLoad); //약정신청서 다운로드
 router.get("/subscription/excel/download", subscriptionExcel.down); //약정충전 상태 엑셀 다운로드
-router.get(
+router.post(
     "/subscription/excel/upload",
     excelUpload.single("xlsx"),
     subscriptionExcel.up,
