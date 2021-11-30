@@ -42,5 +42,18 @@ const imageUpload = multer({
         cb(undefined, true);
     },
 });
+const excelUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 10000000, // 10000000 Bytes = 10 MB
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(xlsx)$/)) {
+            // upload only png and jpg format
+            return cb(new Error("Please upload a xlsx"));
+        }
+        cb(undefined, true);
+    },
+});
 
-module.exports = { imageUpload };
+module.exports = { imageUpload, excelUpload };

@@ -22,6 +22,7 @@ const faqHandler = require("./admin/faqHandler");
 const storeNoticeHandler = require("./admin/storeNoticeHandler");
 const storeQuestionHandler = require("./admin/storeQuestionHandler");
 const questionHandler = require("./admin/questionHandler");
+const subscriptionExcel = require("./admin/subscriptionExcel");
 
 //app
 const appListData = require("./appListData");
@@ -59,5 +60,6 @@ module.exports = {
     storeNoticeHandler,
     storeQuestionHandler,
     questionHandler,
+    subscriptionExcel,
     rtpay,
 };

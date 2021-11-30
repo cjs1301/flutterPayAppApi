@@ -381,6 +381,9 @@ module.exports = {
                     .send({ data: userToken, message: "로그인 성공" });
             }
             User.id = userInfo.user_id;
+            if (userInfo.idValue) {
+                User.idValue = userInfo.idValue;
+            }
             if (userInfo.name) {
                 User.userName = userInfo.name;
             }

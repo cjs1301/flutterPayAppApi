@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { imageUpload } = require("../modules/multerConfig");
+const { imageUpload, excelUpload } = require("../modules/multerConfig");
 const {
     user, //user
     pay,
@@ -29,6 +29,7 @@ const {
     storeNoticeHandler,
     storeQuestionHandler,
     questionHandler,
+    subscriptionExcel,
     rtpay,
 } = require("../controllers/index");
 
@@ -90,6 +91,16 @@ router.get("/admin/subscription/search", chargeHandler.subscriptionSearch);
 router.put("/admin/subscription", chargeHandler.proceeding); //약정신청 진행중 변경
 router.delete("/admin/subscription", chargeHandler.termination); //약정신청 해지
 router.get("/subscriptionFile/upload/:name", chargeHandler.downLoad); //약정신청서 다운로드
+router.get("/subscription/excel/download", subscriptionExcel.down); //약정충전 상태 엑셀 다운로드
+router.get(
+    "/subscription/excel/upload",
+    excelUpload.single("xlsx"),
+    subscriptionExcel.up,
+    (error, req, res, next) => {
+        console.log(error);
+        return res.status(400).send({ message: error.message });
+    }
+); //약정신청서 적용 엑셀 업로드
 
 router.get("/admin/transaction", adminTransactionHandler.search);
 router.get("/admin/calculate", adminTransactionHandler.transaction);
