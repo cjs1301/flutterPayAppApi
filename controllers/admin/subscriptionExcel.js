@@ -18,7 +18,7 @@ module.exports = {
                 order: [["updatedAt", "DESC"]],
             });
             const workbook = new ExcelJS.Workbook();
-
+            const worksheet = workbook.addWorksheet();
             let rawData = [
                 { header: "아이디", data: [] },
                 { header: "이름(닉네임)", data: [] },
