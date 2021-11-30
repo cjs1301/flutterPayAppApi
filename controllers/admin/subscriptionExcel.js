@@ -32,7 +32,12 @@ module.exports = {
                 rawData[2].data.push(el.user.phoneNumber);
                 rawData[3].data.push(el.user.email);
             }
-
+            rawData.forEach((data, index) => {
+                worksheet.getColumn(index + 1).values = [
+                    data.header,
+                    ...data.data,
+                ];
+            });
             res.setHeader("Content-Type", "application/vnd.openxmlformats");
             res.setHeader(
                 "Content-Disposition",
