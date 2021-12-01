@@ -6,7 +6,7 @@ const user = require("../../models/index.js").user;
 module.exports = {
     down: async (req, res) => {
         try {
-            let arr = await subscription.findAll({
+            let subList = await subscription.findAll({
                 where: {
                     state: "약정충전진행",
                 },
@@ -17,6 +17,22 @@ module.exports = {
                 ],
                 order: [["updatedAt", "DESC"]],
             });
+            let result = [];
+            if (subList.length !== 0) {
+                for (let el of subList) {
+                    let find = await subscription.findAll({
+                        where: {
+                            userId: el.user.id,
+                        },
+                        order: [["updatedAt", "DESC"]],
+                    });
+                    if (find.length !== 0) {
+                        if (find[0].state === "약정충전진행") {
+                            result.push(el);
+                        }
+                    }
+                }
+            }
             console.log(arr);
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet();
@@ -27,7 +43,7 @@ module.exports = {
                 { header: "이메일", data: [] },
                 { header: "금액", data: [] },
             ];
-            for (let el of arr) {
+            for (let el of result) {
                 rawData[0].data.push(el.user.idValue);
                 rawData[1].data.push(el.user.userName);
                 rawData[2].data.push(el.user.phoneNumber);
