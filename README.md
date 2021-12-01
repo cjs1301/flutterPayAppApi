@@ -1,15 +1,14 @@
-## Navigation
-1. [Introduce](#introduce)
-2. [How to Use](#how-to-use)
-3. [Folder](#folder)
-4. [Library](#library)
-5. [Custom Color List](#custom-color-list)
-6. [Section](#section)
-7. [Reversal](#reversal)
+# 마을이야기 페이
+### _광진구 사회적 기업 지역 결제 앱_
 
-# introduce
 
-# how-to-use
+node js, express 기반의 서버입니다.
+기존앱의 서버와 연동이 되어야 사용가능합니다!
+- [How to Use](#how-to-use)
+- [Folder](#folder)
+- ✨[Library](#library)✨
+
+## how-to-use
 
 1. 모듈설치하기
 ```
@@ -42,3 +41,16 @@ node app.js
  - subsciptionFile `약정충전 신청서 다운로드,업로드`
 
 ## library
+
+
+| Plugin | 목적 |
+| ------ | ------ |
+| exceljs | 통계자료 제공, 엑셀로 대량의 정보 수정 |
+| firebase-admin | 앱 내의 푸쉬 알림 설정 |
+| jsonwebtoken | 로그인 관리 |
+| node-cron | 주기적 앱 데이터 최신화 |
+| sequelize | MySQL 컨트롤 |
+| multer | 신청서, 이벤트 이미지 업로드 |
+
+**Thank U**
+
