@@ -118,12 +118,15 @@ module.exports = {
                         message: "사용자가 약정충전 진행 상태가 아닙니다.",
                     });
                 }
-                console.log(data[i]);
-                console.log(data[i][-1]);
-                find.gMoney += data[i][-1];
+
+                find.gMoney += data[i][data[i].length - 1];
                 let contents = {
                     title: "정기 약정충전 내역알림",
-                    body: "신청금액: " + data[i][-1] + "\n" + "충전완료",
+                    body:
+                        "신청금액: " +
+                        data[i][data[i].length - 1] +
+                        "\n" +
+                        "충전완료",
                 };
                 await alarm.create({
                     userId: find.id,
