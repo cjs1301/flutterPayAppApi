@@ -33,7 +33,6 @@ module.exports = {
                     }
                 }
             }
-            console.log(arr);
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet();
             let rawData = [
