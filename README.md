@@ -16,12 +16,12 @@
 npm i
 ```
 2. 환경변수 설정하기
-파일명 변경후 키값들을 채워 넣으세요
-.env.exsample => .env
+ 파일명 변경후 키값들을 채워 넣으세요
+ .env.exsample => .env
 
 3. 데이터베이스 설정
-config/config.json
-mysql에 데이터베이스 만들기
+ config/config.json
+ mysql에 데이터베이스 만들기
 
 4. 서버 실행
 ```
