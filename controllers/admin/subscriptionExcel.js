@@ -84,7 +84,7 @@ module.exports = {
             for (let el of data) {
                 let find = await user.findOne({
                     where: {
-                        idValue: el[0],
+                        idValue: el[1],
                     },
                 });
                 if (!find) {
