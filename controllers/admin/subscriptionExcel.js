@@ -118,6 +118,7 @@ module.exports = {
                         message: "사용자가 약정충전 진행 상태가 아닙니다.",
                     });
                 }
+                console.log(data[i]);
                 find.gMoney += data[i][-1];
                 let contents = {
                     title: "정기 약정충전 내역알림",
