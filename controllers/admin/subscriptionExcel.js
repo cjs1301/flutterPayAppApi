@@ -100,15 +100,15 @@ module.exports = {
                     },
                     order: [["updatedAt", "DESC"]],
                 });
-                console.log(userSub);
-                if (userSub.length !== 0) {
+
+                if (userSub.length === 0) {
                     await transaction.rollback();
                     return res.status(400).send({
                         data: null,
                         message: "사용자가 약정충전 진행 상태가 아닙니다.",
                     });
                 }
-                console.log(userSub[0].state);
+
                 if (userSub[0].state !== "약정충전진행") {
                     await transaction.rollback();
                     return res.status(400).send({
