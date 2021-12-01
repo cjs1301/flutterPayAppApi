@@ -119,6 +119,7 @@ module.exports = {
                     });
                 }
                 console.log(data[i]);
+                console.log(data[i][-1]);
                 find.gMoney += data[i][-1];
                 let contents = {
                     title: "정기 약정충전 내역알림",
