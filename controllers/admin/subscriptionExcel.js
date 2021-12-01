@@ -81,10 +81,10 @@ module.exports = {
                 });
             });
             console.log(data);
-            for (let el of data) {
+            for (let i = 1; i < data.length; i++) {
                 let find = await user.findOne({
                     where: {
-                        idValue: el[1],
+                        idValue: data[i][1],
                     },
                 });
                 if (!find) {
@@ -114,7 +114,7 @@ module.exports = {
                         message: "사용자가 약정충전 진행 상태가 아닙니다.",
                     });
                 }
-                find.gMoney += el[-1];
+                find.gMoney += data[i][-1];
                 await find.save();
             }
             await transaction.commit();
