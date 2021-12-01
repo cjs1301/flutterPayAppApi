@@ -100,6 +100,7 @@ module.exports = {
                     },
                     order: [["updatedAt", "DESC"]],
                 });
+                console.log(userSub);
                 if (userSub.length !== 0) {
                     await transaction.rollback();
                     return res.status(400).send({
