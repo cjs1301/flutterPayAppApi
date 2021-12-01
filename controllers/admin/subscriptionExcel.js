@@ -80,6 +80,7 @@ module.exports = {
                     i++;
                 });
             });
+            console.log(data);
             for (let el of data) {
                 let find = await user.findOne({
                     where: {
