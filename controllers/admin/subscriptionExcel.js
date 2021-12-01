@@ -2,6 +2,8 @@ const ExcelJS = require("exceljs");
 const { Request, Response } = require("express");
 const subscription = require("../../models/index.js").subscription;
 const user = require("../../models/index.js").user;
+const pushEvent = require("../../modules/push");
+const alarm = require("../../models/index.js").alarm;
 
 module.exports = {
     down: async (req, res) => {
@@ -117,6 +119,17 @@ module.exports = {
                     });
                 }
                 find.gMoney += data[i][-1];
+                let contents = {
+                    title: "정기 약정충전 내역알림",
+                    body: "신청금액: " + data[i][-1] + "\n" + "충전완료",
+                };
+                await alarm.create({
+                    userId: find.id,
+                    title: contents.title,
+                    content: contents.body,
+                });
+                pushEvent.data("/user/info", find.fcmToken);
+                pushEvent.noti(contents, find.fcmToken);
                 await find.save();
             }
             await transaction.commit();
