@@ -1,26 +1,16 @@
 ## Navigation
-1. [How to Use](#how-to-use)
-2. [Folder](#folder)
-3. [Library](#library)
-4. [Custom Color List](#custom-color-list)
-5. [Section](#section)
-6. [Reversal](#reversal)
-7. [Height](#height)
-8. [Text](#text)
-9. [Desc](#desc)
-10. [Text Background](#text-background)
-11. [Text Animation](#text-animation)
-12. [Font Color](#fontcolor)
-13. [Font Size](#fontsize)
-14. [Font Align - X](#fontalign)
-15. [Font Align - Y](#fontaligny)
-16. [Desc Size](#descsize)
-17. [Desc Align - X](#descalign)
-18. [Desc Align - Y](#descaligny)
-19. [Rotate](#rotate)
-20. [Demo](#demo)
+1. [Introduce](#introduce)
+2. [How to Use](#how-to-use)
+3. [Folder](#folder)
+4. [Library](#library)
+5. [Custom Color List](#custom-color-list)
+6. [Section](#section)
+7. [Reversal](#reversal)
+
+# introduce
 
 # how-to-use
+
 1. 모듈설치하기
 ```
 npm i
@@ -37,6 +27,7 @@ node app.js
 ```
 
 ## folder
+
 > 구성
  - config
  - controllers
