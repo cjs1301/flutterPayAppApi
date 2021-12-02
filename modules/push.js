@@ -42,7 +42,7 @@ module.exports = {
                     payload: {
                         aps: {
                             contentAvailable: true,
-                            category: "NEW_MESSAGE_CATEGORY",
+                            category: "NEW_MESSAGE_CATEGORY", //추가
                             sound: "default",
                         },
                     },
