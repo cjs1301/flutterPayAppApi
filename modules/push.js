@@ -41,6 +41,8 @@ module.exports = {
                     },
                     payload: {
                         aps: {
+                            contentAvailable: true,
+                            category: "NEW_MESSAGE_CATEGORY",
                             sound: "default",
                         },
                     },
