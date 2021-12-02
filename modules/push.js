@@ -36,13 +36,11 @@ module.exports = {
                 },
                 token: fcmToken,
                 apns: {
-                    headers: {
-                        "apns-priority": "10",
-                    },
                     payload: {
                         aps: {
-                            contentAvailable: true,
-                            category: "NEW_MESSAGE_CATEGORY", //추가
+                            alert: {
+                                body: message.body,
+                            },
                             sound: "default",
                         },
                     },
