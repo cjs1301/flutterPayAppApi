@@ -11,7 +11,7 @@ node js, express 기반의 서버입니다.
 
 ## how-to-use
 
-1. 모듈설치하기.
+1. 모듈설치하기
 
 ```
 npm i
